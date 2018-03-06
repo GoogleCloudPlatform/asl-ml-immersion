@@ -55,10 +55,9 @@ if __name__ == '__main__':
     )
     parser.add_argument(
         '--hidden_units',
-        help='Hidden layer sizes to use for DNN feature columns -- provide space-separated layers',
-        nargs='+',
-        type=int,
-        default=[128, 32, 4]
+        help = 'Hidden layer sizes to use for DNN feature columns -- provide space-separated layers',
+        type = str,
+        default = "128 32 4"
     )
     parser.add_argument(
         '--pattern',
@@ -85,7 +84,7 @@ if __name__ == '__main__':
     print ("Will train for {} steps using batch_size={}".format(model.TRAIN_STEPS, model.BATCH_SIZE))
     model.PATTERN = arguments.pop('pattern')
     model.EMEBED_SIZE = arguments.pop('embed_size')
-    model.HIDDEN_UNITS = arguments.pop('hidden_units')
+    model.HIDDEN_UNITS = [int(x) for x in arguments.pop('hidden_units').split(' ')]
     print ("Will use DNN size of {}".format(model.HIDDEN_UNITS))
 
     # Append trial_id to path if we are doing hptuning

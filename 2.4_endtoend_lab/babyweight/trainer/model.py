@@ -105,11 +105,15 @@ def train_and_evaluate(output_dir):
         dnn_feature_columns = deep,
         dnn_hidden_units = HIDDEN_UNITS)
     train_spec = tf.estimator.TrainSpec(
-        input_fn = read_dataset('train.csv', mode = tf.estimator.ModeKeys.TRAIN, BATCH_SIZE),
+        input_fn = read_dataset(prefix = 'train.csv',
+				mode = tf.estimator.ModeKeys.TRAIN,
+				batch_size = BATCH_SIZE),
         max_steps = TRAIN_STEPS)
     exporter = tf.estimator.LatestExporter('exporter', serving_input_fn)
     eval_spec = tf.estimator.EvalSpec(
-        input_fn = read_dataset('eval.csv', mode = tf.estimator.ModeKeys.EVAL, BATCH_SIZE),
+        input_fn = read_dataset(prefix = 'eval.csv',
+				mode = tf.estimator.ModeKeys.EVAL,
+				batch_size = BATCH_SIZE),
         steps = None,
         start_delay_secs = 60, # start evaluating after N seconds
         throttle_secs = 300,  # evaluate every N seconds

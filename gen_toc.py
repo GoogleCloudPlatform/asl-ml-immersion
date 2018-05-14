@@ -118,12 +118,12 @@ for lab in labs:
     contents = get_relevant_files(lab)
     lab_md += gen_module_markdown(lab, contents)
     lab_md += '<br> \n'
-print contents
 
 soln_md = ''
 for soln in solns:
     contents = get_relevant_files(soln)
-    soln_md += '\n' + gen_module_markdown(soln, contents)
+    soln_md += gen_module_markdown(soln, contents)
+    soln_md += '<br> \n'
 
 # write to .ipynb
 nb = nbf.v4.new_notebook()

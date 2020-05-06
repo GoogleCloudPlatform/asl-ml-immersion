@@ -1,8 +1,0 @@
-outputdir
-trainer
-house_trained
-hyperparam.yaml
-test.json
-train.csv
-valid.csv
-setup.cfg

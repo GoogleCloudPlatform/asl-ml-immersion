@@ -1,14 +1,6 @@
-# New Project Template
+# Advanced Solutions Lab
 
-This repository contains a template that can be used to seed a repository for a
-new Google open source project.
-
-See [go/releasing](http://go/releasing) (available externally at
-https://opensource.google/docs/releasing/) for more information about
-releasing a new Google open source project.
-
-This template uses the Apache license, as is Google's default.  See the
-documentation for instructions on using alternate license.
+This repository contains labs and solutions for the Advanced Solutions Lab: ML Immersion.
 
 ## How to use this template
 

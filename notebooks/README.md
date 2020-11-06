@@ -3,7 +3,7 @@ Table of contents for various ASL course and offerings.
 
 ## ASL (standard)
 * Week 1
-    * (Launching into ML)[https://github.com/GoogleCloudPlatform/asl-ml-immersion/tree/notebooks/launching_into_ml]
+    * [Launching into ML](https://github.com/GoogleCloudPlatform/asl-ml-immersion/tree/notebooks/launching_into_ml)
     * Intro to TF and Keras
     * ...
 * Week 2

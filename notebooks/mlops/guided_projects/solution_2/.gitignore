@@ -1,0 +1,3 @@
+covertype_tfx_templated_pipeline.tar.gz  # Pipeline definition file in argo format for Kubeflow.
+tfx_pipeline_output  # Default pipeline output directory
+tfx_metadata  # Default tfx metadata SQLite DB directory

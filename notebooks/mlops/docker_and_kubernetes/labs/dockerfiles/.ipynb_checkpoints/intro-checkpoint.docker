@@ -1,0 +1,14 @@
+# Use an official Node runtime as the parent image
+TODO: Your code goes here
+
+# Set the working directory in the container to /app
+TODO: Your code goes here
+
+# Copy the current directory contents into the container at /app
+TODO: Your code goes here
+
+# Make the container's port 80 available to the outside world
+TODO: Your code goes here
+
+# Run app.js using node when the container launches
+TODO: Your code goes here

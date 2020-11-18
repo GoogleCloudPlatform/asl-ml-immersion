@@ -78,10 +78,10 @@ def create_pipeline(pipeline_name: Text,
         example_gen_pb2.SplitConfig.Split(name='train', hash_buckets=4),
         example_gen_pb2.SplitConfig.Split(name='eval', hash_buckets=1)
     ]))
-  generate_examples = CsvExampleGen(input=examples)
+  generate_examples = # TODO
 
   # Computes statistics over data for visualization and example validation.
-  generate_statistics = StatisticsGen(examples=generate_examples.outputs.examples)
+  generate_statistics = # TODO
 
   # Import a user-provided schema
   import_schema = ImporterNode(
@@ -91,18 +91,13 @@ def create_pipeline(pipeline_name: Text,
   
   # Generates schema based on statistics files.Even though, we use user-provided schema
   # we still want to generate the schema of the newest data for tracking and comparison
-  infer_schema = SchemaGen(statistics=generate_statistics.outputs.statistics)
+  infer_schema = # TODO
 
   # Performs anomaly detection based on statistics and data schema.
-  validate_stats = ExampleValidator(
-      statistics=generate_statistics.outputs.statistics, 
-      schema=import_schema.outputs.result)
+  validate_stats = # TODO
 
   # Performs transformations and feature engineering in training and serving.
-  transform = Transform(
-      examples=generate_examples.outputs.examples,
-      schema=import_schema.outputs.result,
-      module_file=TRANSFORM_MODULE_FILE)
+  transform = # TODO
 
   
   # Trains the model using a user provided trainer function.
@@ -151,7 +146,6 @@ def create_pipeline(pipeline_name: Text,
         tfma.SlicingSpec(feature_keys=['Wilderness_Area'])
     ]
   )
-  
 
   analyze = Evaluator(
       examples=generate_examples.outputs.examples,
@@ -204,16 +198,9 @@ def create_pipeline(pipeline_name: Text,
   #    model_blessing=validate.outputs.blessing,
   #    custom_config={'ai_platform_serving_args': ai_platform_serving_args})
 
-
-  return pipeline.Pipeline(
-      pipeline_name=pipeline_name,
-      pipeline_root=pipeline_root,
-      components=[
-          generate_examples, generate_statistics, import_schema, infer_schema, validate_stats, transform,
-          train, resolve, analyze, infra_validate, deploy
-      ],
-      enable_cache=enable_cache,
-      beam_pipeline_args=beam_pipeline_args
-  )
+  
+  #TODO: Create and return a Pipeline object using `pipeline_name` as name, `pipeline_root` as root,
+  # as well as all the component you defined above. Make sure to pass the correct `beam_pipline_args` and 
+  # please enbable cache. 
 
 

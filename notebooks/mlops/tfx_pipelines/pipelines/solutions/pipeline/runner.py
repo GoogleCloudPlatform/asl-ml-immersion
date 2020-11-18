@@ -99,9 +99,3 @@ if __name__ == '__main__':
         ai_platform_training_args=ai_platform_training_args,
         ai_platform_serving_args=ai_platform_serving_args,
         beam_pipeline_args=beam_pipeline_args))
-     
-        
-
-
-
-

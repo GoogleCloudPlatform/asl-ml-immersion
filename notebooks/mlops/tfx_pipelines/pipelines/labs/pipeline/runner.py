@@ -89,19 +89,5 @@ if __name__ == '__main__':
       tfx_image=Config.TFX_IMAGE)
 
   # Compile the pipeline
-  kubeflow_dag_runner.KubeflowDagRunner(config=runner_config).run(
-      create_pipeline(
-        pipeline_name=Config.PIPELINE_NAME,
-        pipeline_root=pipeline_root,
-        data_root_uri=data_root_uri,
-        train_steps=train_steps,
-        eval_steps=eval_steps,
-        ai_platform_training_args=ai_platform_training_args,
-        ai_platform_serving_args=ai_platform_serving_args,
-        beam_pipeline_args=beam_pipeline_args))
-     
-        
-
-
-
-
+  # TODO: Use KubeflowDagRunner to run the tfx pipeline that you create using
+  # create_pipeline. 

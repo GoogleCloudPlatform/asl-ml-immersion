@@ -171,26 +171,28 @@ def create_pipeline(pipeline_name: Text,
       tensorflow_serving=infra_validator_pb2.TensorFlowServingRequestSpec(),
       num_examples=3,
   )
-    
-  infra_validate = InfraValidator(
-      model=train.outputs['model'],
-      examples=generate_examples.outputs['examples'],
-      serving_spec=serving_config,
-      validation_spec=validation_config,
-      request_spec=request_config,
-  )
+  
+  # Uncomment to validate the infrastructure  
+  # infra_validate = InfraValidator(
+  #   model=train.outputs['model'],
+  #   examples=generate_examples.outputs['examples'],
+  #   serving_spec=serving_config,
+  #   validation_spec=validation_config,
+  #   request_spec=request_config,
+  #)
   
   # Checks whether the model passed the validation steps and pushes the model
   # to a file destination if check passed.
   deploy = Pusher(
       model=train.outputs['model'],
       model_blessing=analyze.outputs['blessing'],
-      infra_blessing=infra_validate.outputs['blessing'],
+      #infra_blessing=infra_validate.outputs['blessing'],
       push_destination=pusher_pb2.PushDestination(
           filesystem=pusher_pb2.PushDestination.Filesystem(
               base_directory=os.path.join(
                   str(pipeline.ROOT_PARAMETER), 'model_serving'))))
                
+  # Uncomment to deploy on CAIP Prediction      
   #deploy = Pusher(
   #    custom_executor_spec=executor_spec.ExecutorClassSpec(
   #        ai_platform_pusher_executor.Executor),

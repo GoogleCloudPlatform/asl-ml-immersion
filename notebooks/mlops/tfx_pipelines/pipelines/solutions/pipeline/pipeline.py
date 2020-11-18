@@ -109,7 +109,6 @@ def create_pipeline(pipeline_name: Text,
   train = Trainer(
       custom_executor_spec=executor_spec.ExecutorClassSpec(
           ai_platform_trainer_executor.GenericExecutor),
-#      custom_executor_spec=executor_spec.ExecutorClassSpec(trainer_executor.GenericExecutor),
       module_file=TRAIN_MODULE_FILE,
       transformed_examples=transform.outputs.transformed_examples,
       schema=import_schema.outputs.result,
@@ -178,20 +177,20 @@ def create_pipeline(pipeline_name: Text,
       num_examples=3,
   )
     
-  infra_validate = InfraValidator(
-      model=train.outputs['model'],
-      examples=generate_examples.outputs['examples'],
-      serving_spec=serving_config,
-      validation_spec=validation_config,
-      request_spec=request_config,
-  )
+  #infra_validate = InfraValidator(
+  #    model=train.outputs['model'],
+  #    examples=generate_examples.outputs['examples'],
+  #    serving_spec=serving_config,
+  #    validation_spec=validation_config,
+  #    request_spec=request_config,
+  #)
   
   # Checks whether the model passed the validation steps and pushes the model
   # to a file destination if check passed.
   deploy = Pusher(
       model=train.outputs['model'],
       model_blessing=analyze.outputs['blessing'],
-      infra_blessing=infra_validate.outputs['blessing'],
+      #infra_blessing=infra_validate.outputs['blessing'],
       push_destination=pusher_pb2.PushDestination(
           filesystem=pusher_pb2.PushDestination.Filesystem(
               base_directory=os.path.join(
@@ -209,8 +208,17 @@ def create_pipeline(pipeline_name: Text,
       pipeline_name=pipeline_name,
       pipeline_root=pipeline_root,
       components=[
-          generate_examples, generate_statistics, import_schema, infer_schema, validate_stats, transform,
-          train, resolve, analyze, infra_validate, deploy
+          generate_examples, 
+          generate_statistics, 
+          import_schema, 
+          infer_schema, 
+          validate_stats, 
+          transform,
+          train, 
+          resolve, 
+          analyze, 
+          #infra_validate, 
+          deploy
       ],
       enable_cache=enable_cache,
       beam_pipeline_args=beam_pipeline_args

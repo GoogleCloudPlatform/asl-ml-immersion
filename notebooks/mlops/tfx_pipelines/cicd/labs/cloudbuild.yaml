@@ -21,13 +21,13 @@
 
 steps:
 # Build the image that encapsulates transform and train modules
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/$PROJECT_ID/$_TFX_IMAGE_NAME:$TAG_NAME', '.']
+- name: # TODO
+  args: # TODO
   dir: $_PIPELINE_FOLDER
 
-  
-- name: 'gcr.io/$PROJECT_ID/tfx-cli'
-  args: ['pipeline', 'create', '--engine', 'kubeflow', '--pipeline_path', '$_PIPELINE_DSL', '--endpoint', '$_ENDPOINT']
+# Compile and upload the tfx pipeliine using the custom CloudBuilder 'gcr.io/$PROJECT_ID/tfx-cli'
+- name: # TODO
+  args: # TODO
   env: 
   - 'KUBEFLOW_TFX_IMAGE=gcr.io/$PROJECT_ID/$_TFX_IMAGE_NAME:$TAG_NAME'
   - 'MODEL_NAME=$_MODEL_NAME'

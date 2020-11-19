@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
 # Install KFP and TFX SDKs
 python -m pip install -U --user -r requirements.txt
 
@@ -22,6 +23,4 @@ chmod +x skaffold
 mv skaffold /home/jupyter/.local/bin
 
 jupyter nbextension enable --py tensorflow_model_analysis
-
-
 

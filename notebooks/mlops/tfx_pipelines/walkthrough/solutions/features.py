@@ -29,7 +29,6 @@ CATEGORICAL_FEATURE_KEYS = ['Wilderness_Area', 'Soil_Type']
 LABEL_KEY = 'Cover_Type'
 NUM_CLASSES = 7
 
+
 def transformed_name(key):
-  return key + '_xf'
-
-
+    return key + '_xf'

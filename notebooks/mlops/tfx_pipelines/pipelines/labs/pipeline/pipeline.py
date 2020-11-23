@@ -146,6 +146,7 @@ def create_pipeline(pipeline_name: Text,
         tfma.SlicingSpec(feature_keys=['Wilderness_Area'])
     ]
   )
+  
 
   analyze = Evaluator(
       examples=generate_examples.outputs.examples,
@@ -159,7 +160,7 @@ def create_pipeline(pipeline_name: Text,
   serving_config = infra_validator_pb2.ServingSpec(
       tensorflow_serving=infra_validator_pb2.TensorFlowServing(
           tags=['latest']),
-      local_docker=infra_validator_pb2.LocalDockerConfig(),
+      kubernetes=infra_validator_pb2.KubernetesConfig(),
   )
   
   validation_config = infra_validator_pb2.ValidationSpec(
@@ -171,38 +172,24 @@ def create_pipeline(pipeline_name: Text,
       tensorflow_serving=infra_validator_pb2.TensorFlowServingRequestSpec(),
       num_examples=3,
   )
-  
-  # Uncomment to validate the infrastructure  
-  # infra_validate = InfraValidator(
-  #   model=train.outputs['model'],
-  #   examples=generate_examples.outputs['examples'],
-  #   serving_spec=serving_config,
-  #   validation_spec=validation_config,
-  #   request_spec=request_config,
-  #)
+    
+  infra_validate = InfraValidator(
+      model=train.outputs['model'],
+      examples=generate_examples.outputs['examples'],
+      serving_spec=serving_config,
+      validation_spec=validation_config,
+      request_spec=request_config,
+  )
   
   # Checks whether the model passed the validation steps and pushes the model
   # to a file destination if check passed.
   deploy = Pusher(
+      custom_executor_spec=executor_spec.ExecutorClassSpec(ai_platform_pusher_executor.Executor),      
       model=train.outputs['model'],
       model_blessing=analyze.outputs['blessing'],
-      #infra_blessing=infra_validate.outputs['blessing'],
-      push_destination=pusher_pb2.PushDestination(
-          filesystem=pusher_pb2.PushDestination.Filesystem(
-              base_directory=os.path.join(
-                  str(pipeline.ROOT_PARAMETER), 'model_serving'))))
-               
-  # Uncomment to deploy on CAIP Prediction      
-  #deploy = Pusher(
-  #    custom_executor_spec=executor_spec.ExecutorClassSpec(
-  #        ai_platform_pusher_executor.Executor),
-  #    model=train.outputs.model,
-  #    model_blessing=validate.outputs.blessing,
-  #    custom_config={'ai_platform_serving_args': ai_platform_serving_args})
+      infra_blessing=infra_validate.outputs['blessing'],
+      custom_config={ai_platform_pusher_executor.SERVING_ARGS_KEY: ai_platform_serving_args})
 
-  
   #TODO: Create and return a Pipeline object using `pipeline_name` as name, `pipeline_root` as root,
   # as well as all the component you defined above. Make sure to pass the correct `beam_pipline_args` and 
   # please enbable cache. 
-
-

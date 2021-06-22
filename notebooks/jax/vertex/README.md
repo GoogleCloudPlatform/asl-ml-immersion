@@ -16,7 +16,7 @@ The below examples all train the [FlaxMNIST](https://github.com/google/jax/blob/
 
 - [training-prebuilt.ipynb](training-prebuilt.ipynb) uses a [pre-built container for TensorFlow](https://cloud.google.com/vertex-ai/docs/training/pre-built-containers#tensorflow) to train on Vertex AI. 
 
-- [training-customcontainer.ipynb](training-customcontainer.ipynb) uses a [Google Cloud Deep Learning VM Image for TensorFlow](https://cloud.google.com/deep-learning-vm/docs/images#images) to train on Vertex AI.
+- [training-customcontainer.ipynb](training-customcontainer.ipynb) uses a [Google Cloud Deep Learning Container for TensorFlow](https://cloud.google.com/deep-learning-containers/docs/choosing-container) to train on Vertex AI.
 
 - [training-local.ipynb](training-local.ipynb) trains the model inside the notebook environment (useful if you only want to explore Vertex AI prediction and need a SavedModel).
 

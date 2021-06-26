@@ -1,0 +1,6 @@
+# cloudml-hypertune
+google-cloud-aiplatform
+flake8-nb
+flax
+# kfp
+jax[cuda110]

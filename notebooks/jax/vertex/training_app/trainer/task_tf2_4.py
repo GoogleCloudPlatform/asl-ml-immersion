@@ -12,7 +12,7 @@ from jax.experimental.jax2tf.examples.mnist_lib import (
 #     convert_and_save_model
 # )
 
-from trainer.saved_model_lib_t2_4 import convert_and_save_model
+from trainer.saved_model_lib_tf2_4 import convert_and_save_model
 
 TRAIN_BATCH_SIZE = 128
 TEST_BATCH_SIZE = 16

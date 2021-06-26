@@ -8,6 +8,14 @@ These examples use [Vertex AI Notebooks](https://cloud.google.com/vertex-ai/docs
 
 You can interact with Vertex AI in a number of ways, including the [Cloud Console GUI](https://console.cloud.google.com/), the [`gcloud ai` CLI](https://cloud.google.com/sdk/gcloud/reference/ai), [REST](https://cloud.google.com/vertex-ai/docs/reference/rest)/[RPC](https://cloud.google.com/vertex-ai/docs/reference/rpc) API calls, as well as a [client libraries in several languages](https://cloud.google.com/vertex-ai/docs/start/client-libraries). In the below examples we use the client library [Vertex SDK for Python](https://github.com/googleapis/python-aiplatform).
 
+## Before you begin
+
+The below examples were tested on Vertex Notebooks with a [Tensorflow Enterprise 2.5 GPU image](https://cloud.google.com/notebooks/docs/images#images). Install the [requirements.txt](requirements.txt) first.
+
+```bash
+python3 -m pip install --upgrade --user -r requirements.txt -f https://storage.googleapis.com/jax-releases/jax_releases.html
+```
+
 ## Vertex AI Training
 
 [Vertex AI Custom Training](https://cloud.google.com/vertex-ai/docs/training/custom-training) supports containerized ML training jobs, either using [pre-built containers](https://cloud.google.com/vertex-ai/docs/training/pre-built-containers) (that can only be lightly customized with e.g. additional Python packages) or with a [custom container](https://cloud.google.com/vertex-ai/docs/training/containers-overview).

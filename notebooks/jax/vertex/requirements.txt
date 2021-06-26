@@ -1,6 +1,6 @@
 # cloudml-hypertune
 google-cloud-aiplatform
-flake8-nb
 flax
 # kfp
-jax[cuda110]
+jax[cuda111]  # needs pip to run with `-f https://storage.googleapis.com/jax-releases/jax_releases.html`
+setuptools

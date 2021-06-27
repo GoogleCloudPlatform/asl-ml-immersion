@@ -51,13 +51,14 @@ input_signature = tf.TensorSpec.from_tensor(
 
 
 def main(output_dir):
+    logger_level = logger.level
     logger.setLevel(logging.INFO)
     predict_fn, params = flax_mnist.train(
         train_ds=train_ds,
         test_ds=test_ds,
         num_epochs=NUM_EPOCHS,
     )
-    logger.setLevel(logging.NOTSET)
+    logger.setLevel(logger_level)
 
     convert_and_save_model(
         jax_fn=predict_fn,

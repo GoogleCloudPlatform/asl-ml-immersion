@@ -18,12 +18,10 @@ import os
 import tensorflow as tf
 import tensorflow_datasets as tfds
 from absl import flags
-from jax.experimental.jax2tf.examples.mnist_lib import (
-    load_mnist, FlaxMNIST
-)
-from jax.experimental.jax2tf.examples.saved_model_lib import (
-    convert_and_save_model
-)
+from jax.experimental.jax2tf.examples import mnist_lib
+from jax.experimental.jax2tf.examples import saved_model_lib 
+
+from trainer import saved_model_lib_tf2_4
 
 TRAIN_BATCH_SIZE = 128
 TEST_BATCH_SIZE = 16
@@ -35,12 +33,12 @@ tf.config.set_visible_devices([], 'GPU')
 logger = logging.getLogger()
 
 # need to initialize flags somehow to avoid errors in load_mnist
-flags.FLAGS(['e'])
+flags.FLAGS([''])
 
-flax_mnist = FlaxMNIST()
+flax_mnist = mnist_lib.FlaxMNIST()
 
-train_ds = load_mnist(tfds.Split.TRAIN, TRAIN_BATCH_SIZE)
-test_ds = load_mnist(tfds.Split.TEST, TEST_BATCH_SIZE)
+train_ds = mnist_lib.load_mnist(tfds.Split.TRAIN, TRAIN_BATCH_SIZE)
+test_ds = mnist_lib.load_mnist(tfds.Split.TEST, TEST_BATCH_SIZE)
 
 image, _ = next(iter(train_ds))
 input_signature = tf.TensorSpec.from_tensor(
@@ -48,7 +46,7 @@ input_signature = tf.TensorSpec.from_tensor(
 )
 
 
-def main(output_dir):
+def main(args):
     logger_level = logger.level
     logger.setLevel(logging.INFO)
     predict_fn, params = flax_mnist.train(
@@ -58,21 +56,41 @@ def main(output_dir):
     )
     logger.setLevel(logger_level)
     
-    convert_and_save_model(
-        jax_fn=predict_fn,
-        params=params,
-        model_dir=output_dir,
-        input_signatures=[input_signature],
-    )
-
+    if args["tf2_4_compatibility_mode"]:
+        saved_model_lib_tf2_4.convert_and_save_model(
+            jax_fn=predict_fn,
+            params=params,
+            model_dir=os.path.join(args["output_dir"], str(args["model_version"])),
+            input_signatures=[input_signature],
+            enable_xla=False,
+        )
+    else:
+        saved_model_lib.convert_and_save_model(
+            jax_fn=predict_fn,
+            params=params,
+            model_dir=os.path.join(args["output_dir"], str(args["model_version"])),
+            input_signatures=[input_signature],
+        )
+        
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--output_dir",
-        help="GCS location to export SavedModel",
+        help="GCS location to export model_version/SavedModel",
         default=os.getenv("AIP_MODEL_DIR")
     )
+    parser.add_argument(
+        "--model_version",
+        default=1,
+        type=int
+    )
+    parser.add_argument(
+        "--tf2_4_compatibility_mode",
+        action="store_true",
+        default=False,
+    )
+
     args = parser.parse_args().__dict__
 
-    main(output_dir=args["output_dir"])
+    main(args)

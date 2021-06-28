@@ -19,7 +19,8 @@ import tensorflow as tf
 import tensorflow_datasets as tfds
 from absl import flags
 from jax.experimental.jax2tf.examples import mnist_lib
-from jax.experimental.jax2tf.examples import saved_model_lib 
+
+from trainer import saved_model_lib_tf2_4
 
 TRAIN_BATCH_SIZE = 128
 TEST_BATCH_SIZE = 16
@@ -54,11 +55,12 @@ def main(args):
     )
     logger.setLevel(logger_level)
     
-    saved_model_lib.convert_and_save_model(
+    saved_model_lib_tf2_4.convert_and_save_model(
         jax_fn=predict_fn,
         params=params,
         model_dir=os.path.join(args["output_dir"], str(args["model_version"])),
         input_signatures=[input_signature],
+        enable_xla=False,
     )
         
 

@@ -24,7 +24,7 @@ The below examples all train the [FlaxMNIST](https://github.com/google/jax/blob/
 
 - [training-prebuilt.ipynb](training-prebuilt.ipynb) uses a [pre-built container for TensorFlow](https://cloud.google.com/vertex-ai/docs/training/pre-built-containers#tensorflow) to train on Vertex AI. 
 
-- [training-customcontainer.ipynb](training-customcontainer.ipynb) uses a [Google Cloud Deep Learning Container for TensorFlow](https://cloud.google.com/deep-learning-containers/docs/choosing-container) to train on Vertex AI.
+- [training-upload-customcontainer.ipynb](training-upload-customcontainer.ipynb) uses a [Google Cloud Deep Learning Container for TensorFlow](https://cloud.google.com/deep-learning-containers/docs/choosing-container) to train on Vertex AI, and uploads the model to Vertex AI.
 
 - [training-local.ipynb](training-local.ipynb) trains the model inside the notebook environment (useful if you only want to explore Vertex AI prediction and need a SavedModel).
 
@@ -32,7 +32,9 @@ The below examples all train the [FlaxMNIST](https://github.com/google/jax/blob/
 
 [Vertex AI Predition](https://cloud.google.com/vertex-ai/docs/predictions/getting-predictions) allows for many different types of ML models, including TensorFlow SavedModel artifacts, to be deployed to scalable endpoints that listen to online prediction requests. The uploaded models can also be used for batch prediction jobs.
 
-- [prediction-customcontainer.ipynb](prediction-customcontainer.ipynb) uses a SavedModel stored in Cloud Storage, and bakes it in a [TensorFlow Serving container](https://www.tensorflow.org/tfx/serving/docker#creating_your_own_serving_image) which can be used as a [custom container for Vertex AI Prediction](https://cloud.google.com/vertex-ai/docs/predictions/use-custom-container).
+- [upload-customcontainer.ipynb](upload-customcontainer.ipynb) uploads a SavedModel from Cloud Storage to Vertex AI, specifying a [TensorFlow Serving container](https://www.tensorflow.org/tfx/serving/docker) as a [custom container for Vertex AI Prediction](https://cloud.google.com/vertex-ai/docs/predictions/use-custom-container).
+
+- [prediction-online.ipynb](prediction-online.ipynb) deploys a model in Vertex AI for online prediction.
 
 ## Next Steps
 

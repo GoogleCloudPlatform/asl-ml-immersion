@@ -16,6 +16,36 @@ The below examples were tested on Vertex Notebooks with a [Tensorflow Enterprise
 python3 -m pip install --upgrade --user -r requirements.txt -f https://storage.googleapis.com/jax-releases/jax_releases.html
 ```
 
+```
++----------------+ +---------------------------------------------------------+
+|    Local Env   | |                      Google Cloud                       |
++----------------+ +------------------+ +-------------+ +--------------------+
+|       |        | |Vertex AI Training| |Cloud Storage| |Vertex AI Prediction|
+|task.py|training| +------------------+ +-------------+ +--------------------+
+|       |        | |    Custom Job    | |  SavedModel | | Models | Endpoints |
++----------------+ +------------------+-+-------------+-+--------------------+
+
+            *                                  /\
+    \______/ \_________________________________/
+      training-local.ipynb
+
+                            *                  /\
+    \______________________/ \_________________/
+      training-prebuilt.ipynb
+
+                            *                  /\           /\
+    \______________________/ \_________________/____________/
+      training-upload-customcontainer.ipynb
+
+                                                            /\
+                                                \___________/
+                                                upload-customcontainer.ipynb
+
+                                                                      /\
+                                                             \________/
+                                                     prediction-online.ipynb
+```
+
 ## Vertex AI Training
 
 [Vertex AI Custom Training](https://cloud.google.com/vertex-ai/docs/training/custom-training) supports containerized ML training jobs, either using [pre-built containers](https://cloud.google.com/vertex-ai/docs/training/pre-built-containers) (that can only be lightly customized with e.g. additional Python packages) or with a [custom container](https://cloud.google.com/vertex-ai/docs/training/containers-overview).

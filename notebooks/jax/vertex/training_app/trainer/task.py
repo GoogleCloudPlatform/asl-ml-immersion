@@ -19,7 +19,7 @@ import tensorflow as tf
 import tensorflow_datasets as tfds
 from absl import flags
 from jax.experimental.jax2tf.examples import mnist_lib
-from jax.experimental.jax2tf.examples import saved_model_lib 
+from jax.experimental.jax2tf.examples import saved_model_lib
 
 TRAIN_BATCH_SIZE = 128
 TEST_BATCH_SIZE = 16
@@ -53,14 +53,14 @@ def main(args):
         num_epochs=NUM_EPOCHS,
     )
     logger.setLevel(logger_level)
-    
+
     saved_model_lib.convert_and_save_model(
         jax_fn=predict_fn,
         params=params,
         model_dir=os.path.join(args["output_dir"], str(args["model_version"])),
         input_signatures=[input_signature],
     )
-        
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -77,4 +77,4 @@ if __name__ == '__main__':
 
     args = parser.parse_args().__dict__
 
-    main(args)
+    main(args=args)

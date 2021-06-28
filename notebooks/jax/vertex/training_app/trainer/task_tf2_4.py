@@ -54,7 +54,7 @@ def main(args):
         num_epochs=NUM_EPOCHS,
     )
     logger.setLevel(logger_level)
-    
+
     saved_model_lib_tf2_4.convert_and_save_model(
         jax_fn=predict_fn,
         params=params,
@@ -62,7 +62,7 @@ def main(args):
         input_signatures=[input_signature],
         enable_xla=False,
     )
-        
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -79,4 +79,4 @@ if __name__ == '__main__':
 
     args = parser.parse_args().__dict__
 
-    main(args)
+    main(args=args)

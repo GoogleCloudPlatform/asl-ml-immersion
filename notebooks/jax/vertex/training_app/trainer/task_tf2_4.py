@@ -19,7 +19,6 @@ import tensorflow as tf
 import tensorflow_datasets as tfds
 from absl import flags
 from jax.experimental.jax2tf.examples import mnist_lib
-
 from trainer import saved_model_lib_tf2_4
 
 TRAIN_BATCH_SIZE = 128
@@ -60,7 +59,7 @@ def main(args):
         params=params,
         model_dir=os.path.join(
             args["output_dir"],
-            args["model_name"]),
+            args["model_name"],
             str(args["model_version"])
         ),
         input_signatures=[input_signature],

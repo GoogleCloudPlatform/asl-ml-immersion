@@ -59,7 +59,7 @@ def main(args):
         params=params,
         model_dir=os.path.join(
             args["output_dir"],
-            "model",
+            args["model_name"]),
             str(args["model_version"])
         ),
         input_signatures=[input_signature],
@@ -72,6 +72,10 @@ if __name__ == '__main__':
         "--output_dir",
         help="GCS location to export model_version/SavedModel",
         default=os.getenv("AIP_MODEL_DIR")
+    )
+    parser.add_argument(
+        "--model_name",
+        default="model",
     )
     parser.add_argument(
         "--model_version",

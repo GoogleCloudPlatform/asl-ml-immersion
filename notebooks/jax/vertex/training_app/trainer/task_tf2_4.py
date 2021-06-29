@@ -56,8 +56,8 @@ def main(args):
         jax_fn=predict_fn,
         params=params,
         model_dir=f"{args['output_dir']}/"
-        "{args['model_name']}/"
-        "{args['model_version']}",
+        f"{args['model_name']}/"
+        f"{args['model_version']}",
         input_signatures=[input_signature],
         enable_xla=False,
     )

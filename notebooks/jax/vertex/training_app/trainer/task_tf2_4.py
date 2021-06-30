@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import argparse
 import logging
 import os
@@ -55,7 +56,7 @@ def main(args):
     saved_model_lib_tf2_4.convert_and_save_model(
         jax_fn=predict_fn,
         params=params,
-        model_dir=os.path.join(args['output_dir'], args['model_name'], str(args['model_version']),
+        model_dir=os.path.join(args['output_dir'], args['model_name'], str(args['model_version'])),
         input_signatures=[input_signature],
         enable_xla=False,
     )

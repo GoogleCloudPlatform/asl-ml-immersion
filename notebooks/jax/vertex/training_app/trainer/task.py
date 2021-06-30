@@ -54,9 +54,7 @@ def main(args):
     saved_model_lib.convert_and_save_model(
         jax_fn=predict_fn,
         params=params,
-        model_dir=f"{args['output_dir']}/"
-        f"{args['model_name']}/"
-        f"{args['model_version']}",
+        model_dir=os.path.join(args['output_dir'], args['model_name'], str(args['model_version']),
         input_signatures=[input_signature],
     )
 

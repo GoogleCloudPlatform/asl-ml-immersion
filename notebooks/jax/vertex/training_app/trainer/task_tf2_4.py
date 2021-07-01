@@ -39,8 +39,11 @@ flax_mnist = mnist_lib.FlaxMNIST()
 train_ds = mnist_lib.load_mnist(tfds.Split.TRAIN, TRAIN_BATCH_SIZE)
 test_ds = mnist_lib.load_mnist(tfds.Split.TEST, TEST_BATCH_SIZE)
 
-image, _ = next(iter(train_ds))
-input_signature = tf.TensorSpec.from_tensor(tf.expand_dims(image[0], axis=0))
+# Batch-polymorphic SavedModel
+input_signatures = [
+    tf.TensorSpec((None,) + mnist_lib.input_shape, tf.float32),
+]
+polymorphic_shapes = "(batch, ...)"
 
 
 def main(args):
@@ -59,7 +62,8 @@ def main(args):
         model_dir=os.path.join(
             args["output_dir"], args["model_name"], str(args["model_version"])
         ),
-        input_signatures=[input_signature],
+        input_signatures=input_signatures,
+        polymorphic_shapes=polymorphic_shapes,
         enable_xla=False,
     )
 

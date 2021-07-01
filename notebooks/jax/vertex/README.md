@@ -19,33 +19,37 @@ pip install --upgrade \
 ```
 
 ```
-+----------------+ +---------------------------------------------------------+
-|    Local Env   | |                      Google Cloud                       |
-+----------------+ +------------------+ +-------------+ +--------------------+
-|       |        | |Vertex AI Training| |Cloud Storage| |Vertex AI Prediction|
-|task.py|training| +------------------+ +-------------+ +--------------------+
-|       |        | |    Custom Job    | |  SavedModel | | Models | Endpoints |
-+----------------+ +------------------+-+-------------+-+--------------------+
++----------------+ +--------------------------------------------------+
+|    Local Env   | |                  Google Cloud                    |
++----------------+ +----------+ +----------+ +------------------------+
+|       |        | | Vertex AI| |  Cloud   | |       Vertex AI        |
+|       |        | | Training | | Storage  | |       Prediction       |
+|task.py|training| +----------+ +----------+ +------------------------+
+|       |        | |          | |          | |      |Endpoints(online)|
+|       |        | |Custom Job| |SavedModel| |Models|       /         |
+|       |        | |          | |          | |      |Batch Prediction |
++----------------+ +----------+-+----------+-+------------------------+
 
-            *                                  /\
-    \______/ \_________________________________/
+            *                        /\
+    \______/ \_______________________/
       training-local.ipynb
 
-                            *                  /\
-    \______________________/ \_________________/
+                        *            /\
+    \__________________/ \___________/
       training-prebuilt.ipynb
 
-                            *                  /\           /\
-    \______________________/ \_________________/____________/
+                        *            /\         /\
+    \__________________/ \___________/__________/
       training-upload-customcontainer.ipynb
 
-                                                            /\
-                                                \___________/
-                                                upload-customcontainer.ipynb
+                                                /\
+                                      \_________/
+                                       upload-customcontainer.ipynb
 
-                                                                      /\
-                                                             \________/
-                                                     prediction-online.ipynb
+                                                          /\
+                                                \_________/
+                                            prediction-online.ipynb
+                                            prediction-batch.ipynb
 ```
 
 ## Vertex AI Training
@@ -67,6 +71,8 @@ The below examples all train the [FlaxMNIST](https://github.com/google/jax/blob/
 - [upload-customcontainer.ipynb](upload-customcontainer.ipynb) uploads a SavedModel from Cloud Storage to Vertex AI, specifying a [TensorFlow Serving container](https://www.tensorflow.org/tfx/serving/docker) as a [custom container for Vertex AI Prediction](https://cloud.google.com/vertex-ai/docs/predictions/use-custom-container).
 
 - [prediction-online.ipynb](prediction-online.ipynb) deploys a model in Vertex AI for online prediction.
+
+- [prediction-batch.ipynb](prediction-batch.ipynb) runs a Batch Prediction job against a model in Vertex AI, with results written to Cloud Storage.
 
 ## Next Steps
 

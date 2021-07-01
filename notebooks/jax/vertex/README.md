@@ -13,7 +13,9 @@ You can interact with Vertex AI in a number of ways, including the [Cloud Consol
 The below examples were tested on Vertex Notebooks with a [Tensorflow Enterprise 2.5 GPU image](https://cloud.google.com/notebooks/docs/images#images). Install the [requirements.txt](requirements.txt) first.
 
 ```bash
-python3 -m pip install --upgrade --user -r requirements.txt -f https://storage.googleapis.com/jax-releases/jax_releases.html
+pip install --upgrade \
+    -r requirements.txt \
+    -f https://storage.googleapis.com/jax-releases/jax_releases.html
 ```
 
 ```
@@ -52,7 +54,7 @@ python3 -m pip install --upgrade --user -r requirements.txt -f https://storage.g
 
 The below examples all train the [FlaxMNIST](https://github.com/google/jax/blob/main/jax/experimental/jax2tf/examples/mnist_lib.py) model, optionally using a [GPU](https://cloud.google.com/gpu), and [`jax2tf`](https://github.com/google/jax/tree/main/jax/experimental/jax2tf) is used to convert to a [SavedModel](https://www.tensorflow.org/guide/saved_model), which is uploaded to [Cloud Storage](https://cloud.google.com/storage). Use a [TensorFlow 2.5 image](https://cloud.google.com/notebooks/docs/images#images) on [Vertex AI Notebooks](https://cloud.google.com/vertex-ai/docs/general/notebooks) to run.
 
-- [training-prebuilt.ipynb](training-prebuilt.ipynb) uses a [pre-built container for TensorFlow](https://cloud.google.com/vertex-ai/docs/training/pre-built-containers#tensorflow) to train on Vertex AI. 
+- [training-prebuilt.ipynb](training-prebuilt.ipynb) uses a [pre-built container for TensorFlow](https://cloud.google.com/vertex-ai/docs/training/pre-built-containers#tensorflow) to train on Vertex AI.
 
 - [training-upload-customcontainer.ipynb](training-upload-customcontainer.ipynb) uses a [Google Cloud Deep Learning Container for TensorFlow](https://cloud.google.com/deep-learning-containers/docs/choosing-container) to train on Vertex AI, and uploads the model to Vertex AI.
 
@@ -71,7 +73,7 @@ The below examples all train the [FlaxMNIST](https://github.com/google/jax/blob/
 Many more things could be made possible with Vertex AI:
 
 - Make GPU online prediction work
-- Demonstrate [Batch Prediction](https://cloud.google.com/vertex-ai/docs/predictions/batch-prediction)
+- Demonstrate [Batch Prediction](https://cloud.google.com/vertex-ai/docs/predictions/batch-predictions)
 - [Distributed training](https://cloud.google.com/vertex-ai/docs/training/distributed-training)
 - [Hyperparameter Tuning](https://cloud.google.com/vertex-ai/docs/training/hyperparameter-tuning-overview)
 - [Experiments with managed TensorBoard](https://cloud.google.com/vertex-ai/docs/experiments)

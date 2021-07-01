@@ -72,14 +72,13 @@ The below examples all train the [FlaxMNIST](https://github.com/google/jax/blob/
 
 - [prediction-online.ipynb](prediction-online.ipynb) deploys a model in Vertex AI for online prediction.
 
-- [prediction-batch.ipynb](prediction-batch.ipynb) runs a Batch Prediction job against a model in Vertex AI, with results written to Cloud Storage.
+- [prediction-batch.ipynb](prediction-batch.ipynb) runs a [Batch Prediction job](https://cloud.google.com/vertex-ai/docs/predictions/batch-predictions) against a model in Vertex AI, with results written to Cloud Storage.
 
 ## Next Steps
 
 Many more things could be made possible with Vertex AI:
 
 - Make GPU online prediction work
-- Demonstrate [Batch Prediction](https://cloud.google.com/vertex-ai/docs/predictions/batch-predictions)
 - [Distributed training](https://cloud.google.com/vertex-ai/docs/training/distributed-training)
 - [Hyperparameter Tuning](https://cloud.google.com/vertex-ai/docs/training/hyperparameter-tuning-overview)
 - [Experiments with managed TensorBoard](https://cloud.google.com/vertex-ai/docs/experiments)

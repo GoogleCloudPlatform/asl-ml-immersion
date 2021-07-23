@@ -41,6 +41,10 @@ def run(argv=None):
             help=('Google Cloud Project ID'),
             required=True)
     parser.add_argument(
+            '--region',
+            help=('Google Cloud region'),
+            required=True)
+    parser.add_argument(
             '--input_topic',
             help=('Google Cloud PubSub topic name '),
             required=True)
@@ -48,7 +52,8 @@ def run(argv=None):
     known_args, pipeline_args = parser.parse_known_args(argv)
 
     pipeline_options = PipelineOptions(
-        pipeline_args.append('--project={}'.format(known_args.project)))
+        pipeline_args.append(f'--project={known_args.project} --region={known_args.region}'))
+    
     pipeline_options.view_as(SetupOptions).save_main_session = True
     pipeline_options.view_as(StandardOptions).streaming = True
 

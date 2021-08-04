@@ -24,8 +24,8 @@ repos:
     hooks:
     -   id: mypy
         args: [--ignore-missing-imports]
--   repo: https://github.com/pre-commit/mirrors-isort
-    rev: v5.9.1
+-   repo: https://github.com/pycqa/isort
+    rev: 5.5.2
     hooks:
     -   id: isort
 -   repo: https://github.com/psf/black

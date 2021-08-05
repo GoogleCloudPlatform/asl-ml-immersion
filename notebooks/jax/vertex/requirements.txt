@@ -2,5 +2,5 @@
 google-cloud-aiplatform
 flax
 # kfp
-jax[cuda111]  # needs pip to run with `-f https://storage.googleapis.com/jax-releases/jax_releases.html`
+jax[cuda111]==0.2.16  # needs pip to run with `-f https://storage.googleapis.com/jax-releases/jax_releases.html`
 setuptools

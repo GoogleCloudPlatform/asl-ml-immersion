@@ -60,7 +60,7 @@ def main(args):
         jax_fn=predict_fn,
         params=params,
         model_dir=os.path.join(
-            args["output_dir"], args["model_name"], str(args["model_version"])
+            args["output_dir"], str(args["model_version"])
         ),
         input_signatures=input_signatures,
         polymorphic_shapes=polymorphic_shapes,
@@ -74,10 +74,6 @@ if __name__ == "__main__":
         "--output_dir",
         help="GCS location to export model_version/SavedModel",
         default=os.getenv("AIP_MODEL_DIR"),
-    )
-    parser.add_argument(
-        "--model_name",
-        default="model",
     )
     parser.add_argument("--model_version", default=1, type=int)
 

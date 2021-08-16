@@ -12,6 +12,7 @@ from past.builtins import unicode
 import apache_beam as beam
 import apache_beam.transforms.window as window
 from apache_beam.examples.wordcount import WordExtractingDoFn
+from apache_beam.options.pipeline_options import GoogleCloudOptions
 from apache_beam.options.pipeline_options import PipelineOptions
 from apache_beam.options.pipeline_options import SetupOptions
 from apache_beam.options.pipeline_options import StandardOptions
@@ -41,16 +42,21 @@ def run(argv=None):
             help=('Google Cloud Project ID'),
             required=True)
     parser.add_argument(
+            '--region',
+            help=('Google Cloud region'),
+            required=True)
+    parser.add_argument(
             '--input_topic',
             help=('Google Cloud PubSub topic name '),
             required=True)
 
     known_args, pipeline_args = parser.parse_known_args(argv)
 
-    pipeline_options = PipelineOptions(
-        pipeline_args.append('--project={}'.format(known_args.project)))
+    pipeline_options = PipelineOptions(pipeline_args)
     pipeline_options.view_as(SetupOptions).save_main_session = True
     pipeline_options.view_as(StandardOptions).streaming = True
+    pipeline_options.view_as(GoogleCloudOptions).region = known_args.region
+    pipeline_options.view_as(GoogleCloudOptions).project = known_args.project
 
     p = beam.Pipeline(options=pipeline_options)
 

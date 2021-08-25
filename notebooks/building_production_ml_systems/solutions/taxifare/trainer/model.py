@@ -89,9 +89,7 @@ def transform(inputs, NUMERIC_COLS, STRING_COLS, nbuckets):
     transformed = inputs.copy()
     del transformed["pickup_datetime"]
 
-    feature_columns = {
-        colname: fc.numeric_column(colname) for colname in NUMERIC_COLS
-    }
+    feature_columns = {colname: fc.numeric_column(colname) for colname in NUMERIC_COLS}
 
     # Scaling longitude from range [-70, -78] to [0, 1]
     for lon_col in ["pickup_longitude", "dropoff_longitude"]:
@@ -129,18 +127,10 @@ def transform(inputs, NUMERIC_COLS, STRING_COLS, nbuckets):
 
     latbuckets = np.linspace(0, 1, nbuckets).tolist()
     lonbuckets = np.linspace(0, 1, nbuckets).tolist()
-    b_plat = fc.bucketized_column(
-        feature_columns["pickup_latitude"], latbuckets
-    )
-    b_dlat = fc.bucketized_column(
-        feature_columns["dropoff_latitude"], latbuckets
-    )
-    b_plon = fc.bucketized_column(
-        feature_columns["pickup_longitude"], lonbuckets
-    )
-    b_dlon = fc.bucketized_column(
-        feature_columns["dropoff_longitude"], lonbuckets
-    )
+    b_plat = fc.bucketized_column(feature_columns["pickup_latitude"], latbuckets)
+    b_dlat = fc.bucketized_column(feature_columns["dropoff_latitude"], latbuckets)
+    b_plon = fc.bucketized_column(feature_columns["pickup_longitude"], lonbuckets)
+    b_dlon = fc.bucketized_column(feature_columns["dropoff_longitude"], lonbuckets)
     ploc = fc.crossed_column([b_plat, b_plon], nbuckets * nbuckets)
     dloc = fc.crossed_column([b_dlat, b_dlon], nbuckets * nbuckets)
     pd_pair = fc.crossed_column([ploc, dloc], nbuckets ** 4)

@@ -9,10 +9,10 @@ The below diagram represents the workflow orchestrated by the pipeline.
 1. Training data in the CSV format is ingested from a GCS location using *CsvExampleGen*. The URI to the data root is passed as a runtime parameter. The *CsvExampleGen* component splits the source data into training and evaluation splits and converts the data into the TFRecords format.
 2. The *StatisticsGen* component generates statistics for both splits.
 3. The *SchemaGen* component autogenerates a schema . This is done for tracking. The pipeline uses a curated schema imported by the *ImportedNode* component.
-4. The *ImporterNode* component is used to bring the curated schema file into the pipeline. The location of the schema file is passed as a runtime parameter. 
+4. The *ImporterNode* component is used to bring the curated schema file into the pipeline. The location of the schema file is passed as a runtime parameter.
 5. The *ExampleValidator* component validates the generated examples against the imported schema
-6. The *Transform* component preprocess the data to the format required by the *Trainer* compoment. It also saves the preprocessing TensorFlow graph. 
-7. The *Trainer* starts an AI Platform Training job. The AI Platform Training job is configured for training in a custom container. 
+6. The *Transform* component preprocess the data to the format required by the *Trainer* compoment. It also saves the preprocessing TensorFlow graph.
+7. The *Trainer* starts an AI Platform Training job. The AI Platform Training job is configured for training in a custom container.
 8. The *ResolverNode* component retrieves the best performing model from the previous runs and passed it to the *Evaluator* to be used as a baseline during model validation.
 8. The *Evaluator* component evaluates the trained model against the eval split and validates against the baseline model from the *ResolverNode*. If the new model exceeds validation thresholds it is marked as "blessed".
 9. If the new model is blessed by the *Evaluator*, the *Pusher* deploys the model to AI Platform Prediction.
@@ -25,16 +25,16 @@ You will use the lab environment configured as on the below diagram:
 ![Lab env](/images/lab-env.png)
 
 The core services in the environment are:
-- ML experimentation and development - AI Platform Notebooks 
-- Scalable, serverless model training - AI Platform Training  
-- Scalable, serverless model serving - AI Platform Prediction 
+- ML experimentation and development - AI Platform Notebooks
+- Scalable, serverless model training - AI Platform Training
+- Scalable, serverless model serving - AI Platform Prediction
 - Machine learning pipelines - AI Platform Pipelines
-- Distributed data processing - Cloud Dataflow  
-- Analytics data warehouse - BigQuery 
-- Artifact store - Google Cloud Storage 
+- Distributed data processing - Cloud Dataflow
+- Analytics data warehouse - BigQuery
+- Artifact store - Google Cloud Storage
 - CI/CD tooling - Cloud Build
-    
-In this environment, all services are provisioned in the same [Google Cloud Project](https://cloud.google.com/storage/docs/projects). 
+
+In this environment, all services are provisioned in the same [Google Cloud Project](https://cloud.google.com/storage/docs/projects).
 
 ### Enabling Cloud Services
 
@@ -56,7 +56,7 @@ iam.googleapis.com \
 containerregistry.googleapis.com \
 containeranalysis.googleapis.com \
 ml.googleapis.com \
-dataflow.googleapis.com 
+dataflow.googleapis.com
 ```
 
 The **Cloud Build** service account needs the Editor permissions in your GCP project to upload the pipeline package to an **AI Platform Pipelines** instance.
@@ -97,7 +97,7 @@ cd mlops-on-gcp/workshops/tfx-caip-tf21
 ## Summary of lab exercises
 
 ### Lab-01 - TFX Components walk-through
-In this lab, you will step through the configuration and execution of core TFX components using TFX interactive context. The primary goal of the lab is to get a high level understanding of a function and usage of each of the components. 
+In this lab, you will step through the configuration and execution of core TFX components using TFX interactive context. The primary goal of the lab is to get a high level understanding of a function and usage of each of the components.
 
 ### Lab-02 - Orchestrating model training and deployment with TFX and Cloud AI Platform
 In this lab you will develop, deploy and run a TFX pipeline that uses  Cloud Dataflow and Cloud AI Platform as execution runtimes.

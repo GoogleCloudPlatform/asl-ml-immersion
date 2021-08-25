@@ -13,20 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
 
 import tensorflow as tf
-
 from models.keras import model
 
 
 class ModelTest(tf.test.TestCase):
+    def testBuildKerasModel(self):
+        pass
 
-  def testBuildKerasModel(self):
-    pass
 
-
-if __name__ == '__main__':
-  tf.test.main()
+if __name__ == "__main__":
+    tf.test.main()

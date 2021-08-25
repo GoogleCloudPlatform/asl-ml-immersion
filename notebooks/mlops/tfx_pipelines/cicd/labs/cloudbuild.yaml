@@ -13,11 +13,11 @@
 # limitations under the License.
 #
 # Submits a Cloud Build job that builds and deploys
-# the pipelines and pipelines components 
+# the pipelines and pipelines components
 #
-# Build and deploy a TFX pipeline. This is an interim solution till tfx CLI fully 
+# Build and deploy a TFX pipeline. This is an interim solution till tfx CLI fully
 # supports automated building and deploying.
-# 
+#
 
 steps:
 # Build the image that encapsulates transform and train modules
@@ -28,7 +28,7 @@ steps:
 # Compile and upload the tfx pipeliine using the custom CloudBuilder 'gcr.io/$PROJECT_ID/tfx-cli'
 - name: # TODO
   args: # TODO
-  env: 
+  env:
   - 'KUBEFLOW_TFX_IMAGE=gcr.io/$PROJECT_ID/$_TFX_IMAGE_NAME:$TAG_NAME'
   - 'MODEL_NAME=$_MODEL_NAME'
   - 'PROJECT_ID=$PROJECT_ID'
@@ -42,5 +42,5 @@ steps:
   dir: $_PIPELINE_FOLDER
 
 
-# Push the custom image to Container Registry 
+# Push the custom image to Container Registry
 images: ['gcr.io/$PROJECT_ID/$_TFX_IMAGE_NAME:$TAG_NAME']

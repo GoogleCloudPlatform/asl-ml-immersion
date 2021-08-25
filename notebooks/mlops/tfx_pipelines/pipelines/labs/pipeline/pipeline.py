@@ -14,53 +14,38 @@
 """Covertype training pipeline DSL."""
 
 import os
-import kfp
-import tensorflow_model_analysis as tfma
-
-from typing import Optional, Dict, List, Text
-
-from tfx.components.base import executor_spec
-from tfx.components import Evaluator
-from tfx.components import CsvExampleGen
-from tfx.components import ExampleValidator
-from tfx.components import ImporterNode
-from tfx.components import InfraValidator
-from tfx.components import Pusher
-from tfx.components import ResolverNode
-from tfx.components import SchemaGen
-from tfx.components import StatisticsGen
-from tfx.components import Trainer
-from tfx.components import Transform
-from tfx.components.trainer import executor as trainer_executor
-from tfx.dsl.experimental import latest_blessed_model_resolver
-from tfx.extensions.google_cloud_ai_platform.pusher import executor as ai_platform_pusher_executor
-from tfx.extensions.google_cloud_ai_platform.trainer import executor as ai_platform_trainer_executor
-from tfx.orchestration import data_types
-from tfx.orchestration import pipeline
-from tfx.orchestration.kubeflow import kubeflow_dag_runner
-from tfx.orchestration.kubeflow.proto import kubeflow_pb2
-from tfx.proto import example_gen_pb2
-from tfx.proto import evaluator_pb2
-from tfx.proto import infra_validator_pb2
-from tfx.proto import pusher_pb2
-from tfx.proto import trainer_pb2
-from tfx.utils.dsl_utils import external_input
-from tfx.types import Channel
-from tfx.types.standard_artifacts import Model
-from tfx.types.standard_artifacts import ModelBlessing
-from tfx.types.standard_artifacts import InfraBlessing
-from tfx.types.standard_artifacts import Schema
+from typing import Dict, List, Optional, Text
 
 import features
-
+import kfp
+import tensorflow_model_analysis as tfma
+from tfx.components import (CsvExampleGen, Evaluator, ExampleValidator,
+                            ImporterNode, InfraValidator, Pusher, ResolverNode,
+                            SchemaGen, StatisticsGen, Trainer, Transform)
+from tfx.components.base import executor_spec
+from tfx.components.trainer import executor as trainer_executor
+from tfx.dsl.experimental import latest_blessed_model_resolver
+from tfx.extensions.google_cloud_ai_platform.pusher import \
+    executor as ai_platform_pusher_executor
+from tfx.extensions.google_cloud_ai_platform.trainer import \
+    executor as ai_platform_trainer_executor
+from tfx.orchestration import data_types, pipeline
+from tfx.orchestration.kubeflow import kubeflow_dag_runner
+from tfx.orchestration.kubeflow.proto import kubeflow_pb2
+from tfx.proto import (evaluator_pb2, example_gen_pb2, infra_validator_pb2,
+                       pusher_pb2, trainer_pb2)
+from tfx.types import Channel
+from tfx.types.standard_artifacts import (InfraBlessing, Model, ModelBlessing,
+                                          Schema)
+from tfx.utils.dsl_utils import external_input
 
 SCHEMA_FOLDER='schema'
 TRANSFORM_MODULE_FILE='preprocessing.py'
 TRAIN_MODULE_FILE='model.py'
 
 
-def create_pipeline(pipeline_name: Text, 
-                      pipeline_root: Text, 
+def create_pipeline(pipeline_name: Text,
+                      pipeline_root: Text,
                       data_root_uri: data_types.RuntimeParameter,
                       train_steps: data_types.RuntimeParameter,
                       eval_steps: data_types.RuntimeParameter,
@@ -70,7 +55,7 @@ def create_pipeline(pipeline_name: Text,
                       enable_cache: Optional[bool] = False) -> pipeline.Pipeline:
   """Trains and deploys the Covertype classifier."""
 
- 
+
   # Brings data into the pipeline and splits the data into training and eval splits
   examples = external_input(data_root_uri)
   output_config = example_gen_pb2.Output(
@@ -88,7 +73,7 @@ def create_pipeline(pipeline_name: Text,
       instance_name='import_user_schema',
       source_uri=SCHEMA_FOLDER,
       artifact_type=Schema)
-  
+
   # Generates schema based on statistics files.Even though, we use user-provided schema
   # we still want to generate the schema of the newest data for tracking and comparison
   infer_schema = # TODO
@@ -99,7 +84,7 @@ def create_pipeline(pipeline_name: Text,
   # Performs transformations and feature engineering in training and serving.
   transform = # TODO
 
-  
+
   # Trains the model using a user provided trainer function.
   train = Trainer(
       custom_executor_spec=executor_spec.ExecutorClassSpec(
@@ -146,7 +131,7 @@ def create_pipeline(pipeline_name: Text,
         tfma.SlicingSpec(feature_keys=['Wilderness_Area'])
     ]
   )
-  
+
 
   analyze = Evaluator(
       examples=generate_examples.outputs.examples,
@@ -155,24 +140,24 @@ def create_pipeline(pipeline_name: Text,
       eval_config=eval_config
   )
 
-  # Validate model can be loaded and queried in sand-boxed environment 
+  # Validate model can be loaded and queried in sand-boxed environment
   # mirroring production.
   serving_config = infra_validator_pb2.ServingSpec(
       tensorflow_serving=infra_validator_pb2.TensorFlowServing(
           tags=['latest']),
       kubernetes=infra_validator_pb2.KubernetesConfig(),
   )
-  
+
   validation_config = infra_validator_pb2.ValidationSpec(
       max_loading_time_seconds=60,
       num_tries=3,
   )
-  
+
   request_config = infra_validator_pb2.RequestSpec(
       tensorflow_serving=infra_validator_pb2.TensorFlowServingRequestSpec(),
       num_examples=3,
   )
-    
+
   infra_validate = InfraValidator(
       model=train.outputs['model'],
       examples=generate_examples.outputs['examples'],
@@ -180,16 +165,16 @@ def create_pipeline(pipeline_name: Text,
       validation_spec=validation_config,
       request_spec=request_config,
   )
-  
+
   # Checks whether the model passed the validation steps and pushes the model
   # to a file destination if check passed.
   deploy = Pusher(
-      custom_executor_spec=executor_spec.ExecutorClassSpec(ai_platform_pusher_executor.Executor),      
+      custom_executor_spec=executor_spec.ExecutorClassSpec(ai_platform_pusher_executor.Executor),
       model=train.outputs['model'],
       model_blessing=analyze.outputs['blessing'],
       infra_blessing=infra_validate.outputs['blessing'],
       custom_config={ai_platform_pusher_executor.SERVING_ARGS_KEY: ai_platform_serving_args})
 
   #TODO: Create and return a Pipeline object using `pipeline_name` as name, `pipeline_root` as root,
-  # as well as all the component you defined above. Make sure to pass the correct `beam_pipline_args` and 
-  # please enbable cache. 
+  # as well as all the component you defined above. Make sure to pass the correct `beam_pipline_args` and
+  # please enbable cache.

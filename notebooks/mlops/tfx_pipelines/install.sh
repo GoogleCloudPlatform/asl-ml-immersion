@@ -23,4 +23,3 @@ chmod +x skaffold
 mv skaffold /home/jupyter/.local/bin
 
 jupyter nbextension enable --py tensorflow_model_analysis
-

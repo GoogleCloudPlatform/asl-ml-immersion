@@ -33,5 +33,3 @@ Table of contents for various ASL course and offerings.
     * [Working with Sequential Data](https://github.com/GoogleCloudPlatform/asl-ml-immersion/tree/master/notebooks/time_series_prediction)
     * [Text Classification](https://github.com/GoogleCloudPlatform/asl-ml-immersion/tree/master/notebooks/text_classification)
     * [Recommendation Systems](https://github.com/GoogleCloudPlatform/asl-ml-immersion/tree/master/notebooks/recommendation_systems)
-
-

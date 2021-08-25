@@ -1,6 +1,6 @@
 # Continuous training with scikit-learn and Cloud AI Platform
 
-This series of hands on labs guides you through the process of implementing a **Kubeflow Pipelines (KFP**) continuous training pipeline that automates training and deployment of a **scikit-learn** model. 
+This series of hands on labs guides you through the process of implementing a **Kubeflow Pipelines (KFP**) continuous training pipeline that automates training and deployment of a **scikit-learn** model.
 
 The below diagram represents the workflow orchestrated by the pipeline.
 
@@ -22,16 +22,16 @@ You will use the lab environment configured as on the below diagram:
 ![Lab env](/images/lab-env.png)
 
 The core services in the environment are:
-- ML experimentation and development - AI Platform Notebooks 
-- Scalable, serverless model training - AI Platform Training  
-- Scalable, serverless model serving - AI Platform Prediction 
+- ML experimentation and development - AI Platform Notebooks
+- Scalable, serverless model training - AI Platform Training
+- Scalable, serverless model serving - AI Platform Prediction
 - ML pipelines and ML metadata - AI Platform Pipelines
-- Distributed data processing - Cloud Dataflow  
-- Analytics data warehouse - BigQuery 
-- Artifact store - Google Cloud Storage 
+- Distributed data processing - Cloud Dataflow
+- Analytics data warehouse - BigQuery
+- Artifact store - Google Cloud Storage
 - CI/CD tooling - Cloud Build
-    
-In this environment, all services are provisioned in the same [Google Cloud Project](https://cloud.google.com/storage/docs/projects). 
+
+In this environment, all services are provisioned in the same [Google Cloud Project](https://cloud.google.com/storage/docs/projects).
 
 ### Enabling Cloud Services
 
@@ -53,7 +53,7 @@ iam.googleapis.com \
 containerregistry.googleapis.com \
 containeranalysis.googleapis.com \
 ml.googleapis.com \
-dataflow.googleapis.com 
+dataflow.googleapis.com
 ```
 
 The **Cloud Build** service account needs the Editor permissions in your GCP project to upload the pipeline package to an **AI Platform Pipelines** instance.
@@ -72,7 +72,7 @@ The core component of the lab environment is **AI Platform Pipelines**. To creat
 
 ### Creating an instance of AI Platform Notebooks
 
-An instance of **AI Platform Notebooks** is used as a primary experimentation/development workbench. The instance is configured using a custom container image that includes all Python packages required for the hands-on labs. 
+An instance of **AI Platform Notebooks** is used as a primary experimentation/development workbench. The instance is configured using a custom container image that includes all Python packages required for the hands-on labs.
 
 
 1. In [Cloud Shell](https://cloud.google.com/shell/docs/launching-cloud-shell), create a folder in your `home` directory
@@ -96,7 +96,7 @@ FROM gcr.io/deeplearning-platform-release/base-cpu
 SHELL ["/bin/bash", "-c"]
 RUN apt-get update -y && apt-get -y install kubectl
 COPY requirements.txt .
-RUN python -m pip install -U -r requirements.txt 
+RUN python -m pip install -U -r requirements.txt
 EOF
 ```
 4. Build the image and push it to your project's **Container Registry**
@@ -189,6 +189,3 @@ In this lab, you will author, deploy, and run a **Kubeflow Pipelines (KFP)** pip
 
 ### Lab-03 - CI/CD for the continuous training pipeline
 In this lab, you will author a **Cloud Build** CI/CD workflow that automates the process of building and deploying of the KFP pipeline authored in the second lab. You will also integrate the **Cloud Build** workflow with **GitHub**.
-
-
-

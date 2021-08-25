@@ -7,5 +7,5 @@ EXPOSE 8080
 # Copy the serverr.js code over
 COPY ./src/server.js .
 
-# Start the server with server.js 
+# Start the server with server.js
 CMD node server.js

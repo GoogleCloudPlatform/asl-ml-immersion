@@ -16,17 +16,17 @@ build: pyclean
 	@./scripts/build.sh
 
 .PHONY: push
-push: 
+push:
 	@./scripts/push.sh
 
 .PHONY: login
-login: 
+login:
 	@./scripts/login.sh
 
 .PHONY: test
-test: 
+test:
 	@./scripts/test.sh
 
 .PHONY: substitute
-substitute: 
+substitute:
 	@./scripts/substitute.sh

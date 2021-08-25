@@ -13,15 +13,14 @@
 # limitations under the License.
 """The Covertype classifier DNN keras model."""
 
-import absl
 import os
 
+import absl
+import features
 import tensorflow as tf
 import tensorflow_model_analysis as tfma
 import tensorflow_transform as tft
 from tensorflow_transform.tf_metadata import schema_utils
-
-import features
 
 HIDDEN_UNITS = [16, 8]
 LEARNING_RATE = 0.001

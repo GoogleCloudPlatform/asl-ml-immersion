@@ -1,3 +1,2 @@
-def fun_e(
-        a=None):
+def fun_e(a=None):
     pass

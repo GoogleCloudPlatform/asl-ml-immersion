@@ -6,7 +6,7 @@ FROM google/cloud-sdk:latest
 COPY . /code
 WORKDIR /code
 
-# RUN pip3 install google-cloud-bigquery 
+# RUN pip3 install google-cloud-bigquery
 
 
 ENTRYPOINT ["./main.sh"]

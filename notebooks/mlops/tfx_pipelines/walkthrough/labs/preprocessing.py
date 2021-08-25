@@ -15,10 +15,9 @@
 This file defines a template for TFX Transform component.
 """
 
+import features
 import tensorflow as tf
 import tensorflow_transform as tft
-
-import features
 
 
 def _fill_in_missing(x):
@@ -50,25 +49,24 @@ def preprocessing_fn(inputs):
     Returns:
       outputs(dict): A `dict` of `string` to `Tensor` or `SparseTensor`, where key is a new set
         of Feature keys, and values are possibly transformed `Tensor` or
-       `SparseTensor`.    
-    
+       `SparseTensor`.
+
     """
 
     outputs = {}
 
     # Scale numerical features
     for key in features.NUMERIC_FEATURE_KEYS:
-    # TODO: your code here to scale numeric features with z-score with Tensorflow Transform.        
+    # TODO: your code here to scale numeric features with z-score with Tensorflow Transform.
     outputs[features.transformed_name(key)] =
 
     # Generate vocabularies and maps categorical features
     for key in features.CATEGORICAL_FEATURE_KEYS:
     # TODO: your code here to integerize categorical features and generate vocabulary file with Tensorflow Transform.
-        outputs[features.transformed_name(key)] = 
+        outputs[features.transformed_name(key)] =
 
     # Convert Cover_Type to dense tensor
     outputs[features.transformed_name(features.LABEL_KEY)] = _fill_in_missing(
          inputs[features.LABEL_KEY])
 
     return outputs
-

@@ -4,7 +4,6 @@ import os
 from google.cloud import bigquery
 from google.cloud.bigquery.job import ExtractJobConfig
 
-
 DATASET = "taxifare"
 TRAIN_TABLE = "feateng_training_data"
 VALID_TABLE = "feateng_valid_data"
@@ -83,15 +82,13 @@ def export_table_to_gcs(dataset_ref, source_table, destination_uri):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--bucket",
-        help = "GCS bucket where datasets will be exported.",
-        required = True
+        "--bucket", help="GCS bucket where datasets will be exported.", required=True
     )
     args = parser.parse_args()
 
     gs = "gs://"
     bucket = args.bucket if gs in args.bucket else os.path.join(gs, args.bucket)
-    datadir = os.path.join(bucket, DATASET, 'data')
+    datadir = os.path.join(bucket, DATASET, "data")
     train_export_path = os.path.join(datadir, "taxi-train-*.csv")
     valid_export_path = os.path.join(datadir, "taxi-valid-*.csv")
 
@@ -116,4 +113,3 @@ if __name__ == "__main__":
 
     print("Exporting validation dataset to GCS", valid_export_path)
     export_table_to_gcs(dataset_ref, VALID_TABLE, valid_export_path)
-

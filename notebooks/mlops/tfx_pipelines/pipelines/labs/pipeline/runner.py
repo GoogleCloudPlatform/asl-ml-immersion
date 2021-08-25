@@ -14,80 +14,70 @@
 # limitations under the License.
 """KFP runner configuration"""
 
-import kfp
+from typing import Dict, List, Optional, Text
 
+import kfp
+from config import Config
+from pipeline import create_pipeline
 from tfx.orchestration import data_types
 from tfx.orchestration.kubeflow import kubeflow_dag_runner
 
-from typing import Optional, Dict, List, Text
+if __name__ == "__main__":
 
-from config import Config
-from pipeline import create_pipeline
+    # Set the values for the compile time parameters
 
-if __name__ == '__main__':
+    ai_platform_training_args = {
+        "project": Config.PROJECT_ID,
+        "region": Config.GCP_REGION,
+        "masterConfig": {
+            "imageUri": Config.TFX_IMAGE,
+        },
+    }
 
-  # Set the values for the compile time parameters
-    
-  ai_platform_training_args = {
-      'project': Config.PROJECT_ID,
-      'region': Config.GCP_REGION,
-      'masterConfig': {
-          'imageUri': Config.TFX_IMAGE,
-      }
-  }
+    ai_platform_serving_args = {
+        "project_id": Config.PROJECT_ID,
+        "model_name": Config.MODEL_NAME,
+        "runtimeVersion": Config.RUNTIME_VERSION,
+        "pythonVersion": Config.PYTHON_VERSION,
+        "regions": [Config.GCP_REGION],
+    }
 
-  ai_platform_serving_args = {
-      'project_id': Config.PROJECT_ID,
-      'model_name': Config.MODEL_NAME,
-      'runtimeVersion': Config.RUNTIME_VERSION,
-      'pythonVersion': Config.PYTHON_VERSION,
-      'regions': [Config.GCP_REGION]
-  }
+    beam_tmp_folder = f"{Config.ARTIFACT_STORE_URI}/beam/tmp"
+    beam_pipeline_args = [
+        "--runner=DataflowRunner",
+        "--experiments=shuffle_mode=auto",
+        "--project=" + Config.PROJECT_ID,
+        "--temp_location=" + beam_tmp_folder,
+        "--region=" + Config.GCP_REGION,
+    ]
 
-  beam_tmp_folder = '{}/beam/tmp'.format(Config.ARTIFACT_STORE_URI)
-  beam_pipeline_args = [
-      '--runner=DataflowRunner',
-      '--experiments=shuffle_mode=auto',
-      '--project=' + Config.PROJECT_ID,
-      '--temp_location=' + beam_tmp_folder,
-      '--region=' + Config.GCP_REGION,
-  ]
-    
-  
-  # Set the default values for the pipeline runtime parameters
-    
-  data_root_uri = data_types.RuntimeParameter(
-      name='data-root-uri',
-      default=Config.DATA_ROOT_URI,
-      ptype=Text
-  )
+    # Set the default values for the pipeline runtime parameters
 
-  train_steps = data_types.RuntimeParameter(
-      name='train-steps',
-      default=5000,
-      ptype=int
-  )
-    
-  eval_steps = data_types.RuntimeParameter(
-      name='eval-steps',
-      default=500,
-      ptype=int
-  )
+    data_root_uri = data_types.RuntimeParameter(
+        name="data-root-uri", default=Config.DATA_ROOT_URI, ptype=str
+    )
 
-  pipeline_root = '{}/{}/{}'.format(
-      Config.ARTIFACT_STORE_URI, 
-      Config.PIPELINE_NAME,
-      kfp.dsl.RUN_ID_PLACEHOLDER)
-    
-  # Set KubeflowDagRunner settings
-  metadata_config = kubeflow_dag_runner.get_default_kubeflow_metadata_config()
+    train_steps = data_types.RuntimeParameter(
+        name="train-steps", default=5000, ptype=int
+    )
 
-  runner_config = kubeflow_dag_runner.KubeflowDagRunnerConfig(
-      kubeflow_metadata_config = metadata_config,
-      pipeline_operator_funcs = kubeflow_dag_runner.get_default_pipeline_operator_funcs(
-          Config.USE_KFP_SA == 'True'),
-      tfx_image=Config.TFX_IMAGE)
+    eval_steps = data_types.RuntimeParameter(name="eval-steps", default=500, ptype=int)
 
-  # Compile the pipeline
-  # TODO: Use KubeflowDagRunner to run the tfx pipeline that you create using
-  # create_pipeline. 
+    pipeline_root = "{}/{}/{}".format(
+        Config.ARTIFACT_STORE_URI, Config.PIPELINE_NAME, kfp.dsl.RUN_ID_PLACEHOLDER
+    )
+
+    # Set KubeflowDagRunner settings
+    metadata_config = kubeflow_dag_runner.get_default_kubeflow_metadata_config()
+
+    runner_config = kubeflow_dag_runner.KubeflowDagRunnerConfig(
+        kubeflow_metadata_config=metadata_config,
+        pipeline_operator_funcs=kubeflow_dag_runner.get_default_pipeline_operator_funcs(
+            Config.USE_KFP_SA == "True"
+        ),
+        tfx_image=Config.TFX_IMAGE,
+    )
+
+    # Compile the pipeline
+    # TODO: Use KubeflowDagRunner to run the tfx pipeline that you create using
+    # create_pipeline.

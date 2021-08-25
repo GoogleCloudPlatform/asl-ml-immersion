@@ -40,5 +40,4 @@ gcloud ai-platform jobs submit training $JOBID \
   --num_examples_to_train_on $NUM_EXAMPLES_TO_TRAIN_ON \
   --num_evals $NUM_EVALS \
   --nbuckets $NBUCKETS \
-  --nnsize $NNSIZE 
-
+  --nnsize $NNSIZE

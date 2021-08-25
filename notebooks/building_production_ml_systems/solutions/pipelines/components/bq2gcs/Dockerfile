@@ -6,7 +6,7 @@ RUN apt-get update && \
 COPY . /code
 WORKDIR /code
 
-RUN pip3 install google-cloud-bigquery 
+RUN pip3 install google-cloud-bigquery
 
 
 ENTRYPOINT ["python3", "./main.py"]

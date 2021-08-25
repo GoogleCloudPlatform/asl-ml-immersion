@@ -227,5 +227,5 @@ def train_and_evaluate(hparams):
     )
 
     # Exporting the model with default serving function.
-    tf.saved_model.save(model, model_export_path)
+    model.save(model_export_path)
     return history

@@ -32,6 +32,7 @@ repos:
     rev: 21.6b0
     hooks:
     -   id: black
+        args: [-l 79]
 -   repo: https://github.com/asottile/pyupgrade
     rev: v2.19.4
     hooks:

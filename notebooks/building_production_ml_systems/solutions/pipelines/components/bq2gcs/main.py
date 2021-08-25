@@ -1,9 +1,9 @@
 import argparse
 import os
 
+from google import api_core
 from google.cloud import bigquery
 from google.cloud.bigquery.job import ExtractJobConfig
-
 
 DATASET = "taxifare"
 TRAIN_TABLE = "feateng_training_data"
@@ -65,13 +65,13 @@ AND
 """
 
 
-def export_table_to_gcs(dataset_ref, source_table, destination_uri):
+def export_table_to_gcs(bq_client, dataset_ref, source_table, destination_uri):
     table_ref = dataset_ref.table(source_table)
 
     config = ExtractJobConfig()
     config.print_header = False
 
-    extract_job = bq.extract_table(
+    extract_job = bq_client.extract_table(
         table_ref,
         destination_uri,
         location="US",
@@ -80,40 +80,47 @@ def export_table_to_gcs(dataset_ref, source_table, destination_uri):
     extract_job.result()
 
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--bucket",
-        help = "GCS bucket where datasets will be exported.",
-        required = True
+        help="GCS bucket where datasets will be exported.",
+        required=True,
     )
     args = parser.parse_args()
 
-    gs = "gs://"
-    bucket = args.bucket if gs in args.bucket else os.path.join(gs, args.bucket)
-    datadir = os.path.join(bucket, DATASET, 'data')
+    gs_prefix = "gs://"
+    bucket = (
+        args.bucket
+        if gs_prefix in args.bucket
+        else os.path.join(gs_prefix, args.bucket)
+    )
+    datadir = os.path.join(bucket, DATASET, "data")
     train_export_path = os.path.join(datadir, "taxi-train-*.csv")
     valid_export_path = os.path.join(datadir, "taxi-valid-*.csv")
 
-    bq = bigquery.Client()
+    bq_client = bigquery.Client()
 
-    dataset_ref = bigquery.Dataset(bq.dataset("taxifare"))
+    dataset_ref = bigquery.Dataset(bq_client.dataset("taxifare"))
 
     try:
-        bq.create_dataset(dataset_ref)
+        bq_client.create_dataset(dataset_ref)
         print("Dataset created")
-    except:
+    except api_core.exceptions.Conflict:
         print("Dataset already exists")
 
     print("Creating the training dataset...")
-    bq.query(TRAIN_SQL).result()
+    bq_client.query(TRAIN_SQL).result()
 
     print("Creating the validation dataset...")
-    bq.query(VALID_SQL).result()
+    bq_client.query(VALID_SQL).result()
 
     print("Exporting training dataset to GCS", train_export_path)
-    export_table_to_gcs(dataset_ref, TRAIN_TABLE, train_export_path)
+    export_table_to_gcs(bq_client, dataset_ref, TRAIN_TABLE, train_export_path)
 
     print("Exporting validation dataset to GCS", valid_export_path)
-    export_table_to_gcs(dataset_ref, VALID_TABLE, valid_export_path)
+    export_table_to_gcs(bq_client, dataset_ref, VALID_TABLE, valid_export_path)
 
+
+if __name__ == "__main__":
+    main()

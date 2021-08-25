@@ -1,4 +1,4 @@
-FROM gcr.io/deeplearning-platform-release/tf2-cpu.2-3:latest
+FROM gcr.io/deeplearning-platform-release/tf2-cpu.2-5:latest
 # TODO 3
 
 COPY . /code

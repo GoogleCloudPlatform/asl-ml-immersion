@@ -1,0 +1,7 @@
+steps:
+- name: python:3.7
+  id: FLAKE8-NB
+  entrypoint: flake8-nb
+- name: python:3.7
+  id: BLACK-NB
+  entrypoint: black-nb

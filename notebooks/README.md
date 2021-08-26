@@ -1,4 +1,4 @@
-# Module Descriptions
+# Modules
 
 
 * Module 1 - Fundamentals
@@ -10,11 +10,11 @@
     
 * Module 2 - Recap
     * [Feature Engineering](./feature_engineering)
-    * [End-to-end Babyweight example](./end-to-end-structured)
+    * [End-to-End Guided Project](./end-to-end-structured)
 
 
 * Module 3 - Algos 
-    * [Image models](./image_models)
+    * [Image Models](./image_models)
     * [Text Models](./text_classification)
     * [Time Series](./time_series_prediction)
     * [Recommendation Systems](./recommendation_systems)

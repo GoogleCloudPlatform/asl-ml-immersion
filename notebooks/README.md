@@ -3,7 +3,7 @@ Table of contents for various ASL course and offerings.
 
 ## ASL
 * Week 1
-    * [BigQuery](https://github.com/GoogleCloudPlatform/asl-ml-immersion/tree/master/notebooks/bigquery)
+    * [BigQuery](./bigquery)
     * [Launching into ML](https://github.com/GoogleCloudPlatform/asl-ml-immersion/tree/master/notebooks/launching_into_ml)
     * [Intro to TF and Keras](https://github.com/GoogleCloudPlatform/asl-ml-immersion/tree/master/notebooks/introduction_to_tensorflow)
     * [Basic Feature Engineering](https://github.com/GoogleCloudPlatform/asl-ml-immersion/tree/master/notebooks/feature_engineering)

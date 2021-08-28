@@ -54,7 +54,7 @@ def create_eval_dataset(pattern, batch_size):
 
 
 def parse_datetime(s):
-    if type(s) is not str:
+    if not isinstance(s, str):
         s = s.numpy().decode("utf-8")
     return datetime.datetime.strptime(s, "%Y-%m-%d %H:%M:%S %Z")
 

@@ -7,13 +7,13 @@ import logging
 from datetime import datetime
 
 import apache_beam as beam
-import apache_beam.transforms.window as window
 from apache_beam.options.pipeline_options import (
     GoogleCloudOptions,
     PipelineOptions,
     SetupOptions,
     StandardOptions,
 )
+from apache_beam.transforms import window
 
 
 class CountFn(beam.CombineFn):
@@ -69,7 +69,7 @@ def run(argv=None):
             "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         }
 
-    pipeline = (
+    pipeline = (  # noqa F841
         p
         | "read_from_pubsub"
         >> beam.io.ReadFromPubSub(topic=TOPIC).with_output_types(bytes)
@@ -86,7 +86,7 @@ def run(argv=None):
         )
     )
 
-    result = p.run()
+    result = p.run()  # noqa F841
     # result.wait_until_finish() #only do this if running with DirectRunner
 
 

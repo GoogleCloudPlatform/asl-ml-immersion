@@ -1,9 +1,8 @@
 """Generates the taxifare pipeline."""
 from os import path
 
-import kfp.compiler as compiler
 import kfp.components as comp
-import kfp.dsl as dsl
+from kfp import compiler, dsl
 
 HERE = path.abspath(path.dirname(__file__))
 COMPONENT_DIR = path.join(HERE, "components")

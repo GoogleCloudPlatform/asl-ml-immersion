@@ -1,15 +1,16 @@
+"""
+Send sensor data to Cloud Pub/Sub in small groups, simulating real-time
+behavior
+"""
+
 import argparse
-import datetime
-import gzip
 import logging
 import random
 import time
 
+from google import api_core
 from google.cloud import pubsub
 
-"""
-Send sensor data to Cloud Pub/Sub in small groups, simulating real-time behavior
-"""
 TIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 DEFAULT_TOPIC = "taxi_rides"
 
@@ -33,10 +34,10 @@ if __name__ == "__main__":
     topic_name = publisher.topic_path(args.project, args.topic)
     try:
         publisher.get_topic(topic_name)
-        logging.info(f"Reusing pub/sub topic {args.topic}")
-    except:
+        logging.info("Reusing pub/sub topic %topic", args.topic)
+    except api_core.exceptions.NotFound:
         publisher.create_topic(topic_name)
-        logging.info(f"Creating pub/sub topic {args.topic}")
+        logging.info("Creating pub/sub topic %topic", args.topic)
 
     while True:
         num_trips = random.randint(10, 60)

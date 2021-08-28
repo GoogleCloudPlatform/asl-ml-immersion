@@ -4,7 +4,6 @@ from os import path
 import kfp.compiler as compiler
 import kfp.components as comp
 import kfp.dsl as dsl
-import kfp.gcp as gcp
 
 HERE = path.abspath(path.dirname(__file__))
 COMPONENT_DIR = path.join(HERE, "components")

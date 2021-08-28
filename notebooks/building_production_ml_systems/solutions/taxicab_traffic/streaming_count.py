@@ -8,15 +8,12 @@ from datetime import datetime
 
 import apache_beam as beam
 import apache_beam.transforms.window as window
-from apache_beam.examples.wordcount import WordExtractingDoFn
-from apache_beam.io import WriteToText
 from apache_beam.options.pipeline_options import (
     GoogleCloudOptions,
     PipelineOptions,
     SetupOptions,
     StandardOptions,
 )
-from past.builtins import unicode
 
 
 class CountFn(beam.CombineFn):

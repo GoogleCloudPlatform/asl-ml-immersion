@@ -6,7 +6,6 @@ import kfp.components as comp
 import kfp.dsl as dsl
 import kfp.gcp as gcp
 
-
 HERE = path.abspath(path.dirname(__file__))
 COMPONENT_DIR = path.join(HERE, "components")
 
@@ -18,7 +17,8 @@ PIPELINE_TAR = "taxifare.tar.gz"
 
 
 @dsl.pipeline(
-    name="Taxifare", description="Train a ml model to predict the taxi fare in NY"
+    name="Taxifare",
+    description="Train a ml model to predict the taxi fare in NY",
 )
 def pipeline(gcs_bucket_name="<bucket where data and model will be exported>"):
 

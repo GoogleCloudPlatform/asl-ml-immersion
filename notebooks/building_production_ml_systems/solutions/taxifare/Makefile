@@ -3,7 +3,7 @@ all: clean build push
 .PHONY: venv
 venv:
 	@test -d ./venv || python3 -m venv venv
-	@. ./venv/bin/activate && pip install -U pip && pip install -e . 
+	@. ./venv/bin/activate && pip install -U pip && pip install -e .
 
 .PHONY: pyclean
 pyclean:
@@ -21,17 +21,17 @@ build: pyclean
 	@./scripts/build.sh
 
 .PHONY: push
-push: 
+push:
 	@./scripts/push.sh
 
 .PHONY: submit
-submit: 
+submit:
 	@./scripts/submit.sh
 
 .PHONY: login
-login: 
+login:
 	@./scripts/login.sh
 
 .PHONY: test
-test: 
+test:
 	@./scripts/test.sh

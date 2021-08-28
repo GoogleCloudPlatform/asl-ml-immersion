@@ -34,14 +34,14 @@ if __name__ == "__main__":
     topic_name = publisher.topic_path(args.project, args.topic)
     try:
         publisher.get_topic(topic_name)
-        logging.info("Reusing pub/sub topic %topic", args.topic)
+        logging.info("Reusing pub/sub topic %s", args.topic)
     except api_core.exceptions.NotFound:
         publisher.create_topic(topic_name)
-        logging.info("Creating pub/sub topic %topic", args.topic)
+        logging.info("Creating pub/sub topic %s", args.topic)
 
     while True:
         num_trips = random.randint(10, 60)
         for i in range(num_trips):
             publisher.publish(topic_name, b"taxi_ride")
-        logging.info(f"Publishing: {time.ctime()}")
+        logging.info("Publishing: %s", time.ctime())
         time.sleep(5)

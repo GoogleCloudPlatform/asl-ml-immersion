@@ -14,7 +14,7 @@ SCALE_TIER=CUSTOM
 
 
 # gcloud ai-platform jobs submit training $JOBID \
-gcloud beta ai-platform jobs submit training $JOBID \
+gcloud ai-platform jobs submit training $JOBID \
    --staging-bucket=gs://$BUCKET \
    --region=$REGION \
    --master-image-uri=$IMAGE_URI \
@@ -28,5 +28,4 @@ gcloud beta ai-platform jobs submit training $JOBID \
   --num_examples_to_train_on $NUM_EXAMPLES_TO_TRAIN_ON \
   --num_evals $NUM_EVALS \
   --nbuckets $NBUCKETS \
-  --nnsize $NNSIZE 
-
+  --nnsize $NNSIZE

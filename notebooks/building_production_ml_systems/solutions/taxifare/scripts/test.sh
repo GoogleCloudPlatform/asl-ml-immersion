@@ -9,7 +9,7 @@ TRAIN_PATH=$DATA_PATH/taxi-train*
 EVAL_PATH=$DATA_PATH/taxi-valid*
 MODEL_PATH=$TEST_BUCKET/model
 
-gsutil ls $TEST_BUCKET && gsutil -m rm -r $TEST_BUCKET 
+gsutil ls $TEST_BUCKET && gsutil -m rm -r $TEST_BUCKET
 gsutil -m cp $TEST_DATA/* $DATA_PATH
 
 $SCRIPTS_DIR/run.sh \

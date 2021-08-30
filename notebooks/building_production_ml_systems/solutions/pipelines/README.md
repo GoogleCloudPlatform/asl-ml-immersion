@@ -11,7 +11,7 @@ gs://<BUCKET>/taxifare/data/taxi-train*.csv
 gs://<BUCKET>/taxifare/data/taxi-valid*.csv
 ```
 
-The model will be stored at 
+The model will be stored at
 ```bash
 gs://<BUCKET/taxifare/model
 ```
@@ -19,7 +19,7 @@ gs://<BUCKET/taxifare/model
 The training takes place on the AI-platform and assumes
 that the training container (`taxifare-trainer`) Docker image
 has been already exported to the project Docker registry.
-(This should have been done by completing the previous lab, or by 
+(This should have been done by completing the previous lab, or by
 running `make` in `../taxifare`.)
 
 
@@ -28,7 +28,7 @@ version `dnn`.
 
 The training parameters can be modified in the training submission
 script `./components/trainjob/main.sh`. For simplicity, we do not
-surface these parameters to the Kubeflow UI dashboard.  
+surface these parameters to the Kubeflow UI dashboard.
 
 
 ## Pre-requisite
@@ -36,10 +36,10 @@ surface these parameters to the Kubeflow UI dashboard.
 A [Kubeflow](https://www.kubeflow.org/) cluster needs to be deployed
 in your GCP project, using the [Kubeflow cluster deployment](https://deploy.kubeflow.cloud/#/deploy).
 There is a [setup video](https://www.kubeflow.org/docs/started/cloud/getting-started-gke/~) that will
-take you over all the steps in details, and explains how to access to the Kubeflow Dashboard UI, once it is 
-running. 
+take you over all the steps in details, and explains how to access to the Kubeflow Dashboard UI, once it is
+running.
 
-You'll need to create an OAuth client for authentication purposes: Follow the 
+You'll need to create an OAuth client for authentication purposes: Follow the
 instructions [here](https://www.kubeflow.org/docs/gke/deploy/oauth-setup/).
 
 ## Building the pipeline
@@ -56,7 +56,7 @@ To build the pipeline type
 $ make
 ```
 
-This will 
+This will
 1. go recursively into each of the compoment subdirectory, build their Docker images, and push them into the gcr.io registry
 2. build the pipeline artifact `taxifare.tar.gz` that you'll need to uploaed into the Kubeflow Pipeline UI to run it.
 

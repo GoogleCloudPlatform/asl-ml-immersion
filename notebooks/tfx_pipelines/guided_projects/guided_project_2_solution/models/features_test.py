@@ -27,7 +27,7 @@ class FeaturesTest(tf.test.TestCase):
   def testNumberFeatures(self):
     self.assertEqual(len(features.NUMERIC_FEATURE_KEYS), 10)
     self.assertEqual(len(features.CATEGORICAL_FEATURE_KEYS), 2)
- 
+
   def testTransformedName(self):
     name = "a_name"
     expected = "a_name_xf"

@@ -13,18 +13,18 @@
 # limitations under the License.
 #
 # Submits a Cloud Build job that builds and deploys
-# the pipelines and pipelines components 
+# the pipelines and pipelines components
 #
-# Build and deploy a TFX pipeline. This is an interim solution till tfx CLI fully 
+# Build and deploy a TFX pipeline. This is an interim solution till tfx CLI fully
 # supports automated building and deploying.
-# 
+#
 
 steps:
 # Build the trainer image
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'gcr.io/$PROJECT_ID/$_TRAINER_IMAGE_NAME:$TAG_NAME', '.']
   dir: $_PIPELINE_FOLDER/trainer_image
-  
+
 # Build the base image for lightweight components
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'gcr.io/$PROJECT_ID/$_BASE_IMAGE_NAME:$TAG_NAME', '.']
@@ -44,7 +44,7 @@ steps:
   - 'COMPONENT_URL_SEARCH_PREFIX=$_COMPONENT_URL_SEARCH_PREFIX'
   - 'USE_KFP_SA=$_USE_KFP_SA'
   dir: $_PIPELINE_FOLDER/pipeline
-  
+
  # Upload the pipeline
 - name: 'gcr.io/$PROJECT_ID/kfp-cli'
   args:
@@ -54,5 +54,5 @@ steps:
   dir: $_PIPELINE_FOLDER/pipeline
 
 
-# Push the images to Container Registry 
+# Push the images to Container Registry
 images: ['gcr.io/$PROJECT_ID/$_TRAINER_IMAGE_NAME:$TAG_NAME', 'gcr.io/$PROJECT_ID/$_BASE_IMAGE_NAME:$TAG_NAME']

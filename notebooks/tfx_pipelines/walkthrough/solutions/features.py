@@ -31,5 +31,3 @@ NUM_CLASSES = 7
 
 def transformed_name(key):
   return key + '_xf'
-
-

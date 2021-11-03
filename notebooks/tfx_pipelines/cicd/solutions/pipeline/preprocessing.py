@@ -56,4 +56,3 @@ def preprocessing_fn(inputs):
       inputs[features.LABEL_KEY])
 
   return outputs
-

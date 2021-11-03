@@ -266,5 +266,3 @@ def create_pipeline(pipeline_name: Text,
       enable_cache=enable_cache,
       beam_pipeline_args=beam_pipeline_args
   )
-
-

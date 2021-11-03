@@ -220,5 +220,3 @@ def covertype_train(project_id,
   # in the user-gcp-sa k8s secret
   if USE_KFP_SA == 'True':
     kfp.dsl.get_pipeline_conf().add_op_transformer(use_gcp_secret('user-gcp-sa'))
-
-

@@ -62,14 +62,14 @@ TRANSFORM_MODULE_FILE='preprocessing.py'
 TRAIN_MODULE_FILE='model.py'
 
 
-def create_pipeline(pipeline_name: Text, 
-                      pipeline_root: Text, 
+def create_pipeline(pipeline_name: Text,
+                      pipeline_root: Text,
                       data_root_uri: data_types.RuntimeParameter,
                       train_steps: data_types.RuntimeParameter,
                       eval_steps: data_types.RuntimeParameter,
-                      enable_tuning: bool,                    
+                      enable_tuning: bool,
                       ai_platform_training_args: Dict[Text, Text],
-                      ai_platform_serving_args: Dict[Text, Text],                    
+                      ai_platform_serving_args: Dict[Text, Text],
                       beam_pipeline_args: List[Text],
                       enable_cache: Optional[bool] = False) -> pipeline.Pipeline:
   """Trains and deploys the Keras Covertype Classifier with TFX and Kubeflow Pipeline on Google Cloud.
@@ -80,7 +80,7 @@ def create_pipeline(pipeline_name: Text,
     train_steps: runtime parameter for number of model training steps for the Trainer component.
     eval_steps: runtime parameter for number of model evaluation steps for the Trainer component.
     enable_tuning: If True, the hyperparameter tuning through CloudTuner is
-      enabled.    
+      enabled.
     ai_platform_training_args: Args of CAIP training job. Please refer to
       https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs#Job
       for detailed description.
@@ -99,7 +99,7 @@ def create_pipeline(pipeline_name: Text,
     A TFX pipeline object.
   """
 
- 
+
   # Brings data into the pipeline and splits the data into training and eval splits
   output = example_gen_pb2.Output(
     split_config=example_gen_pb2.SplitConfig(splits=[
@@ -107,7 +107,7 @@ def create_pipeline(pipeline_name: Text,
         example_gen_pb2.SplitConfig.Split(name='eval', hash_buckets=1)
     ]))
 
-  examplegen = CsvExampleGen(input_base=data_root_uri, 
+  examplegen = CsvExampleGen(input_base=data_root_uri,
                              output_config=output)
 
   # Computes statistics over data for visualization and example validation.
@@ -125,7 +125,7 @@ def create_pipeline(pipeline_name: Text,
 
   # Performs anomaly detection based on statistics and data schema.
   examplevalidator = ExampleValidator(
-      statistics=statisticsgen.outputs.statistics, 
+      statistics=statisticsgen.outputs.statistics,
       schema=import_schema.outputs.result)
 
   # Performs transformations and feature engineering in training and serving.
@@ -144,7 +144,7 @@ def create_pipeline(pipeline_name: Text,
     tuner = Tuner(
         module_file=TRAIN_MODULE_FILE,
         examples=transform.outputs.transformed_examples,
-        transform_graph=transform.outputs.transform_graph,        
+        transform_graph=transform.outputs.transform_graph,
         train_args={'num_steps': train_steps},
         eval_args={'num_steps': eval_steps},
         tune_args=tuner_pb2.TuneArgs(
@@ -154,7 +154,7 @@ def create_pipeline(pipeline_name: Text,
             # Configures Cloud AI Platform-specific configs. For details, see
             # https://cloud.google.com/ai-platform/training/docs/reference/rest/v1/projects.jobs#traininginput.
             ai_platform_trainer_executor.TRAINING_ARGS_KEY: ai_platform_training_args
-        })  
+        })
 
   # Trains the model using a user provided trainer function.
   trainer = Trainer(
@@ -163,7 +163,7 @@ def create_pipeline(pipeline_name: Text,
       transformed_examples=transform.outputs.transformed_examples,
       schema=import_schema.outputs.result,
       transform_graph=transform.outputs.transform_graph,
-      hyperparameters=(tuner.outputs.best_hyperparameters if enable_tuning else None),      
+      hyperparameters=(tuner.outputs.best_hyperparameters if enable_tuning else None),
       train_args={'num_steps': train_steps},
       eval_args={'num_steps': eval_steps},
       custom_config={'ai_platform_training_args': ai_platform_training_args})
@@ -198,7 +198,7 @@ def create_pipeline(pipeline_name: Text,
         tfma.SlicingSpec(feature_keys=['Wilderness_Area'])
     ]
   )
-  
+
   evaluator = Evaluator(
       examples=examplegen.outputs.examples,
       model=trainer.outputs.model,
@@ -206,24 +206,24 @@ def create_pipeline(pipeline_name: Text,
       eval_config=eval_config
   )
 
-  # Validate model can be loaded and queried in sand-boxed environment 
+  # Validate model can be loaded and queried in sand-boxed environment
   # mirroring production.
   serving_config = infra_validator_pb2.ServingSpec(
       tensorflow_serving=infra_validator_pb2.TensorFlowServing(
           tags=['latest']),
       kubernetes=infra_validator_pb2.KubernetesConfig(),
   )
-  
+
   validation_config = infra_validator_pb2.ValidationSpec(
       max_loading_time_seconds=60,
       num_tries=3,
   )
-  
+
   request_config = infra_validator_pb2.RequestSpec(
       tensorflow_serving=infra_validator_pb2.TensorFlowServingRequestSpec(),
       num_examples=3,
   )
-    
+
   infravalidator = InfraValidator(
       model=trainer.outputs.model,
       examples=examplegen.outputs.examples,
@@ -231,27 +231,27 @@ def create_pipeline(pipeline_name: Text,
       validation_spec=validation_config,
       request_spec=request_config,
   )
-  
+
   # Checks whether the model passed the validation steps and pushes the model
   # to CAIP Prediction if checks are passed.
   pusher = Pusher(
-      custom_executor_spec=executor_spec.ExecutorClassSpec(ai_platform_pusher_executor.Executor),      
+      custom_executor_spec=executor_spec.ExecutorClassSpec(ai_platform_pusher_executor.Executor),
       model=trainer.outputs.model,
       model_blessing=evaluator.outputs.blessing,
       infra_blessing=infravalidator.outputs.blessing,
       custom_config={ai_platform_pusher_executor.SERVING_ARGS_KEY: ai_platform_serving_args})
 
   components=[
-      examplegen, 
+      examplegen,
       statisticsgen,
-      schemagen,      
+      schemagen,
       import_schema,
       examplevalidator,
       transform,
-      trainer, 
-      resolver, 
-      evaluator, 
-      infravalidator, 
+      trainer,
+      resolver,
+      evaluator,
+      infravalidator,
       pusher
   ]
 
@@ -266,5 +266,3 @@ def create_pipeline(pipeline_name: Text,
       enable_cache=enable_cache,
       beam_pipeline_args=beam_pipeline_args
   )
-
-

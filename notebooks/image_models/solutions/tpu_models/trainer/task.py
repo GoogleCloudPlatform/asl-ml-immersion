@@ -46,14 +46,14 @@ def _parse_arguments(argv):
 def main():
     """Parses command line arguments and kicks off model training."""
     args = _parse_arguments(sys.argv[1:])[0]
-    
+
     # TODO: define a TPU strategy
     resolver = tf.distribute.cluster_resolver.TPUClusterResolver(
         tpu=args.tpu_address)
     tf.config.experimental_connect_to_cluster(resolver)
     tf.tpu.experimental.initialize_tpu_system(resolver)
     strategy = tf.distribute.experimental.TPUStrategy(resolver)
-    
+
     with strategy.scope():
         train_data = util.load_dataset(args.train_path)
         eval_data = util.load_dataset(args.eval_path, training=False)

@@ -163,4 +163,3 @@ def train_and_evaluate(args):
     )
 
     tf.estimator.train_and_evaluate(estimator, train_spec, eval_spec)
-

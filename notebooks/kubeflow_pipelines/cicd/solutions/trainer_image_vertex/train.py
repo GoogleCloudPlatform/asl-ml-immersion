@@ -50,7 +50,7 @@ def train_evaluate(training_dataset_path, validation_dataset_path, alpha, max_it
     categorical_features = ['Wilderness_Area', 'Soil_Type']
 
     preprocessor = ColumnTransformer(transformers=[
-        ('num', StandardScaler(), numeric_features), 
+        ('num', StandardScaler(), numeric_features),
         ('cat', OneHotEncoder(), categorical_features)])
 
     pipeline = Pipeline([('preprocessor', preprocessor),
@@ -82,7 +82,7 @@ def train_evaluate(training_dataset_path, validation_dataset_path, alpha, max_it
         with open(MODEL_FILENAME, 'wb') as model_file:
             pickle.dump(pipeline, model_file)
         subprocess.check_call(['gsutil', 'cp', MODEL_FILENAME, AIP_MODEL_DIR],
-                              stderr=sys.stdout)     
+                              stderr=sys.stdout)
         print(f'Saved model in: {AIP_MODEL_DIR}')
 
 

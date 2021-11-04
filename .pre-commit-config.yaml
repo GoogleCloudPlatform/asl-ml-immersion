@@ -3,6 +3,10 @@
 #   pre-commit run --all-files
 # Update this file:
 #   pre-commit autoupdate
+ci:
+    autofix_prs: false  # as it would fail the Google CLA check
+    skip: [isort, black, black-jupyter, pyupgrade, pylint]  # temporary disable as expected to fail
+
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.0.1
@@ -19,24 +23,24 @@ repos:
     -   id: fix-byte-order-marker
     -   id: trailing-whitespace
     -   id: mixed-line-ending
-#-   repo: https://github.com/pre-commit/mirrors-isort
-#    rev: v5.9.3
-#    hooks:
-#    -   id: isort
-#        args: ["--profile", "black"]
-#-   repo: https://github.com/psf/black
-#    rev: 21.10b0
-#    hooks:
-#    -   id: black
-#        args: [-l 80]
-#    -   id: black-jupyter
-#        args: [-l 80]
-#-   repo: https://github.com/asottile/pyupgrade
-#    rev: v2.29.0
-#    hooks:
-#    -   id: pyupgrade
-#        args: [--py36-plus]
-#-   repo: https://github.com/pycqa/pylint
-#    rev: v2.11.1
-#    hooks:
-#    -   id: pylint
+-   repo: https://github.com/pre-commit/mirrors-isort
+    rev: v5.9.3
+    hooks:
+    -   id: isort
+        args: ["--profile", "black"]
+-   repo: https://github.com/psf/black
+    rev: 21.10b0
+    hooks:
+    -   id: black
+        args: [-l 80]
+    -   id: black-jupyter
+        args: [-l 80]
+-   repo: https://github.com/asottile/pyupgrade
+    rev: v2.29.0
+    hooks:
+    -   id: pyupgrade
+        args: [--py36-plus]
+-   repo: https://github.com/pycqa/pylint
+    rev: v2.11.1
+    hooks:
+    -   id: pylint

@@ -51,10 +51,10 @@ repos:
 #    hooks:
 #    -   id: black-nb
 #        args: [-l 80]
--   repo: https://github.com/s-weigand/flake8-nb
-    rev: v0.3.1
-    hooks:
-    -   id: flake8-nb
+#-   repo: https://github.com/s-weigand/flake8-nb
+#    rev: v0.3.1
+#    hooks:
+#    -   id: flake8-nb
 -   repo: https://github.com/pycqa/pylint
     rev: v2.11.1
     hooks:

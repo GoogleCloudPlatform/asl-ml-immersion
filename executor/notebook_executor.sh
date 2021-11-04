@@ -1,7 +1,7 @@
 TF_VERSION=2-6
 LOCATION=us-central1
 MASTER_TYPE=n1-standard-4
-TIMESTAMP=$(date +%Y-%m-%dT%H%M%S)
+TIMESTAMP=$(date +%Y%m%dT%H%M%S)
 STAGING_BUCKET_NAME=asl_cloudbuild_$TIMESTAMP
 CONTAINER_IMAGE_URI=gcr.io/deeplearning-platform-release/tf2-cpu.$TF_VERSION
 EXECUTION_ID=execution_$TIMESTAMP

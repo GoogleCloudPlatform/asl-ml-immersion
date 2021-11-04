@@ -4,8 +4,8 @@
 # Update this file:
 #   pre-commit autoupdate
 ci:
--   autofix_prs: false  # as it would fail the Google CLA check
--   skip: [isort, black, pyupgrade, pylint]  # temporary disable as expected to fail
+    autofix_prs: false  # as it would fail the Google CLA check
+    skip: [isort, black, pyupgrade, pylint]  # temporary disable as expected to fail
 
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks

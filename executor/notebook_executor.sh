@@ -4,13 +4,18 @@ MASTER_TYPE=n1-standard-4
 TIMESTAMP=$(date +%Y-%m-%dt%H%M%S)
 STAGING_BUCKET_NAME=asl_cloudbuild_$TIMESTAMP
 CONTAINER_IMAGE_URI=gcr.io/deeplearning-platform-release/tf2-cpu.$TF_VERSION
+
+#BEGIN: there should not be required for GitHub Triggered build
 GIT_ORG=https://github.com/GoogleCloudPlatform
 GIT_REPO_NAME=asl-ml-immersion
-NOTEBOOK_TEST_ALLOWLIST="$GIT_REPO_NAME/notebooks/introduction_to_tensorflow/solutions/1_core_tensorflow.ipynb
-$GIT_REPO_NAME/notebooks/introduction_to_tensorflow/solutions/4_keras_functional_api.ipynb
-"
-
 git clone $GIT_ORG/$GIT_REPO_NAME
+cd $GIT_REPO_NAME
+ls
+#END 
+
+NOTEBOOK_TEST_ALLOWLIST="notebooks/introduction_to_tensorflow/solutions/1_core_tensorflow.ipynb
+notebooks/image_models/solutions/1_mnist_linear.ipynb
+"
 
 gsutil mb -l $LOCATION gs://$STAGING_BUCKET_NAME
 

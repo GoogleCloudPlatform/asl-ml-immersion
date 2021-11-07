@@ -74,9 +74,9 @@ def generate_sampling_query(source_table_name, num_lots, lots):
 
     sampling_query_template = """
          SELECT *
-         FROM 
+         FROM
              `{{ source_table }}` AS cover
-         WHERE 
+         WHERE
          MOD(ABS(FARM_FINGERPRINT(TO_JSON_STRING(cover))), {{ num_lots }}) IN ({{ lots }})
          """
     query = Template(sampling_query_template).render(

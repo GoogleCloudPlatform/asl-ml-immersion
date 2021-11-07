@@ -7,13 +7,12 @@ import tensorflow as tf
 
 def unicode_to_ascii(s):
     """Transforms an ascii string into unicode."""
-    normalized = unicodedata.normalize('NFD', s)
-    return ''.join(c for c in normalized if unicodedata.category(c) != 'Mn')
+    normalized = unicodedata.normalize("NFD", s)
+    return "".join(c for c in normalized if unicodedata.category(c) != "Mn")
 
 
 def preprocess_sentence(w):
-    """Lowers, strips, and adds <start> and <end> tags to a sentence.
-    """
+    """Lowers, strips, and adds <start> and <end> tags to a sentence."""
     w = unicode_to_ascii(w.lower().strip())
 
     # creating a space between a word and the punctuation following it
@@ -29,7 +28,7 @@ def preprocess_sentence(w):
 
     # adding a start and an end token to the sentence
     # so that the model know when to start and stop predicting.
-    w = '<start> ' + w + ' <end>'
+    w = "<start> " + w + " <end>"
     return w
 
 
@@ -46,14 +45,14 @@ def tokenize(lang, lang_tokenizer=None):
     lang_tokenizer -- keras_preprocessing.text.Tokenizer
     """
     if lang_tokenizer is None:
-        lang_tokenizer = tf.keras.preprocessing.text.Tokenizer(
-          filters='')
+        lang_tokenizer = tf.keras.preprocessing.text.Tokenizer(filters="")
         lang_tokenizer.fit_on_texts(lang)
 
     tensor = lang_tokenizer.texts_to_sequences(lang)
 
     tensor = tf.keras.preprocessing.sequence.pad_sequences(
-        tensor, padding='post')
+        tensor, padding="post"
+    )
 
     return tensor, lang_tokenizer
 
@@ -83,4 +82,4 @@ def int2word(tokenizer, int_sequence):
 
     Returns list of string tokens
     """
-    return [tokenizer.index_word[t] if t != 0 else '' for t in int_sequence]
+    return [tokenizer.index_word[t] if t != 0 else "" for t in int_sequence]

@@ -22,7 +22,7 @@ from config import (
 
 def _get_serve_tf_examples_fn(model, tf_transform_output):
     model.tft_layer = tf_transform_output.transform_features_layer()
-    
+
     @tf.function
     def serve_tf_examples_fn(serialized_tf_examples):
         """Returns the output to be used in the serving signature."""
@@ -47,10 +47,10 @@ def _input_fn(file_pattern, data_accessor, tf_transform_output, batch_size=200):
 
 def _load_hub_module_layer():
     hub_module = KerasLayer(
-        HUB_URL, output_shape=[HUB_DIM], 
+        HUB_URL, output_shape=[HUB_DIM],
         input_shape=[], dtype=tf.string, trainable=True)
     return hub_module
-    
+
 
 def _build_keras_model():
     hub_module = _load_hub_module_layer()
@@ -74,12 +74,12 @@ def run_fn(fn_args):
 
     train_dataset = _input_fn(fn_args.train_files, fn_args.data_accessor,
                             tf_transform_output, TRAIN_BATCH_SIZE)
-    
+
     eval_dataset = _input_fn(fn_args.eval_files, fn_args.data_accessor,
                            tf_transform_output, EVAL_BATCH_SIZE)
 
     mirrored_strategy = tf.distribute.MirroredStrategy()
-    
+
     with mirrored_strategy.scope():
         model = _build_keras_model()
 

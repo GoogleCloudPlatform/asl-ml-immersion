@@ -4,11 +4,11 @@
 # file except in compliance with the License. You may obtain a copy of the License at
 
 # https://www.apache.org/licenses/LICENSE-2.0
-    
-# Unless required by applicable law or agreed to in writing, software 
+
+# Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS"
-# BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either 
-# express or implied. See the License for the specific language governing 
+# BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
 steps:
@@ -16,7 +16,7 @@ steps:
 - name: # TODO
   args: # TODO
   dir:  # TODO
-  
+
 
 # Compile the pipeline
 - name: 'gcr.io/$PROJECT_ID/kfp-cli-vertex'
@@ -33,14 +33,14 @@ steps:
   - 'TRAINING_FILE_PATH=gs://$PROJECT_ID-vertex/data/training/dataset.csv'
   - 'VALIDATION_FILE_PATH=gs://$PROJECT_ID-vertex/data/validation/dataset.csv'
   dir: pipeline_vertex
-  
+
 # Run the pipeline
 - name: 'gcr.io/$PROJECT_ID/kfp-cli-vertex'
   args:
   - '-c'
   - |
     python kfp-cli_vertex/run_pipeline.py  # TODO
-    
+
 # Push the images to Container Registry
 # TODO: List the images to be pushed to the project Docker registry
 images: # TODO

@@ -4,11 +4,11 @@
 # file except in compliance with the License. You may obtain a copy of the License at
 
 # https://www.apache.org/licenses/LICENSE-2.0
-    
-# Unless required by applicable law or agreed to in writing, software 
+
+# Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS"
-# BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either 
-# express or implied. See the License for the specific language governing 
+# BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 """Kubeflow Covertype Pipeline."""
 import os
@@ -68,7 +68,7 @@ def covertype_train(
     pipeline_root: str = PIPELINE_ROOT,
 ):
     staging_bucket = f'{pipeline_root}/staging'
-    
+
     tuning_op = tune_hyperparameters_component(
         project=PROJECT_ID,
         location=REGION,
@@ -79,10 +79,10 @@ def covertype_train(
         max_trial_count=max_trial_count,
         parallel_trial_count=parallel_trial_count,
     )
-    
+
     accuracy = tuning_op.outputs['best_accuracy']
-    
-    with dsl.Condition(accuracy >= accuracy_deployment_threshold, name="deploy_decision"):    
+
+    with dsl.Condition(accuracy >= accuracy_deployment_threshold, name="deploy_decision"):
         train_and_deploy_op = train_and_deploy_component(
             project=PROJECT_ID,
             location=REGION,
@@ -91,6 +91,6 @@ def covertype_train(
             training_file_path=training_file_path,
             validation_file_path=validation_file_path,
             staging_bucket=staging_bucket,
-            alpha=tuning_op.outputs['best_alpha'], 
-            max_iter=tuning_op.outputs['best_max_iter'],            
+            alpha=tuning_op.outputs['best_alpha'],
+            max_iter=tuning_op.outputs['best_max_iter'],
         )

@@ -12,8 +12,6 @@
 # permissions and limitations under the License.
 
 steps:
-- name: gcr.io/cloud-builders/git
-  args: ['fetch', '--unshallow']
 - name: 'gcr.io/cloud-builders/gcloud'
   id: execute notebooks
   entrypoint: /bin/sh
@@ -26,20 +24,7 @@ steps:
     TIMESTAMP=$$(date +%Y-%m-%dt%H%M%S)
     STAGING_BUCKET_NAME=asl_cloudbuild_$$TIMESTAMP
     CONTAINER_IMAGE_URI=gcr.io/deeplearning-platform-release/tf2-cpu.$$TF_VERSION
-    git branch -a
-    echo wer
-    echo $BRANCH_NAME
-    echo $_HEAD_BRANCH
-    echo $_BASE_BRANCH
-    echo qq
-    git diff --name-only  remotes/origin/$_HEAD_BRANCH $(git merge-base  remotes/origin/$_HEAD_BRANCH  remotes/origin/$_BASE_BRANCH)
-    echo a
-    git diff --name-only  remotes/origin/$_HEAD_BRANCH $(git merge-base  remotes/origin/$_HEAD_BRANCH  remotes/origin/$_BASE_BRANCH) | grep \\.ipynb$
-    echo e
-    git diff --name-only  remotes/origin/$_HEAD_BRANCH $(git merge-base  remotes/origin/$_HEAD_BRANCH  remotes/origin/$_BASE_BRANCH) | grep \\.ipynb$$
-    echo ee
     NOTEBOOK_TEST_ALLOWLIST=$$(git diff --name-only  remotes/origin/$_HEAD_BRANCH $(git merge-base  remotes/origin/$_HEAD_BRANCH  remotes/origin/$_BASE_BRANCH) | grep \\.ipynb$$)
-    echo $$NOTEBOOK_TEST_ALLOWLIST
     gsutil mb -l $$LOCATION gs://$$STAGING_BUCKET_NAME
     for NOTEBOOK in $$NOTEBOOK_TEST_ALLOWLIST ; do
         INPUT_NOTEBOOK_FILE=gs://$$STAGING_BUCKET_NAME/$$NOTEBOOK

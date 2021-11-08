@@ -12,8 +12,6 @@
 # permissions and limitations under the License.
 
 steps:
-- name: gcr.io/cloud-builders/git
-  args: ['fetch', '--unshallow']
 - name: 'gcr.io/cloud-builders/gcloud'
   id: execute notebooks
   entrypoint: /bin/sh
@@ -26,9 +24,9 @@ steps:
     TIMESTAMP=$$(date +%Y-%m-%dt%H%M%S)
     STAGING_BUCKET_NAME=asl_cloudbuild_$$TIMESTAMP
     CONTAINER_IMAGE_URI=gcr.io/deeplearning-platform-release/tf2-cpu.$$TF_VERSION
-    echo $$BRANCH_NAME
-    echo $$_HEAD_BRANCH
-    echo $$_BASE_BRANCH
+    echo $BRANCH_NAME
+    echo $_HEAD_BRANCH
+    echo $_BASE_BRANCH
     echo qq
     git rev-parse --abbrev-ref HEAD
     echo aa

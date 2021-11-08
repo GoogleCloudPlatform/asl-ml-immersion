@@ -12,6 +12,8 @@
 # permissions and limitations under the License.
 
 steps:
+- name: gcr.io/cloud-builders/git
+  args: ['fetch', '--unshallow']
 - name: 'gcr.io/cloud-builders/gcloud'
   id: execute notebooks
   entrypoint: /bin/sh

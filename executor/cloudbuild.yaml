@@ -28,15 +28,13 @@ steps:
     echo $_HEAD_BRANCH
     echo $_BASE_BRANCH
     echo qq
-    git rev-parse --abbrev-ref HEAD
-    echo aa
-    git diff --name-only master
+    git diff --name-only $_HEAD_BRANCH $(git merge-base $_HEAD_BRANCH $_BASE_BRANCH)
     echo a
-    git diff --name-only master | grep \\.ipynb$
+    git diff --name-only $_HEAD_BRANCH $(git merge-base $_HEAD_BRANCH $_BASE_BRANCH) | grep \\.ipynb$
     echo e
-    git diff --name-only master | grep \\.ipynb$$
+    git diff --name-only $_HEAD_BRANCH $(git merge-base $_HEAD_BRANCH $_BASE_BRANCH) | grep \\.ipynb$$
     echo ee
-    NOTEBOOK_TEST_ALLOWLIST=$$(git diff --name-only master | grep \\.ipynb$$)
+    NOTEBOOK_TEST_ALLOWLIST=$$(git diff --name-only $_HEAD_BRANCH $(git merge-base $_HEAD_BRANCH $_BASE_BRANCH) | grep \\.ipynb$$)
     echo $$NOTEBOOK_TEST_ALLOWLIST
     gsutil mb -l $$LOCATION gs://$$STAGING_BUCKET_NAME
     for NOTEBOOK in $$NOTEBOOK_TEST_ALLOWLIST ; do

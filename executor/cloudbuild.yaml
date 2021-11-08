@@ -24,7 +24,12 @@ steps:
     TIMESTAMP=$$(date +%Y-%m-%dt%H%M%S)
     STAGING_BUCKET_NAME=asl_cloudbuild_$$TIMESTAMP
     CONTAINER_IMAGE_URI=gcr.io/deeplearning-platform-release/tf2-cpu.$$TF_VERSION
-    NOTEBOOK_TEST_ALLOWLIST=$$(git diff --name-only master | grep \\.ipynb$)
+    git diff --name-only master | grep \\.ipynb$
+    echo e
+    git diff --name-only master | grep \\.ipynb$$
+    echo ee
+    NOTEBOOK_TEST_ALLOWLIST=$$(git diff --name-only master | grep \\.ipynb$$)
+    echo $$NOTEBOOK_TEST_ALLOWLIST
     gsutil mb -l $$LOCATION gs://$$STAGING_BUCKET_NAME
     for NOTEBOOK in $$NOTEBOOK_TEST_ALLOWLIST ; do
         INPUT_NOTEBOOK_FILE=gs://$$STAGING_BUCKET_NAME/$$NOTEBOOK

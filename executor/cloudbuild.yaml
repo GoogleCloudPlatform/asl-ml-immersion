@@ -26,6 +26,10 @@ steps:
     TIMESTAMP=$$(date +%Y-%m-%dt%H%M%S)
     STAGING_BUCKET_NAME=asl_cloudbuild_$$TIMESTAMP
     CONTAINER_IMAGE_URI=gcr.io/deeplearning-platform-release/tf2-cpu.$$TF_VERSION
+    git rev-parse --abbrev-ref HEAD
+    echo aa
+    git diff --name-only master
+    echo a
     git diff --name-only master | grep \\.ipynb$
     echo e
     git diff --name-only master | grep \\.ipynb$$

@@ -24,8 +24,11 @@ steps:
     TIMESTAMP=$$(date +%Y-%m-%dt%H%M%S)
     STAGING_BUCKET_NAME=asl_cloudbuild_$$TIMESTAMP
     CONTAINER_IMAGE_URI=gcr.io/deeplearning-platform-release/tf2-cpu.$$TF_VERSION
+    NOTEBOOK_TEST_ALLOWLIST="notebooks/introduction_to_tensorflow/solutions/1_core_tensorflow.ipynb
+    notebooks/image_models/solutions/1_mnist_linear.ipynb
+    "
     gsutil mb -l $$LOCATION gs://$$STAGING_BUCKET_NAME
-    for NOTEBOOK in $$(ls notebooks/*/solutions/*.ipynb) ; do
+    for NOTEBOOK in $$NOTEBOOK_TEST_ALLOWLIST ; do
         INPUT_NOTEBOOK_FILE=gs://$$STAGING_BUCKET_NAME/$$NOTEBOOK
         OUTPUT_NOTEBOOK_FOLDER=gs://$$STAGING_BUCKET_NAME/$$NOTEBOOK/output
         TIMESTAMP=$$(date +%Y-%m-%dt%H%M%S)

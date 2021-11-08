@@ -26,6 +26,8 @@ steps:
     TIMESTAMP=$$(date +%Y-%m-%dt%H%M%S)
     STAGING_BUCKET_NAME=asl_cloudbuild_$$TIMESTAMP
     CONTAINER_IMAGE_URI=gcr.io/deeplearning-platform-release/tf2-cpu.$$TF_VERSION
+    git branch -a
+    echo wer
     echo $BRANCH_NAME
     echo $_HEAD_BRANCH
     echo $_BASE_BRANCH

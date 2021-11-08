@@ -32,13 +32,13 @@ steps:
     echo $_HEAD_BRANCH
     echo $_BASE_BRANCH
     echo qq
-    git diff --name-only $_HEAD_BRANCH $(git merge-base $_HEAD_BRANCH $_BASE_BRANCH)
+    git diff --name-only  remotes/origin/$_HEAD_BRANCH $(git merge-base  remotes/origin/$_HEAD_BRANCH  remotes/origin/$_BASE_BRANCH)
     echo a
-    git diff --name-only $_HEAD_BRANCH $(git merge-base $_HEAD_BRANCH $_BASE_BRANCH) | grep \\.ipynb$
+    git diff --name-only  remotes/origin/$_HEAD_BRANCH $(git merge-base  remotes/origin/$_HEAD_BRANCH  remotes/origin/$_BASE_BRANCH) | grep \\.ipynb$
     echo e
-    git diff --name-only $_HEAD_BRANCH $(git merge-base $_HEAD_BRANCH $_BASE_BRANCH) | grep \\.ipynb$$
+    git diff --name-only  remotes/origin/$_HEAD_BRANCH $(git merge-base  remotes/origin/$_HEAD_BRANCH  remotes/origin/$_BASE_BRANCH) | grep \\.ipynb$$
     echo ee
-    NOTEBOOK_TEST_ALLOWLIST=$$(git diff --name-only $_HEAD_BRANCH $(git merge-base $_HEAD_BRANCH $_BASE_BRANCH) | grep \\.ipynb$$)
+    NOTEBOOK_TEST_ALLOWLIST=$$(git diff --name-only  remotes/origin/$_HEAD_BRANCH $(git merge-base  remotes/origin/$_HEAD_BRANCH  remotes/origin/$_BASE_BRANCH) | grep \\.ipynb$$)
     echo $$NOTEBOOK_TEST_ALLOWLIST
     gsutil mb -l $$LOCATION gs://$$STAGING_BUCKET_NAME
     for NOTEBOOK in $$NOTEBOOK_TEST_ALLOWLIST ; do

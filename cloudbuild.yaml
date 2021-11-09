@@ -29,7 +29,7 @@ steps:
     for NOTEBOOK in $$NOTEBOOK_TEST_ALLOWLIST ; do
         OUTPUT_NOTEBOOK_FOLDER=gs://$$STAGING_BUCKET_NAME/$$NOTEBOOK/output
         OUTPUT_NOTEBOOK=$${NOTEBOOK}.output.ipynb
-        papermill NOTEBOOK OUTPUT_NOTEBOOK
+        papermill $$NOTEBOOK $$OUTPUT_NOTEBOOK
         gsutil cp $$OUTPUT_NOTEBOOK $$OUTPUT_NOTEBOOK_FOLDER/
         echo "output written to $${OUTPUT_NOTEBOOK_FOLDER}/$${OUTPUT_NOTEBOOK}"
     done

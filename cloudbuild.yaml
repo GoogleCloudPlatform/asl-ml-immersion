@@ -12,3 +12,5 @@
 # permissions and limitations under the License.
 
 steps:
+- name: 'ubuntu'
+  args: ['echo', 'hello world']

@@ -28,6 +28,7 @@ steps:
     NOTEBOOK_TEST_ALLOWLIST=$$(git diff --name-only  remotes/origin/$_HEAD_BRANCH $(git merge-base  remotes/origin/$_HEAD_BRANCH  remotes/origin/$_BASE_BRANCH) | grep \\.ipynb$$)
     gsutil mb -l $$LOCATION gs://$$STAGING_BUCKET_NAME
     for NOTEBOOK_PATH in $$NOTEBOOK_TEST_ALLOWLIST ; do
+        echo $$NOTEBOOK_PATH
         NOTEBOOK_DIR="$$(dirname "$${NOTEBOOK_PATH}")"
         NOTEBOOK_FILENAME="$$(basename "$${NOTEBOOK_PATH}")"
         cd $$NOTEBOOK_DIR
@@ -35,5 +36,5 @@ steps:
         papermill $$NOTEBOOK_FILENAME $$OUTPUT_NOTEBOOK_FILENAME
         gsutil cp $$OUTPUT_NOTEBOOK_FILENAME gs://$$STAGING_BUCKET_NAME/$$NOTEBOOK_DIR/$$OUTPUT_NOTEBOOK_FILENAME
         cd -
-        echo "output written to gs://$$STAGING_BUCKET_NAME/$${OUTPUT_NOTEBOOK}"
+        echo "output written to gs://$$STAGING_BUCKET_NAME/$$NOTEBOOK_DIR/$$OUTPUT_NOTEBOOK_FILENAME"
     done

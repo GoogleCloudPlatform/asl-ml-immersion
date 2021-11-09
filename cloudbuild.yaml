@@ -28,7 +28,7 @@ steps:
     CONTAINER_IMAGE_URI=gcr.io/deeplearning-platform-release/tf2-cpu.$$TF_VERSION
     NOTEBOOK_TEST_ALLOWLIST=$$(git diff --name-only  remotes/origin/$_HEAD_BRANCH $(git merge-base  remotes/origin/$_HEAD_BRANCH  remotes/origin/$_BASE_BRANCH) | grep \\.ipynb$$)
     gsutil mb -l $$LOCATION gs://$$STAGING_BUCKET_NAME
-    gsutil cp * gs://$$STAGING_BUCKET_NAME
+    gsutil cp -r * gs://$$STAGING_BUCKET_NAME
     for NOTEBOOK in $$NOTEBOOK_TEST_ALLOWLIST ; do
         INPUT_NOTEBOOK_FILE=gs://$$STAGING_BUCKET_NAME/$$NOTEBOOK
         OUTPUT_NOTEBOOK_FOLDER=gs://$$STAGING_BUCKET_NAME/$$NOTEBOOK/output

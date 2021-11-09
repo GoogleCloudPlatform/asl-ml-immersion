@@ -1,0 +1,55 @@
+# Copyright 2021 Google LLC
+
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+# file except in compliance with the License. You may obtain a copy of the License at
+
+# https://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS"
+# BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+steps:
+- name: gcr.io/cloud-builders/git
+  args: ['fetch', '--unshallow']
+- name: 'gcr.io/cloud-builders/gcloud'
+  id: execute notebooks
+  entrypoint: /bin/sh
+  args:
+  - '-c'
+  - |
+    TF_VERSION=2-6
+    LOCATION=us-central1
+    MASTER_TYPE=n1-standard-4
+    TIMESTAMP=$$(date +%Y-%m-%dt%H%M%S)
+    STAGING_BUCKET_NAME=asl_cloudbuild_$$TIMESTAMP
+    CONTAINER_IMAGE_URI=gcr.io/deeplearning-platform-release/tf2-cpu.$$TF_VERSION
+    NOTEBOOK_TEST_ALLOWLIST=$$(git diff --name-only  remotes/origin/$_HEAD_BRANCH $(git merge-base  remotes/origin/$_HEAD_BRANCH  remotes/origin/$_BASE_BRANCH) | grep \\.ipynb$$)
+    gsutil mb -l $$LOCATION gs://$$STAGING_BUCKET_NAME
+    gsutil cp * gs://$$STAGING_BUCKET_NAME
+    for NOTEBOOK in $$NOTEBOOK_TEST_ALLOWLIST ; do
+        INPUT_NOTEBOOK_FILE=gs://$$STAGING_BUCKET_NAME/$$NOTEBOOK
+        OUTPUT_NOTEBOOK_FOLDER=gs://$$STAGING_BUCKET_NAME/$$NOTEBOOK/output
+        TIMESTAMP=$$(date +%Y-%m-%dt%H%M%S)
+        EXECUTION_ID=execution_$$TIMESTAMP
+        echo > request.json "{
+          \"executionTemplate\": {
+              \"masterType\": \"$$MASTER_TYPE\",
+              \"inputNotebookFile\": \"$$INPUT_NOTEBOOK_FILE\",
+              \"containerImageUri\": \"$$CONTAINER_IMAGE_URI\",
+              \"outputNotebookFolder\": \"$$OUTPUT_NOTEBOOK_FOLDER\",
+          },
+        }"
+        PROJECT_ID=$$(gcloud config get-value project)
+        PROJECT_NUMBER=$$(gcloud projects list --filter="name=$$PROJECT_ID" --format="value(PROJECT_NUMBER)")
+        LOCATION=$$LOCATION
+        PARENT=projects/$$PROJECT_NUMBER/locations/$$LOCATION
+        curl -X POST \
+        -H "Authorization: Bearer "$$(gcloud auth application-default print-access-token) \
+        -H "Content-Type: application/json; charset=utf-8" \
+        -d @request.json \
+        "https://notebooks.googleapis.com/v1/$$PARENT/executions?executionId=$$EXECUTION_ID"
+    done
+    echo "Please review https://console.cloud.google.com/vertex-ai/workbench/list/executions?project=$PROJECT_ID for any unexpected notebook run failures -- note that the runs can take time."

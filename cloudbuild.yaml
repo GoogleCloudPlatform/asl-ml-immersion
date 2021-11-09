@@ -16,7 +16,7 @@ steps:
   id: git deep fetch to identify changed files
   args: ['fetch', '--unshallow']
 
-- name: 'gcr.io/deeplearning-platform-release/tf-cpu.2-6'
+- name: gcr.io/deeplearning-platform-release/tf-cpu.2-6
   id: execute notebooks
   entrypoint: /bin/sh
   args:

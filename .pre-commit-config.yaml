@@ -6,7 +6,6 @@
 ci:
     autofix_prs: false  # as it would fail the Google CLA check
     autoupdate_schedule: quarterly
-    autoupdate_commit_msg: '[pre-commit.ci] pre-commit autoupdate\nNote to Googlers: if you want to avoid the CLA check failing, then abandon this PR, run `pre-commit autoupdate` locally and push, then recreate the PR. This only happens once a quarter as pre-commit.ci attempts to autoupdate.'
     skip: [isort, black, black-jupyter, pyupgrade, pylint]  # temporary disable as expected to fail
 
 repos:

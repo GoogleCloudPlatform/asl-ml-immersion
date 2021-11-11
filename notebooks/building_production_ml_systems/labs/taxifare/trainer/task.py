@@ -1,3 +1,5 @@
+"""Argument definitions for model training code in `trainer.model`."""
+
 import argparse
 
 from trainer import model

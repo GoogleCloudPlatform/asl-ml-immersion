@@ -27,9 +27,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # create Pub/Sub notification topic
-    logging.basicConfig(
-        format="%(levelname)s: %(message)s", level=logging.INFO
-    )
+    logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.INFO)
     publisher = pubsub.PublisherClient()
     topic_name = publisher.topic_path(args.project, args.topic)
     try:

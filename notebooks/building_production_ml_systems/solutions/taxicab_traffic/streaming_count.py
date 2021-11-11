@@ -37,9 +37,7 @@ def run(argv=None):
     parser.add_argument(
         "--project", help=("Google Cloud Project ID"), required=True
     )
-    parser.add_argument(
-        "--region", help=("Google Cloud region"), required=True
-    )
+    parser.add_argument("--region", help=("Google Cloud region"), required=True)
     parser.add_argument(
         "--input_topic",
         help=("Google Cloud PubSub topic name "),

@@ -199,7 +199,7 @@ def train_and_evaluate(hparams):
     train_data_path = hparams["train_data_path"]
 
     timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-    savedmodel_dir = os.path.join(output_dir, "export/savedmodel")
+    savedmodel_dir = os.path.join(output_dir, "savedmodel")
     model_export_path = os.path.join(savedmodel_dir, timestamp)
     checkpoint_path = os.path.join(output_dir, "checkpoints")
     tensorboard_path = os.path.join(output_dir, "tensorboard")
@@ -218,7 +218,7 @@ def train_and_evaluate(hparams):
     checkpoint_cb = callbacks.ModelCheckpoint(
         checkpoint_path, save_weights_only=True, verbose=1
     )
-    tensorboard_cb = callbacks.TensorBoard(tensorboard_path)
+    tensorboard_cb = callbacks.TensorBoard(tensorboard_path, histogram_freq=1)
 
     history = model.fit(
         trainds,

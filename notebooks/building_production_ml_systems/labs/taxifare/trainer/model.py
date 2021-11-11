@@ -22,6 +22,8 @@ CSV_COLUMNS = [
     "passenger_count",
     "key",
 ]
+
+# inputs are all float except for pickup_datetime which is a string
 STRING_COLS = ["pickup_datetime"]
 LABEL_COLUMN = "fare_amount"
 DEFAULTS = [[0.0], ["na"], [0.0], [0.0], [0.0], [0.0], [0.0], ["na"]]
@@ -42,6 +44,7 @@ def load_dataset(pattern, batch_size, num_repeat):
         column_names=CSV_COLUMNS,
         column_defaults=DEFAULTS,
         num_epochs=num_repeat,
+        shuffle_buffer_size=1000000,
     )
     return dataset.map(features_and_labels)
 

@@ -92,16 +92,16 @@ def transform(inputs, NUMERIC_COLS, STRING_COLS, nbuckets):
         colname: fc.numeric_column(colname) for colname in NUMERIC_COLS
     }
 
-    # Scaling longitude from range [-70, -78] to [0, 1]
+    # Scaling longitude from range [-74.05, -73.85] to [0, 1]
     for lon_col in ["pickup_longitude", "dropoff_longitude"]:
         transformed[lon_col] = layers.Lambda(
-            lambda x: (x + 78) / 8.0, name=f"scale_{lon_col}"
+            lambda x: (x - -74.05) / (-73.85 - -74.05), name=f"scale_{lon_col}"
         )(inputs[lon_col])
 
-    # Scaling latitude from range [37, 45] to [0, 1]
+    # Scaling latitude from range [40.65, 40.80] to [0, 1]
     for lat_col in ["pickup_latitude", "dropoff_latitude"]:
         transformed[lat_col] = layers.Lambda(
-            lambda x: (x - 37) / 8.0, name=f"scale_{lat_col}"
+            lambda x: (x - 40.65) / (40.80 - 40.65), name=f"scale_{lat_col}"
         )(inputs[lat_col])
 
     # Adding Euclidean dist (no need to be accurate: NN will calibrate it)

@@ -199,7 +199,7 @@ def train_and_evaluate(hparams):
     train_data_path = hparams["train_data_path"]
 
     timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-    savedmodel_dir = os.path.join(output_dir, "savedmodel")
+    savedmodel_dir = os.path.join(output_dir, "export/savedmodel")
     model_export_path = os.path.join(savedmodel_dir, timestamp)
     checkpoint_path = os.path.join(output_dir, "checkpoints")
     tensorboard_path = os.path.join(output_dir, "tensorboard")

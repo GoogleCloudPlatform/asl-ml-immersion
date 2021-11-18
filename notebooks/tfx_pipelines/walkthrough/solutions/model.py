@@ -82,7 +82,7 @@ def _input_fn(file_pattern: List[Text],
       dataset_options.TensorFlowDatasetOptions(
           batch_size=batch_size, label_key=features.transformed_name(features.LABEL_KEY)),
       tf_transform_output.transformed_metadata.schema)
-    
+
   return dataset
 
 
@@ -96,12 +96,12 @@ def _get_hyperparameters() -> kerastuner.HyperParameters:
         hp.Int('n_units_1', min_value=8, max_value=128, step=8, default=8)
   with hp.conditional_scope('n_layers', 2):
         hp.Int('n_units_1', min_value=8, max_value=128, step=8, default=8)
-        hp.Int('n_units_2', min_value=8, max_value=128, step=8, default=8)        
+        hp.Int('n_units_2', min_value=8, max_value=128, step=8, default=8)
 
   return hp
 
 
-def _build_keras_model(hparams: kerastuner.HyperParameters, 
+def _build_keras_model(hparams: kerastuner.HyperParameters,
                        tf_transform_output: tft.TFTransformOutput) -> tf.keras.Model:
   """Creates a Keras WideDeep Classifier model.
   Args:
@@ -112,20 +112,20 @@ def _build_keras_model(hparams: kerastuner.HyperParameters,
   """
   deep_columns = [
       tf.feature_column.numeric_column(
-          key=features.transformed_name(key), 
+          key=features.transformed_name(key),
           shape=())
       for key in features.NUMERIC_FEATURE_KEYS
   ]
-    
+
   input_layers = {
       column.key: tf.keras.layers.Input(name=column.key, shape=(), dtype=tf.float32)
       for column in deep_columns
-  }    
+  }
 
   categorical_columns = [
       tf.feature_column.categorical_column_with_identity(
-          key=features.transformed_name(key), 
-          num_buckets=tf_transform_output.num_buckets_for_transformed_feature(features.transformed_name(key)), 
+          key=features.transformed_name(key),
+          num_buckets=tf_transform_output.num_buckets_for_transformed_feature(features.transformed_name(key)),
           default_value=0)
       for key in features.CATEGORICAL_FEATURE_KEYS
   ]
@@ -134,7 +134,7 @@ def _build_keras_model(hparams: kerastuner.HyperParameters,
       tf.feature_column.indicator_column(categorical_column)
       for categorical_column in categorical_columns
   ]
-    
+
   input_layers.update({
       column.categorical_column.key: tf.keras.layers.Input(name=column.categorical_column.key, shape=(), dtype=tf.int32)
       for column in wide_columns
@@ -157,7 +157,7 @@ def _build_keras_model(hparams: kerastuner.HyperParameters,
       metrics=[tf.keras.metrics.SparseCategoricalAccuracy()])
   model.summary(print_fn=absl.logging.info)
 
-  return model    
+  return model
 
 
 # TFX Tuner will call this function.
@@ -180,12 +180,12 @@ def tuner_fn(fn_args: TrainerFnArgs) -> TunerFnResult:
                     args depend on the above tuner's implementation.
   """
   transform_graph = tft.TFTransformOutput(fn_args.transform_graph_path)
-  
+
   # Construct a build_keras_model_fn that just takes hyperparams from get_hyperparameters as input.
   build_keras_model_fn = functools.partial(
-      _build_keras_model, tf_transform_output=transform_graph)  
+      _build_keras_model, tf_transform_output=transform_graph)
 
-  # BayesianOptimization is a subclass of kerastuner.Tuner which inherits from BaseTuner.    
+  # BayesianOptimization is a subclass of kerastuner.Tuner which inherits from BaseTuner.
   tuner = kerastuner.BayesianOptimization(
       build_keras_model_fn,
       max_trials=10,
@@ -196,7 +196,7 @@ def tuner_fn(fn_args: TrainerFnArgs) -> TunerFnResult:
       objective=kerastuner.Objective('val_sparse_categorical_accuracy', 'max'),
       directory=fn_args.working_dir,
       project_name='covertype_tuning')
-  
+
   train_dataset = _input_fn(
       fn_args.train_files,
       fn_args.data_accessor,
@@ -229,15 +229,15 @@ def run_fn(fn_args: TrainerFnArgs):
   tf_transform_output = tft.TFTransformOutput(fn_args.transform_output)
 
   train_dataset = _input_fn(
-      fn_args.train_files, 
-      fn_args.data_accessor, 
-      tf_transform_output, 
+      fn_args.train_files,
+      fn_args.data_accessor,
+      tf_transform_output,
       TRAIN_BATCH_SIZE)
 
   eval_dataset = _input_fn(
-      fn_args.eval_files, 
+      fn_args.eval_files,
       fn_args.data_accessor,
-      tf_transform_output, 
+      tf_transform_output,
       EVAL_BATCH_SIZE)
 
   if fn_args.hyperparameters:
@@ -248,7 +248,7 @@ def run_fn(fn_args: TrainerFnArgs):
     # _build_keras_model.
     hparams = _get_hyperparameters()
   absl.logging.info('HyperParameters for training: %s' % hparams.get_config())
-  
+
   # Distribute training over multiple replicas on the same machine.
   mirrored_strategy = tf.distribute.MirroredStrategy()
   with mirrored_strategy.scope():
@@ -266,7 +266,7 @@ def run_fn(fn_args: TrainerFnArgs):
       validation_data=eval_dataset,
       validation_steps=fn_args.eval_steps,
       callbacks=[tensorboard_callback])
-    
+
   signatures = {
       'serving_default':
           _get_serve_tf_examples_fn(model,
@@ -276,9 +276,5 @@ def run_fn(fn_args: TrainerFnArgs):
                                             dtype=tf.string,
                                             name='examples')),
   }
-  
-  model.save(fn_args.serving_model_dir, save_format='tf', signatures=signatures)
-    
 
-  
-  
+  model.save(fn_args.serving_model_dir, save_format='tf', signatures=signatures)

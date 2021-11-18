@@ -4,7 +4,7 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'gcr.io/$PROJECT_ID/$_TRAINER_IMAGE_NAME:$TAG_NAME', '.']
   dir: $_PIPELINE_FOLDER/trainer_image
-  
+
 # TODO: Build the base image for lightweight components
 - name: # TODO
   args: # TODO
@@ -19,16 +19,16 @@ steps:
   - |
     dsl-compile --py $_PIPELINE_DSL --output $_PIPELINE_PACKAGE
   env:
-  - 'BASE_IMAGE= # TODO
-  - 'TRAINER_IMAGE= # TODO
-  - 'RUNTIME_VERSION= # TODO
-  - 'PYTHON_VERSION= # TODO
-  - 'COMPONENT_URL_SEARCH_PREFIX= # TODO
+  - 'BASE_IMAGE='  # TODO
+  - 'TRAINER_IMAGE='  # TODO
+  - 'RUNTIME_VERSION='  # TODO
+  - 'PYTHON_VERSION='  # TODO
+  - 'COMPONENT_URL_SEARCH_PREFIX='  # TODO
   - 'USE_KFP_SA=$_USE_KFP_SA'
   dir: $_PIPELINE_FOLDER/pipeline
-  
+
 # Upload the pipeline
-# TODO: Use the kfp-cli Cloud Builder and write the command to upload the ktf pipeline 
+# TODO: Use the kfp-cli Cloud Builder and write the command to upload the ktf pipeline
 - name: # TODO
   args:
   - '-c'

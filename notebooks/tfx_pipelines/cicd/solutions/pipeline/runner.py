@@ -53,9 +53,9 @@ if __name__ == '__main__':
       '--temp_location=' + beam_tmp_folder,
       '--region=' + Config.GCP_REGION,
   ]
-    
-  
-  # Set the default values for the pipeline runtime parameters   
+
+
+  # Set the default values for the pipeline runtime parameters
   data_root_uri = data_types.RuntimeParameter(
       name='data-root-uri',
       default=Config.DATA_ROOT_URI,
@@ -67,7 +67,7 @@ if __name__ == '__main__':
       default=5000,
       ptype=int
   )
-    
+
   eval_steps = data_types.RuntimeParameter(
       name='eval-steps',
       default=500,
@@ -75,10 +75,10 @@ if __name__ == '__main__':
   )
 
   pipeline_root = '{}/{}/{}'.format(
-      Config.ARTIFACT_STORE_URI, 
+      Config.ARTIFACT_STORE_URI,
       Config.PIPELINE_NAME,
       kfp.dsl.RUN_ID_PLACEHOLDER)
-    
+
   # Set KubeflowDagRunner settings.
   metadata_config = kubeflow_dag_runner.get_default_kubeflow_metadata_config()
 
@@ -96,13 +96,7 @@ if __name__ == '__main__':
         data_root_uri=data_root_uri,
         train_steps=train_steps,
         eval_steps=eval_steps,
-        enable_tuning=strtobool(Config.ENABLE_TUNING),          
+        enable_tuning=strtobool(Config.ENABLE_TUNING),
         ai_platform_training_args=ai_platform_training_args,
         ai_platform_serving_args=ai_platform_serving_args,
         beam_pipeline_args=beam_pipeline_args))
-     
-        
-
-
-
-

@@ -74,9 +74,9 @@ def generate_sampling_query(source_table_name, num_lots, lots):
 
   sampling_query_template = """
        SELECT *
-       FROM 
+       FROM
            `{{ source_table }}` AS cover
-       WHERE 
+       WHERE
        MOD(ABS(FARM_FINGERPRINT(TO_JSON_STRING(cover))), {{ num_lots }}) IN ({{ lots }})
        """
   query = Template(sampling_query_template).render(
@@ -215,10 +215,8 @@ def covertype_train(project_id,
         runtime_version=RUNTIME_VERSION,
         python_version=PYTHON_VERSION,
         replace_existing_version=replace_existing_version)
-  
+
   # Configure the pipeline to run using the service account defined
   # in the user-gcp-sa k8s secret
   if USE_KFP_SA == 'True':
     kfp.dsl.get_pipeline_conf().add_op_transformer(use_gcp_secret('user-gcp-sa'))
-
-

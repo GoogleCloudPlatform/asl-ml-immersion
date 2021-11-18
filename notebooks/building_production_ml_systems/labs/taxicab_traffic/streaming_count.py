@@ -73,7 +73,7 @@ def run(argv=None):
         p
         | "read_from_pubsub"
         >> beam.io.ReadFromPubSub(topic=TOPIC).with_output_types(bytes)
-        | 'window' >> # TODO: Your code goes here.
+        | "window" >> None  # TODO: Your code goes here.
         | "count" >> beam.CombineGlobally(CountFn()).without_defaults()
         | "format_for_bq" >> beam.Map(to_bq_format)
         | "write_to_bq"

@@ -7,7 +7,7 @@
     * [Intro to TF and Keras](./introduction_to_tensorflow)
     * [Building Production ML Systems](./building_production_ml_systems)
 
-    
+
 * Module Feature Engineering and End-to-End Recap
     * [Feature Engineering](./feature_engineering)
     * [End-to-End Guided Project](./end-to-end-structured)
@@ -18,8 +18,8 @@
     * [Text Models](./text_classification)
     * [Time Series](./time_series_prediction)
     * [Recommendation Systems](./recommendation_systems)
-    
-    
+
+
 * Module Machine Learning Pipelines and MLOps
     * [Docker and Kubernetes](./docker_and_kubernetes)
     * [Kubeflow Pipelines](./kubeflow_pipelines)

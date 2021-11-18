@@ -22,9 +22,8 @@ class CountFn(beam.CombineFn):
     def create_accumulator(self):
         return 0
 
-    def add_input(
-        self, count, input
-    ):  # pylint: disable=redefined-builtin,unused-argument
+    def add_input(self, count, element):
+        del element
         return count + 1
 
     def merge_accumulators(self, accumulators):

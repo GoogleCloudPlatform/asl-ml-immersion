@@ -13,7 +13,7 @@ from apache_beam.options.pipeline_options import (
     SetupOptions,
     StandardOptions,
 )
-from apache_beam.transforms import window
+from apache_beam.transforms import window  # pylint: disable=unused-import
 
 
 class CountFn(beam.CombineFn):
@@ -22,7 +22,9 @@ class CountFn(beam.CombineFn):
     def create_accumulator(self):
         return 0
 
-    def add_input(self, count):
+    def add_input(
+        self, count, input
+    ):  # pylint: disable=redefined-builtin,unused-argument
         return count + 1
 
     def merge_accumulators(self, accumulators):

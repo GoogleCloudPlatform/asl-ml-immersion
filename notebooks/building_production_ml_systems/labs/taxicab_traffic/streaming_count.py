@@ -13,14 +13,16 @@ from apache_beam.options.pipeline_options import (
     SetupOptions,
     StandardOptions,
 )
-from apache_beam.transforms import window
+from apache_beam.transforms import window  # pylint: disable=unused-import
 
 
 class CountFn(beam.CombineFn):
+    """Counter function to accumulate statistics"""
+
     def create_accumulator(self):
         return 0
 
-    def add_input(self, count, input):
+    def add_input(self, count):
         return count + 1
 
     def merge_accumulators(self, accumulators):
@@ -37,9 +39,7 @@ def run(argv=None):
     parser.add_argument(
         "--project", help=("Google Cloud Project ID"), required=True
     )
-    parser.add_argument(
-        "--region", help=("Google Cloud region"), required=True
-    )
+    parser.add_argument("--region", help=("Google Cloud region"), required=True)
     parser.add_argument(
         "--input_topic",
         help=("Google Cloud PubSub topic name "),
@@ -56,9 +56,7 @@ def run(argv=None):
 
     p = beam.Pipeline(options=pipeline_options)
 
-    TOPIC = "projects/{}/topics/{}".format(
-        known_args.project, known_args.input_topic
-    )
+    topic = f"projects/{known_args.project}/topics/{known_args.input_topic}"
     # this table needs to exist
     table_spec = f"{known_args.project}:taxifare.traffic_realtime"
 
@@ -69,10 +67,10 @@ def run(argv=None):
             "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         }
 
-    pipeline = (  # noqa F841
+    pipeline = (  # noqa F841 pylint: disable=unused-variable
         p
         | "read_from_pubsub"
-        >> beam.io.ReadFromPubSub(topic=TOPIC).with_output_types(bytes)
+        >> beam.io.ReadFromPubSub(topic=topic).with_output_types(bytes)
         | "window" >> None  # TODO: Your code goes here.
         | "count" >> beam.CombineGlobally(CountFn()).without_defaults()
         | "format_for_bq" >> beam.Map(to_bq_format)
@@ -85,7 +83,7 @@ def run(argv=None):
         )
     )
 
-    result = p.run()  # noqa F841
+    result = p.run()  # noqa F841 pylint: disable=unused-variable
     # result.wait_until_finish() #only do this if running with DirectRunner
 
 

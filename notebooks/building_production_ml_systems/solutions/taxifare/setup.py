@@ -1,3 +1,5 @@
+"""Using `setuptools` to create a source distribution."""
+
 from setuptools import find_packages, setup
 
 setup(

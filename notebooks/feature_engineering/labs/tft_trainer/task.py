@@ -1,9 +1,8 @@
+"""Define input parameters and call train_and_evaluate"""
+
 import argparse
 import json
 import os
-import traceback
-
-import tensorflow as tf
 
 from . import model
 
@@ -70,7 +69,4 @@ if __name__ == "__main__":
     )
 
     # Run the training job:
-    try:
-        model.train_and_evaluate(arguments)
-    except:
-        traceback.print_exc()
+    model.train_and_evaluate(arguments)

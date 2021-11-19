@@ -1,7 +1,5 @@
-import datetime
-import os
+"""Train DNN regression model"""
 
-import numpy as np
 import tensorflow as tf
 
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.INFO)

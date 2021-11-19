@@ -28,9 +28,11 @@ repos:
   rev: 1.1.1
   hooks:
     - id: nbqa-black
+      args: [-l80]
     - id: nbqa-pyupgrade
       args: [--py36-plus]
     - id: nbqa-isort
+      args: [--profile=black]
 -   repo: https://github.com/PyCQA/isort
     rev: 5.10.1
     hooks:

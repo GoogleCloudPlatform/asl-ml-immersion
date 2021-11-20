@@ -32,7 +32,7 @@ repos:
     - id: nbqa-pyupgrade
       args: [--py36-plus]
     - id: nbqa-isort
-      args: [--profile=black]
+      args: [--profile=black -l80]
 -   repo: https://github.com/PyCQA/isort
     rev: 5.10.1
     hooks:

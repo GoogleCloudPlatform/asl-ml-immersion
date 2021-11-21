@@ -38,3 +38,5 @@ steps:
         cd -
         echo "output written to gs://$$STAGING_BUCKET_NAME/$$NOTEBOOK_DIR/$$OUTPUT_NOTEBOOK_FILENAME"
     done
+- name: 'ubuntu'
+  args: ['echo', 'hello world']

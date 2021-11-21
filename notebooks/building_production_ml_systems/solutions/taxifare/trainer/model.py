@@ -1,3 +1,5 @@
+"""Data prep, train and evaluate DNN model."""
+
 import datetime
 import logging
 import os
@@ -20,6 +22,9 @@ CSV_COLUMNS = [
     "passenger_count",
     "key",
 ]
+
+# inputs are all float except for pickup_datetime which is a string
+STRING_COLS = ["pickup_datetime"]
 LABEL_COLUMN = "fare_amount"
 DEFAULTS = [[0.0], ["na"], [0.0], [0.0], [0.0], [0.0], [0.0], ["na"]]
 DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
@@ -39,6 +44,7 @@ def load_dataset(pattern, batch_size, num_repeat):
         column_names=CSV_COLUMNS,
         column_defaults=DEFAULTS,
         num_epochs=num_repeat,
+        shuffle_buffer_size=1000000,
     )
     return dataset.map(features_and_labels)
 
@@ -83,13 +89,13 @@ def fare_thresh(x):
     return 60 * activations.relu(x)
 
 
-def transform(inputs, NUMERIC_COLS, STRING_COLS, nbuckets):
+def transform(inputs, numeric_cols, nbuckets):
     # Pass-through columns
     transformed = inputs.copy()
     del transformed["pickup_datetime"]
 
     feature_columns = {
-        colname: fc.numeric_column(colname) for colname in NUMERIC_COLS
+        colname: fc.numeric_column(colname) for colname in numeric_cols
     }
 
     # Scaling longitude from range [-70, -78] to [0, 1]
@@ -152,24 +158,21 @@ def rmse(y_true, y_pred):
     return tf.sqrt(tf.reduce_mean(tf.square(y_pred - y_true)))
 
 
-def build_dnn_model(nbuckets, nnsize, lr):
-    STRING_COLS = ["pickup_datetime"]
-    NUMERIC_COLS = set(CSV_COLUMNS) - {LABEL_COLUMN, "key"} - set(STRING_COLS)
+def build_dnn_model(nbuckets, nnsize, lr, string_cols):
+    numeric_cols = set(CSV_COLUMNS) - {LABEL_COLUMN, "key"} - set(string_cols)
     inputs = {
         colname: layers.Input(name=colname, shape=(), dtype="float32")
-        for colname in NUMERIC_COLS
+        for colname in numeric_cols
     }
     inputs.update(
         {
             colname: layers.Input(name=colname, shape=(), dtype="string")
-            for colname in STRING_COLS
+            for colname in string_cols
         }
     )
 
     # transforms
-    transformed, feature_columns = transform(
-        inputs, NUMERIC_COLS, STRING_COLS, nbuckets=nbuckets
-    )
+    transformed, feature_columns = transform(inputs, numeric_cols, nbuckets)
     dnn_inputs = layers.DenseFeatures(feature_columns.values())(transformed)
 
     x = dnn_inputs
@@ -204,7 +207,7 @@ def train_and_evaluate(hparams):
     if tf.io.gfile.exists(output_dir):
         tf.io.gfile.rmtree(output_dir)
 
-    model = build_dnn_model(nbuckets, nnsize, lr)
+    model = build_dnn_model(nbuckets, nnsize, lr, STRING_COLS)
     logging.info(model.summary())
 
     trainds = create_train_dataset(train_data_path, batch_size)
@@ -215,7 +218,7 @@ def train_and_evaluate(hparams):
     checkpoint_cb = callbacks.ModelCheckpoint(
         checkpoint_path, save_weights_only=True, verbose=1
     )
-    tensorboard_cb = callbacks.TensorBoard(tensorboard_path)
+    tensorboard_cb = callbacks.TensorBoard(tensorboard_path, histogram_freq=1)
 
     history = model.fit(
         trainds,

@@ -1,20 +1,23 @@
-import tensorflow as tf
+"""MNIST model tests"""
 import unittest
 
-from . import util
-from . import model
+import tensorflow as tf
 
-BENCHMARK_ERROR = .12
+from . import model, util
+
+BENCHMARK_ERROR = 0.12
 BENCHMARK_ACCURACY = 1 - BENCHMARK_ERROR
 BATCH_SIZE = 100
 
 # Add or remove types below ['linear', 'dnn', 'dnn_dropout', 'cnn'].
-MODEL_TYPES = ['linear', 'dnn', 'dnn_dropout', 'cnn']
+MODEL_TYPES = ["linear", "dnn", "dnn_dropout", "cnn"]
 EPOCHS = 10
 STEPS = 100
 
 
 class TestInputFunction(unittest.TestCase):
+    """Test input function"""
+
     def create_shape_test(self, training):
         mnist = tf.keras.datasets.mnist.load_data()
         dataset = util.load_dataset(mnist, training, batch_size=BATCH_SIZE)
@@ -33,32 +36,34 @@ class TestInputFunction(unittest.TestCase):
 
 
 class TestModel(unittest.TestCase):
+    """Test model"""
+
     @classmethod
     def setUpClass(cls):
         cls.histories = {}
 
         for model_type in MODEL_TYPES:
-            print('\n*** Building model for', model_type, '***\n')
+            print("\n*** Building model for", model_type, "***\n")
             layers = model.get_layers(model_type)
             image_model = model.build_model(layers, None)
-            history = model.train_and_evaluate(
-                image_model, EPOCHS, STEPS, None)
+            history = model.train_and_evaluate(image_model, EPOCHS, STEPS, None)
             cls.histories[model_type] = history.history
 
     def test_beats_benchmark(self):
         for model_type in MODEL_TYPES:
             with self.subTest(model_type=model_type):
                 result = self.histories[model_type]
-                self.assertGreater(result['accuracy'][-1], BENCHMARK_ACCURACY)
+                self.assertGreater(result["accuracy"][-1], BENCHMARK_ACCURACY)
                 self.assertGreater(
-                    result['val_accuracy'][-1], BENCHMARK_ACCURACY)
+                    result["val_accuracy"][-1], BENCHMARK_ACCURACY
+                )
 
     def test_accuracy_is_improving(self):
         for model_type in MODEL_TYPES:
             with self.subTest(model_type=model_type):
                 history = self.histories[model_type]
-                accuracy = history['accuracy']
-                val_accuracy = history['val_accuracy']
+                accuracy = history["accuracy"]
+                val_accuracy = history["val_accuracy"]
                 self.assertLess(accuracy[0], accuracy[1])
                 self.assertLess(accuracy[1], accuracy[-1])
                 self.assertLess(val_accuracy[0], val_accuracy[1])
@@ -68,13 +73,13 @@ class TestModel(unittest.TestCase):
         for model_type in MODEL_TYPES:
             with self.subTest(model_type=model_type):
                 history = self.histories[model_type]
-                loss = history['loss']
-                val_loss = history['val_loss']
+                loss = history["loss"]
+                val_loss = history["val_loss"]
                 self.assertGreater(loss[0], loss[1])
                 self.assertGreater(loss[1], loss[-1])
                 self.assertGreater(val_loss[0], val_loss[1])
                 self.assertGreater(val_loss[1], val_loss[-1])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

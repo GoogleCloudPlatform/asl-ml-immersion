@@ -1,3 +1,4 @@
+"""MNIST model tests"""
 import unittest
 
 import tensorflow as tf
@@ -15,6 +16,8 @@ STEPS = 100
 
 
 class TestInputFunction(unittest.TestCase):
+    """Test input function"""
+
     def create_shape_test(self, training):
         mnist = tf.keras.datasets.mnist.load_data()
         dataset = util.load_dataset(mnist, training, batch_size=BATCH_SIZE)
@@ -33,6 +36,8 @@ class TestInputFunction(unittest.TestCase):
 
 
 class TestModel(unittest.TestCase):
+    """Test model"""
+
     @classmethod
     def setUpClass(cls):
         cls.histories = {}

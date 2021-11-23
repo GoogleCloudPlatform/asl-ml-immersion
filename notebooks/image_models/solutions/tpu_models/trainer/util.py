@@ -1,3 +1,5 @@
+"""TPU model helper functions"""
+
 import tensorflow as tf
 
 IMG_HEIGHT = 224

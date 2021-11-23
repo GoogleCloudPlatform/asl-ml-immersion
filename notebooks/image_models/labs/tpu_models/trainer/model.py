@@ -1,5 +1,6 @@
+"""TPU model builder and trainer"""
+
 import os
-import shutil
 
 import tensorflow as tf
 import tensorflow_hub as hub
@@ -14,6 +15,7 @@ DROPOUT = 0.2
 
 def build_model(output_dir, hub_handle):
     """Compiles keras model for image classification."""
+    del output_dir
     model = models.Sequential(
         [
             hub.KerasLayer(hub_handle, trainable=False),

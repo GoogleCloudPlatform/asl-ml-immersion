@@ -1,6 +1,6 @@
+"""TPU trainer command line interface"""
+
 import argparse
-import json
-import os
 import sys
 
 import tensorflow as tf
@@ -78,6 +78,8 @@ def main():
         eval_data,
         args.job_dir,
     )
+
+    return model_history
 
 
 if __name__ == "__main__":

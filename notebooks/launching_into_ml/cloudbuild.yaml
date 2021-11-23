@@ -1,0 +1,36 @@
+# Copyright 2021 Google LLC
+
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+# file except in compliance with the License. You may obtain a copy of the License at
+
+# https://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS"
+# BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+steps:
+- name: gcr.io/deeplearning-platform-release/tf-cpu.2-3
+  id: execute notebooks on TF2.3
+  entrypoint: /bin/sh
+  args:
+  - '-c'
+  - |
+    cd solutions
+    for nb in *.ipynb ; do
+        echo TF2.3 $$nb
+        papermill $$nb $${nb}.output.ipynb 2> $${nb}.stderr || (echo "FAIL:\n" ; cat $${nb}.stderr)
+    done
+- name: gcr.io/deeplearning-platform-release/tf-cpu.2-6
+  id: execute notebooks on TF2.6
+  entrypoint: /bin/sh
+  args:
+  - '-c'
+  - |
+    cd solutions
+    for nb in *.ipynb ; do
+        echo TF2.6 $$nb
+        papermill $$nb $${nb}.output.ipynb 2> $${nb}.stderr || (echo "FAIL:\n" ; cat $${nb}.stderr)
+    done

@@ -8,7 +8,7 @@ BATCH_SIZE = 32
 # 10 is a magic number tuned for local training of this dataset.
 SHUFFLE_BUFFER = 10 * BATCH_SIZE
 AUTOTUNE = tf.data.experimental.AUTOTUNE
-CLASS_NAMES = ['roses', 'sunflowers', 'tulips', 'dandelion', 'daisy']
+CLASS_NAMES = ["roses", "sunflowers", "tulips", "dandelion", "daisy"]
 
 VALIDATION_IMAGES = 370
 VALIDATION_STEPS = VALIDATION_IMAGES // BATCH_SIZE
@@ -50,18 +50,20 @@ def read_and_preprocess_with_augment(image_bytes, label):
 
 
 def load_dataset(csv_of_filenames, training=True):
-    dataset = tf.data.TextLineDataset(filenames=csv_of_filenames) \
-        .map(decode_csv).cache()
+    dataset = (
+        tf.data.TextLineDataset(filenames=csv_of_filenames)
+        .map(decode_csv)
+        .cache()
+    )
 
     if training:
-        dataset = dataset \
-            .map(read_and_preprocess_with_augment) \
-            .shuffle(SHUFFLE_BUFFER) \
+        dataset = (
+            dataset.map(read_and_preprocess_with_augment)
+            .shuffle(SHUFFLE_BUFFER)
             .repeat(count=None)
+        )
     else:
-        dataset = dataset \
-            .map(read_and_preprocess) \
-            .repeat(count=1)
+        dataset = dataset.map(read_and_preprocess).repeat(count=1)
 
     # Prefetch prepares the next set of batches while current batch is in use.
     return dataset.batch(batch_size=BATCH_SIZE).prefetch(buffer_size=AUTOTUNE)

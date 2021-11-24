@@ -18,10 +18,15 @@ steps:
   args:
   - '-c'
   - |
+    BUCKET=asl_cloudbuild_$(date -u +%Y%m%d_%H%M%S)
+    gsutil mb gs://$$BUCKET
     cd solutions
-    for nb in *.ipynb ; do
-        echo TF2.3 $$nb
-        papermill $$nb $${nb}.output.ipynb 2> $${nb}.stderr || (echo "FAIL:\n" ; cat $${nb}.stderr)
+    NOTEBOOKS=$(ls -1 *.ipynb)
+    echo $$NOTEBOOKS
+    for nb in $$NOTEBOOKS ; do
+        papermill $$nb $${nb}.output.ipynb 2> /dev/null
+        echo $$? gs://$$BUCKET/$${nb}.output.ipynb
+        gsutil -q cp $${nb}.output.ipynb gs://$$BUCKET
     done
 - name: gcr.io/deeplearning-platform-release/tf-cpu.2-6
   id: execute notebooks on TF2.6
@@ -29,8 +34,13 @@ steps:
   args:
   - '-c'
   - |
+    BUCKET=asl_cloudbuild_$(date -u +%Y%m%d_%H%M%S)
+    gsutil mb gs://$$BUCKET
     cd solutions
-    for nb in *.ipynb ; do
-        echo TF2.6 $$nb
-        papermill $$nb $${nb}.output.ipynb 2> $${nb}.stderr || (echo "FAIL:\n" ; cat $${nb}.stderr)
+    NOTEBOOKS=$(ls -1 *.ipynb)
+    echo $$NOTEBOOKS
+    for nb in $$NOTEBOOKS ; do
+        papermill $$nb $${nb}.output.ipynb 2> /dev/null
+        echo $$? gs://$$BUCKET/$${nb}.output.ipynb
+        gsutil -q cp $${nb}.output.ipynb gs://$$BUCKET
     done

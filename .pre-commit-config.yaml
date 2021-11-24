@@ -6,7 +6,7 @@
 ci:
     autofix_prs: false  # as it would fail the Google CLA check
     autoupdate_schedule: quarterly
-    skip: [nbqa-black, nbqa-pyupgrade, nbqa-isort, isort, black, black-jupyter, pyupgrade, pylint]  # temporary disable as expected to fail
+    skip: [nbqa-black, nbqa-pyupgrade, nbqa-isort, isort, black, pyupgrade, pylint]  # temporary disable as expected to fail
 
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks

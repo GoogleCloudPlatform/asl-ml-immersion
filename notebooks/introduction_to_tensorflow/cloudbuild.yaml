@@ -26,7 +26,7 @@ steps:
     for nb in $$NOTEBOOKS ; do
         papermill $$nb $${nb}.output.ipynb 2> /dev/null
         echo $$? gs://$$BUCKET/$${nb}.output.ipynb
-        gsutil -q cp $${nb}.output.ipynb gs://$$BUCKET
+        gsutil -q mv $${nb}.output.ipynb gs://$$BUCKET
     done
 - name: gcr.io/deeplearning-platform-release/tf-cpu.2-6
   id: execute notebooks on TF2.6
@@ -42,5 +42,5 @@ steps:
     for nb in $$NOTEBOOKS ; do
         papermill $$nb $${nb}.output.ipynb 2> /dev/null
         echo $$? gs://$$BUCKET/$${nb}.output.ipynb
-        gsutil -q cp $${nb}.output.ipynb gs://$$BUCKET
+        gsutil -q mv $${nb}.output.ipynb gs://$$BUCKET
     done

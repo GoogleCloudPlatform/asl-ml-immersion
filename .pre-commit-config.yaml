@@ -6,7 +6,7 @@
 ci:
     autofix_prs: false  # as it would fail the Google CLA check
     autoupdate_schedule: quarterly
-    skip: [nbqa-black, nbqa-pyupgrade, nbqa-isort, isort, black, black-jupyter, pyupgrade, pylint]  # temporary disable as expected to fail
+    skip: [nbqa-black, nbqa-pyupgrade, nbqa-isort, isort, black, pyupgrade, pylint]  # temporary disable as expected to fail
 
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
@@ -43,8 +43,9 @@ repos:
     hooks:
     -   id: black
         args: [-l 80]
-    -   id: black-jupyter
-        args: [-l 80]
+# black-jupyter disabled until https://github.com/psf/black/pull/2630
+#    -   id: black-jupyter
+#        args: [-l 80]
 -   repo: https://github.com/asottile/pyupgrade
     rev: v2.29.1
     hooks:

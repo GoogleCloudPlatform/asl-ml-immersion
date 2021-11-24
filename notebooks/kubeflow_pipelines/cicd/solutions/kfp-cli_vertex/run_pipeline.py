@@ -27,5 +27,6 @@ def run_pipeline(project_id, region, template_path, display_name):
 
     pipeline.run()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     fire.Fire(run_pipeline)

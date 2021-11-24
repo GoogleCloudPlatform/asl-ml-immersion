@@ -15,24 +15,22 @@ import os
 
 from kfp import dsl
 from kfp.components import create_component_from_func_v2
-
-from tuning_lightweight_component import tune_hyperparameters
 from training_lightweight_component import train_and_deploy
+from tuning_lightweight_component import tune_hyperparameters
 
+PIPELINE_ROOT = os.getenv("PIPELINE_ROOT")
+PROJECT_ID = os.getenv("PROJECT_ID")
+REGION = os.getenv("REGION")
 
-PIPELINE_ROOT = os.getenv('PIPELINE_ROOT')
-PROJECT_ID = os.getenv('PROJECT_ID')
-REGION = os.getenv('REGION')
+TRAINING_CONTAINER_IMAGE_URI = os.getenv("TRAINING_CONTAINER_IMAGE_URI")
+SERVING_CONTAINER_IMAGE_URI = os.getenv("SERVING_CONTAINER_IMAGE_URI")
 
-TRAINING_CONTAINER_IMAGE_URI = os.getenv('TRAINING_CONTAINER_IMAGE_URI')
-SERVING_CONTAINER_IMAGE_URI = os.getenv('SERVING_CONTAINER_IMAGE_URI')
+TRAINING_FILE_PATH = os.getenv("TRAINING_FILE_PATH")
+VALIDATION_FILE_PATH = os.getenv("VALIDATION_FILE_PATH")
 
-TRAINING_FILE_PATH = os.getenv('TRAINING_FILE_PATH')
-VALIDATION_FILE_PATH = os.getenv('VALIDATION_FILE_PATH')
-
-MAX_TRIAL_COUNT = os.getenv('MAX_TRIAL_COUNT', 5)
-PARALLEL_TRIAL_COUNT = os.getenv('PARALLEL_TRIAL_COUNT', 5)
-THRESHOLD = os.getenv('THRESHOLD', 0.6)
+MAX_TRIAL_COUNT = os.getenv("MAX_TRIAL_COUNT", 5)
+PARALLEL_TRIAL_COUNT = os.getenv("PARALLEL_TRIAL_COUNT", 5)
+THRESHOLD = os.getenv("THRESHOLD", 0.6)
 
 
 tune_hyperparameters_component = None  # TODO
@@ -55,11 +53,13 @@ def covertype_train(
     parallel_trial_count: int = PARALLEL_TRIAL_COUNT,
     pipeline_root: str = PIPELINE_ROOT,
 ):
-    staging_bucket = f'{pipeline_root}/staging'
+    staging_bucket = f"{pipeline_root}/staging"
 
     tuning_op = None  # TODO
 
-    accuracy = tuning_op.outputs['best_accuracy']
+    accuracy = tuning_op.outputs["best_accuracy"]
 
-    with dsl.Condition(accuracy >= accuracy_deployment_threshold, name="deploy_decision"):
+    with dsl.Condition(
+        accuracy >= accuracy_deployment_threshold, name="deploy_decision"
+    ):
         train_and_deploy_op = None  # TODO

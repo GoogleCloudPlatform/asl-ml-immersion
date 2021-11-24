@@ -15,24 +15,24 @@ from typing import NamedTuple
 
 
 def tune_hyperparameters(
-        project: str,
-        location: str,
-        container_uri: str,
-        training_file_path: str,
-        validation_file_path: str,
-        staging_bucket: str,
-        max_trial_count: int,
-        parallel_trial_count: int
-
-) -> NamedTuple('Outputs', [
-    ("best_accuracy", float),
-    ("best_alpha", float),
-    ("best_max_iter", int)
-]):
+    project: str,
+    location: str,
+    container_uri: str,
+    training_file_path: str,
+    validation_file_path: str,
+    staging_bucket: str,
+    max_trial_count: int,
+    parallel_trial_count: int,
+) -> NamedTuple(
+    "Outputs",
+    [("best_accuracy", float), ("best_alpha", float), ("best_max_iter", int)],
+):
     from google.cloud import aiplatform
     from google.cloud.aiplatform import hyperparameter_tuning as hpt
 
-    aiplatform.init(project=project, location=location, staging_bucket=staging_bucket)
+    aiplatform.init(
+        project=project, location=location, staging_bucket=staging_bucket
+    )
 
     worker_pool_specs = [
         {
@@ -47,20 +47,22 @@ def tune_hyperparameters(
                 "args": [
                     f"--training_dataset_path={training_file_path}",
                     f"--validation_dataset_path={validation_file_path}",
-                    "--hptune"
+                    "--hptune",
                 ],
             },
         }
     ]
 
     custom_job = aiplatform.CustomJob(
-        display_name='covertype_kfp_trial_job',
-        worker_pool_specs=worker_pool_specs
+        display_name="covertype_kfp_trial_job",
+        worker_pool_specs=worker_pool_specs,
     )
 
     # TODO: launch the hyperparameter job using aiplatform.HyperparameterTuningJob
 
-    metrics = [trial.final_measurement.metrics[0].value for trial in hp_job.trials]
+    metrics = [
+        trial.final_measurement.metrics[0].value for trial in hp_job.trials
+    ]
     best_trial = hp_job.trials[metrics.index(max(metrics))]
     best_accuracy = float(best_trial.final_measurement.metrics[0].value)
     best_alpha = float(best_trial.parameters[0].value)

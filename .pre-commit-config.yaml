@@ -30,9 +30,9 @@ repos:
     - id: nbqa-black
       args: [-l80, --nbqa-skip-celltags=skip-flake8]
     - id: nbqa-pyupgrade
-      args: [--py36-plus]
+      args: [--py36-plus, --nbqa-skip-celltags=skip-flake8]
     - id: nbqa-isort
-      args: [--profile=black, -l80]
+      args: [--profile=black, -l80, --nbqa-skip-celltags=skip-flake8]
 -   repo: https://github.com/PyCQA/isort
     rev: 5.10.1
     hooks:

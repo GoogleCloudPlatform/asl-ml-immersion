@@ -28,7 +28,7 @@ repos:
   rev: 1.1.1
   hooks:
     - id: nbqa-black
-      args: [-l80]
+      args: [-l80, --nbqa-skip-celltags=skip-flake8]
     - id: nbqa-pyupgrade
       args: [--py36-plus]
     - id: nbqa-isort

@@ -14,48 +14,48 @@
 """Covertype training pipeline DSL."""
 
 import os
-import kfp
-import tensorflow_model_analysis as tfma
-
-from absl import app
-from absl import flags
-from typing import Optional, Dict, List, Text
-
-from tfx.dsl.components.base import executor_spec
-from tfx.components import Evaluator
-from tfx.components import CsvExampleGen
-from tfx.components import ExampleValidator
-from tfx.components import ImporterNode
-from tfx.components import InfraValidator
-from tfx.components import Pusher
-from tfx.components import ResolverNode
-from tfx.components import SchemaGen
-from tfx.components import StatisticsGen
-from tfx.components import Trainer
-from tfx.components import Transform
-from tfx.components.trainer import executor as trainer_executor
-from tfx.dsl.experimental import latest_blessed_model_resolver
-from tfx.extensions.google_cloud_ai_platform.pusher import executor as ai_platform_pusher_executor
-from tfx.extensions.google_cloud_ai_platform.trainer import executor as ai_platform_trainer_executor
-from tfx.extensions.google_cloud_ai_platform.tuner.component import Tuner
-from tfx.orchestration import data_types
-from tfx.orchestration import pipeline
-from tfx.orchestration.kubeflow import kubeflow_dag_runner
-from tfx.orchestration.kubeflow.proto import kubeflow_pb2
-from tfx.proto import example_gen_pb2
-from tfx.proto import evaluator_pb2
-from tfx.proto import infra_validator_pb2
-from tfx.proto import pusher_pb2
-from tfx.proto import trainer_pb2
-from tfx.proto import tuner_pb2
-from tfx.types import Channel
-from tfx.types.standard_artifacts import Model
-from tfx.types.standard_artifacts import ModelBlessing
-from tfx.types.standard_artifacts import InfraBlessing
-from tfx.types.standard_artifacts import Schema
+from typing import Dict, List, Optional, Text
 
 import features
-
+import kfp
+import tensorflow_model_analysis as tfma
+from absl import app, flags
+from tfx.components import (
+    CsvExampleGen,
+    Evaluator,
+    ExampleValidator,
+    ImporterNode,
+    InfraValidator,
+    Pusher,
+    ResolverNode,
+    SchemaGen,
+    StatisticsGen,
+    Trainer,
+    Transform,
+)
+from tfx.components.trainer import executor as trainer_executor
+from tfx.dsl.components.base import executor_spec
+from tfx.dsl.experimental import latest_blessed_model_resolver
+from tfx.extensions.google_cloud_ai_platform.pusher import (
+    executor as ai_platform_pusher_executor,
+)
+from tfx.extensions.google_cloud_ai_platform.trainer import (
+    executor as ai_platform_trainer_executor,
+)
+from tfx.extensions.google_cloud_ai_platform.tuner.component import Tuner
+from tfx.orchestration import data_types, pipeline
+from tfx.orchestration.kubeflow import kubeflow_dag_runner
+from tfx.orchestration.kubeflow.proto import kubeflow_pb2
+from tfx.proto import (
+    evaluator_pb2,
+    example_gen_pb2,
+    infra_validator_pb2,
+    pusher_pb2,
+    trainer_pb2,
+    tuner_pb2,
+)
+from tfx.types import Channel
+from tfx.types.standard_artifacts import InfraBlessing, Model, ModelBlessing, Schema
 
 SCHEMA_FOLDER='schema'
 TRANSFORM_MODULE_FILE='preprocessing.py'

@@ -14,16 +14,14 @@
 # limitations under the License.
 """KFP runner configuration"""
 
-import kfp
-
-from tfx.orchestration import data_types
-from tfx.orchestration.kubeflow import kubeflow_dag_runner
-
-from typing import Optional, Dict, List, Text
 from distutils.util import strtobool
+from typing import Dict, List, Optional, Text
 
+import kfp
 from config import Config
 from pipeline import create_pipeline
+from tfx.orchestration import data_types
+from tfx.orchestration.kubeflow import kubeflow_dag_runner
 
 if __name__ == '__main__':
 

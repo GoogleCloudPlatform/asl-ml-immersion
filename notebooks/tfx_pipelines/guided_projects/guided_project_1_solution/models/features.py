@@ -18,11 +18,9 @@ Define constants here that are common across all models
 including features names, label and size of vocabulary.
 """
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
-from typing import Text, List
+from typing import List, Text
 
 # At least one feature is needed.
 

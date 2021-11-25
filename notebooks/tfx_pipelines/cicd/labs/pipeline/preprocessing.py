@@ -15,10 +15,10 @@
 This file defines a template for TFX Transform component.
 """
 
+import features
 import tensorflow as tf
 import tensorflow_transform as tft
 
-import features
 
 def _fill_in_missing(x):
   """Replace missing values in a SparseTensor.

@@ -16,6 +16,7 @@
 
 import os
 
+
 class Config:
     """Sets configuration vars."""
     # Lab user environment resource settings

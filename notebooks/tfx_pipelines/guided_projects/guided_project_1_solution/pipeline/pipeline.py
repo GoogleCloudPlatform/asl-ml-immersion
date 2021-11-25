@@ -17,37 +17,40 @@
 This file defines TFX pipeline and various components in the pipeline.
 """
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
 from typing import Any, Dict, List, Optional, Text
 
 import tensorflow_model_analysis as tfma
-from tfx.components import CsvExampleGen
-from tfx.components import Evaluator
-from tfx.components import ExampleValidator
-from tfx.components import Pusher
-from tfx.components import ResolverNode
-from tfx.components import SchemaGen
-from tfx.components import StatisticsGen
-from tfx.components import Trainer
-from tfx.components import Transform
+from ml_metadata.proto import metadata_store_pb2
+from tfx.components import (
+    CsvExampleGen,
+    Evaluator,
+    ExampleValidator,
+    Pusher,
+    ResolverNode,
+    SchemaGen,
+    StatisticsGen,
+    Trainer,
+    Transform,
+)
 from tfx.components.trainer import executor as trainer_executor
 from tfx.dsl.components.base import executor_spec
 from tfx.dsl.experimental import latest_blessed_model_resolver
-from tfx.extensions.google_cloud_ai_platform.pusher import executor as ai_platform_pusher_executor
-from tfx.extensions.google_cloud_ai_platform.trainer import executor as ai_platform_trainer_executor
-from tfx.extensions.google_cloud_big_query.example_gen import component as big_query_example_gen_component  # pylint: disable=unused-import
+from tfx.extensions.google_cloud_ai_platform.pusher import (
+    executor as ai_platform_pusher_executor,
+)
+from tfx.extensions.google_cloud_ai_platform.trainer import (
+    executor as ai_platform_trainer_executor,
+)
+from tfx.extensions.google_cloud_big_query.example_gen import (
+    component as big_query_example_gen_component,  # pylint: disable=unused-import
+)
 from tfx.orchestration import pipeline
-from tfx.proto import pusher_pb2
-from tfx.proto import trainer_pb2
+from tfx.proto import pusher_pb2, trainer_pb2
 from tfx.types import Channel
-from tfx.types.standard_artifacts import Model
-from tfx.types.standard_artifacts import ModelBlessing
+from tfx.types.standard_artifacts import Model, ModelBlessing
 from tfx.utils.dsl_utils import external_input
-
-from ml_metadata.proto import metadata_store_pb2
 
 
 def create_pipeline(

@@ -14,7 +14,6 @@
 # limitations under the License.
 """Define BeamDagRunner to run the pipeline using Apache Beam."""
 
-from __future__ import absolute_import, division, print_function
 
 import os
 

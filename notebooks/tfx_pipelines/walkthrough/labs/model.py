@@ -61,7 +61,7 @@ def _get_serve_tf_examples_fn(model, tf_transform_output):
 
 
 def _input_fn(
-    file_pattern: List[Text],
+    file_pattern: List[str],
     data_accessor: DataAccessor,
     tf_transform_output: tft.TFTransformOutput,
     batch_size: int = 200,

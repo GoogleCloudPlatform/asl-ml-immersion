@@ -18,7 +18,6 @@ A DNN keras model which uses features defined in features.py and network
 parameters defined in constants.py.
 """
 
-from __future__ import division, print_function
 
 import tensorflow as tf
 import tensorflow_transform as tft

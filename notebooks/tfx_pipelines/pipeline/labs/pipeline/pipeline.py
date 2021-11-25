@@ -68,15 +68,15 @@ TRAIN_MODULE_FILE = "model.py"
 
 
 def create_pipeline(
-    pipeline_name: Text,
-    pipeline_root: Text,
+    pipeline_name: str,
+    pipeline_root: str,
     data_root_uri: data_types.RuntimeParameter,
     train_steps: data_types.RuntimeParameter,
     eval_steps: data_types.RuntimeParameter,
     enable_tuning: bool,
-    ai_platform_training_args: Dict[Text, Text],
-    ai_platform_serving_args: Dict[Text, Text],
-    beam_pipeline_args: List[Text],
+    ai_platform_training_args: Dict[str, str],
+    ai_platform_serving_args: Dict[str, str],
+    beam_pipeline_args: List[str],
     enable_cache: Optional[bool] = False,
 ) -> pipeline.Pipeline:
     """Trains and deploys the Keras Covertype Classifier with TFX and Kubeflow Pipeline on Google Cloud.

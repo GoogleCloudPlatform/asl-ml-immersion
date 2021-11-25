@@ -69,7 +69,7 @@ def _get_serve_tf_examples_fn(model, tf_transform_output):
 
 
 def _input_fn(
-    file_pattern: List[Text],
+    file_pattern: List[str],
     data_accessor: DataAccessor,
     tf_transform_output: tft.TFTransformOutput,
     batch_size: int = 200,
@@ -279,7 +279,7 @@ def _copy_tensorboard_logs(local_path: str, gcs_path: str):
     Returns:
       None.
     """
-    pattern = "{}/*/events.out.tfevents.*".format(local_path)
+    pattern = f"{local_path}/*/events.out.tfevents.*"
     local_files = tf.io.gfile.glob(pattern)
     gcs_log_files = [
         local_file.replace(local_path, gcs_path) for local_file in local_files

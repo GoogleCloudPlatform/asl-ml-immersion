@@ -18,7 +18,6 @@ Define constants here that are common across all models
 including features names, label and size of vocabulary.
 """
 
-from __future__ import absolute_import, division, print_function
 
 from typing import List, Text
 
@@ -77,16 +76,16 @@ OOV_SIZE = 10
 LABEL_KEY = "big_tipper"
 
 
-def transformed_name(key: Text) -> Text:
+def transformed_name(key: str) -> str:
     """Generate the name of the transformed feature from original name."""
     return key + "_xf"
 
 
-def vocabulary_name(key: Text) -> Text:
+def vocabulary_name(key: str) -> str:
     """Generate the name of the vocabulary feature from original name."""
     return key + "_vocab"
 
 
-def transformed_names(keys: List[Text]) -> List[Text]:
+def transformed_names(keys: List[str]) -> List[str]:
     """Transform multiple feature names at once."""
     return [transformed_name(key) for key in keys]

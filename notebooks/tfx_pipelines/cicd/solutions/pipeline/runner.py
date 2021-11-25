@@ -43,7 +43,7 @@ if __name__ == "__main__":
         "regions": [Config.GCP_REGION],
     }
 
-    beam_tmp_folder = "{}/beam/tmp".format(Config.ARTIFACT_STORE_URI)
+    beam_tmp_folder = f"{Config.ARTIFACT_STORE_URI}/beam/tmp"
     beam_pipeline_args = [
         "--runner=DataflowRunner",
         "--experiments=shuffle_mode=auto",
@@ -54,7 +54,7 @@ if __name__ == "__main__":
 
     # Set the default values for the pipeline runtime parameters
     data_root_uri = data_types.RuntimeParameter(
-        name="data-root-uri", default=Config.DATA_ROOT_URI, ptype=Text
+        name="data-root-uri", default=Config.DATA_ROOT_URI, ptype=str
     )
 
     train_steps = data_types.RuntimeParameter(

@@ -55,12 +55,7 @@ from tfx.proto import (
     tuner_pb2,
 )
 from tfx.types import Channel
-from tfx.types.standard_artifacts import (
-    InfraBlessing,
-    Model,
-    ModelBlessing,
-    Schema,
-)
+from tfx.types.standard_artifacts import InfraBlessing, Model, ModelBlessing, Schema
 
 SCHEMA_FOLDER = "schema"
 TRANSFORM_MODULE_FILE = "preprocessing.py"

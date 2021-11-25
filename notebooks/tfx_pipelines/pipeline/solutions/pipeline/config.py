@@ -16,19 +16,28 @@
 
 import os
 
+
 class Config:
     """Sets configuration vars."""
+
     # Lab user environment resource settings
-    GCP_REGION=os.getenv("GCP_REGION", "us-central1")
-    PROJECT_ID=os.getenv("PROJECT_ID", "dougkelly-sandbox")
-    ARTIFACT_STORE_URI=os.getenv("ARTIFACT_STORE_URI", "gs://mlops-workshop-artifact-store")
-    CUSTOM_SERVICE_ACCOUNT=os.getenv("CUSTOM_SERVICE_ACCOUNT", "tfx-tuner-caip-service-account@dougkelly-sandbox.iam.gserviceaccount.com")
+    GCP_REGION = os.getenv("GCP_REGION", "us-central1")
+    PROJECT_ID = os.getenv("PROJECT_ID", "dougkelly-sandbox")
+    ARTIFACT_STORE_URI = os.getenv(
+        "ARTIFACT_STORE_URI", "gs://mlops-workshop-artifact-store"
+    )
+    CUSTOM_SERVICE_ACCOUNT = os.getenv(
+        "CUSTOM_SERVICE_ACCOUNT",
+        "tfx-tuner-caip-service-account@dougkelly-sandbox.iam.gserviceaccount.com",
+    )
     # Lab user runtime environment settings
-    PIPELINE_NAME=os.getenv("PIPELINE_NAME", "covertype_continuous_training")
-    MODEL_NAME=os.getenv("MODEL_NAME", "covertype_classifier")
-    DATA_ROOT_URI=os.getenv("DATA_ROOT_URI", "gs://workshop-datasets/covertype/small")
-    TFX_IMAGE=os.getenv("KUBEFLOW_TFX_IMAGE", "tensorflow/tfx:0.25.0")
-    RUNTIME_VERSION=os.getenv("RUNTIME_VERSION", "2.3")
-    PYTHON_VERSION=os.getenv("PYTHON_VERSION", "3.7")
-    USE_KFP_SA=os.getenv("USE_KFP_SA", "False")
-    ENABLE_TUNING=os.getenv("ENABLE_TUNING", "True")
+    PIPELINE_NAME = os.getenv("PIPELINE_NAME", "covertype_continuous_training")
+    MODEL_NAME = os.getenv("MODEL_NAME", "covertype_classifier")
+    DATA_ROOT_URI = os.getenv(
+        "DATA_ROOT_URI", "gs://workshop-datasets/covertype/small"
+    )
+    TFX_IMAGE = os.getenv("KUBEFLOW_TFX_IMAGE", "tensorflow/tfx:0.25.0")
+    RUNTIME_VERSION = os.getenv("RUNTIME_VERSION", "2.3")
+    PYTHON_VERSION = os.getenv("PYTHON_VERSION", "3.7")
+    USE_KFP_SA = os.getenv("USE_KFP_SA", "False")
+    ENABLE_TUNING = os.getenv("ENABLE_TUNING", "True")

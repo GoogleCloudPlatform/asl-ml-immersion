@@ -13,26 +13,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
 
 import tensorflow as tf
-
 from models import features
 
 
 class FeaturesTest(tf.test.TestCase):
+    def testNumberFeatures(self):
+        self.assertEqual(len(features.NUMERIC_FEATURE_KEYS), 10)
+        self.assertEqual(len(features.CATEGORICAL_FEATURE_KEYS), 2)
 
-  def testNumberFeatures(self):
-    self.assertEqual(len(features.NUMERIC_FEATURE_KEYS), 10)
-    self.assertEqual(len(features.CATEGORICAL_FEATURE_KEYS), 2)
-
-  def testTransformedName(self):
-    name = "a_name"
-    expected = "a_name_xf"
-    self.assertEqual(expected, features.transformed_name(name))
+    def testTransformedName(self):
+        name = "a_name"
+        expected = "a_name_xf"
+        self.assertEqual(expected, features.transformed_name(name))
 
 
 if __name__ == "__main__":
-  tf.test.main()
+    tf.test.main()

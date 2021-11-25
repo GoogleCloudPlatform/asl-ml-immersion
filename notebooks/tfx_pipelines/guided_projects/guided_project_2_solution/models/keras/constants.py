@@ -20,4 +20,4 @@ These values can be tweaked to affect model training performance.
 EPOCHS = 1
 TRAIN_BATCH_SIZE = 64
 EVAL_BATCH_SIZE = 64
-LOCAL_LOG_DIR = '/tmp/logs'
+LOCAL_LOG_DIR = "/tmp/logs"

@@ -22,24 +22,25 @@ from tfx.components.trainer import executor as trainer_executor
 
 
 class ModelTest(tf.test.TestCase):
+    def testTrainerFn(self):
+        trainer_fn_args = trainer_executor.TrainerFnArgs(
+            train_files="/path/to/train.file",
+            transform_output="/path/to/transform_output",
+            serving_model_dir="/path/to/model_dir",
+            eval_files="/path/to/eval.file",
+            schema_file="/path/to/schema_file",
+            train_steps=1000,
+            eval_steps=100,
+        )
+        schema = schema_pb2.Schema()
+        result = model._create_train_and_eval_spec(
+            trainer_fn_args, schema
+        )  # pylint: disable=protected-access
+        self.assertIsInstance(result["estimator"], tf.estimator.Estimator)
+        self.assertIsInstance(result["train_spec"], tf.estimator.TrainSpec)
+        self.assertIsInstance(result["eval_spec"], tf.estimator.EvalSpec)
+        self.assertTrue(callable(result["eval_input_receiver_fn"]))
 
-  def testTrainerFn(self):
-    trainer_fn_args = trainer_executor.TrainerFnArgs(
-        train_files='/path/to/train.file',
-        transform_output='/path/to/transform_output',
-        serving_model_dir='/path/to/model_dir',
-        eval_files='/path/to/eval.file',
-        schema_file='/path/to/schema_file',
-        train_steps=1000,
-        eval_steps=100,
-    )
-    schema = schema_pb2.Schema()
-    result = model._create_train_and_eval_spec(trainer_fn_args, schema)   # pylint: disable=protected-access
-    self.assertIsInstance(result['estimator'], tf.estimator.Estimator)
-    self.assertIsInstance(result['train_spec'], tf.estimator.TrainSpec)
-    self.assertIsInstance(result['eval_spec'], tf.estimator.EvalSpec)
-    self.assertTrue(callable(result['eval_input_receiver_fn']))
 
-
-if __name__ == '__main__':
-  tf.test.main()
+if __name__ == "__main__":
+    tf.test.main()

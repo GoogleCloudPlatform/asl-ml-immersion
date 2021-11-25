@@ -18,20 +18,18 @@ A tf.estimator.DNNLinearCombinedClassifier which uses features
 defined in features.py and network parameters defined in constants.py.
 """
 
-from __future__ import division
-from __future__ import print_function
+from __future__ import division, print_function
 
-from absl import logging
 import tensorflow as tf
 import tensorflow_model_analysis as tfma
 import tensorflow_transform as tft
-from tensorflow_transform.tf_metadata import schema_utils
+from absl import logging
 from models import features
 from models.estimator import constants
+from tensorflow_metadata.proto.v0 import schema_pb2
+from tensorflow_transform.tf_metadata import schema_utils
 from tfx.utils import io_utils
 from tfx_bsl.tfxio import dataset_options
-
-from tensorflow_metadata.proto.v0 import schema_pb2
 
 
 def _gzip_reader_fn(filenames):

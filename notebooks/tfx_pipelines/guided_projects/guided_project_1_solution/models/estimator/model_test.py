@@ -13,15 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
 import tensorflow as tf
-from tfx.components.trainer import executor as trainer_executor
 from models.estimator import model
-
 from tensorflow_metadata.proto.v0 import schema_pb2
+from tfx.components.trainer import executor as trainer_executor
 
 
 class ModelTest(tf.test.TestCase):

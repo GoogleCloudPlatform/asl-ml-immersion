@@ -19,30 +19,27 @@ that this pipeline is based upon: https://github.com/tensorflow/tfx/blob/master/
 """
 
 import functools
-import absl
 import os
 from typing import List, Text
 
+import absl
+import kerastuner
 import tensorflow as tf
 import tensorflow_model_analysis as tfma
 import tensorflow_transform as tft
-from tensorflow_transform.tf_metadata import schema_utils
-import kerastuner
+from models import features
+from models.keras.constants import (
+    EPOCHS,
+    EVAL_BATCH_SIZE,
+    LOCAL_LOG_DIR,
+    TRAIN_BATCH_SIZE,
+)
 from tensorflow_cloud import CloudTuner
-
+from tensorflow_transform.tf_metadata import schema_utils
 from tfx.components.trainer.executor import TrainerFnArgs
 from tfx.components.trainer.fn_args_utils import DataAccessor
 from tfx.components.tuner.component import TunerFnResult
 from tfx_bsl.tfxio import dataset_options
-
-from models import features
-from models.keras.constants import (
-  EPOCHS,
-  TRAIN_BATCH_SIZE,
-  EVAL_BATCH_SIZE,
-  LOCAL_LOG_DIR,
-)
-
 
 
 def _gzip_reader_fn(filenames):

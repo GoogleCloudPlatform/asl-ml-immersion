@@ -18,13 +18,11 @@ A DNN keras model which uses features defined in features.py and network
 parameters defined in constants.py.
 """
 
-from __future__ import division
-from __future__ import print_function
+from __future__ import division, print_function
 
-from absl import logging
 import tensorflow as tf
 import tensorflow_transform as tft
-
+from absl import logging
 from models import features
 from models.keras import constants
 from tfx_bsl.tfxio import dataset_options

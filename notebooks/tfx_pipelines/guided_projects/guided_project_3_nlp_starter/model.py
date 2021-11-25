@@ -1,23 +1,21 @@
 import tensorflow as tf
 import tensorflow_transform as tft
+from config import (
+    EVAL_BATCH_SIZE,
+    HUB_DIM,
+    HUB_URL,
+    LABEL_KEY,
+    MODEL_NAME,
+    N_CLASSES,
+    N_NEURONS,
+    TRAIN_BATCH_SIZE,
+    transformed_name,
+)
 from tensorflow.keras.callbacks import TensorBoard
-from tensorflow_hub import KerasLayer
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.models import Sequential
+from tensorflow_hub import KerasLayer
 from tfx_bsl.tfxio import dataset_options
-
-
-from config import (
-    HUB_URL,
-    HUB_DIM,
-    N_NEURONS,
-    N_CLASSES,
-    LABEL_KEY,
-    TRAIN_BATCH_SIZE,
-    EVAL_BATCH_SIZE,
-    MODEL_NAME,
-    transformed_name
-)
 
 
 def _get_serve_tf_examples_fn(model, tf_transform_output):

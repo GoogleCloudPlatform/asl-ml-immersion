@@ -14,19 +14,15 @@
 # limitations under the License.
 """Define BeamDagRunner to run the pipeline using Apache Beam."""
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
 import os
-from absl import logging
 
-from pipeline import configs
-from pipeline import pipeline
+from absl import logging
+from pipeline import configs, pipeline
 from tfx.orchestration import metadata
 from tfx.orchestration.beam.beam_dag_runner import BeamDagRunner
 from tfx.proto import trainer_pb2
-
 
 # TFX pipeline produces many output files and metadata. All output data will be
 # stored under this OUTPUT_DIR.

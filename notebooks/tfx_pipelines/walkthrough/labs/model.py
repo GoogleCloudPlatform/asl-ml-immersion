@@ -14,22 +14,20 @@
 """Covertype Keras WideDeep Classifier."""
 
 import functools
-import absl
 import os
 from typing import List, Text
 
+import absl
+import features
 import kerastuner
 import tensorflow as tf
 import tensorflow_model_analysis as tfma
 import tensorflow_transform as tft
 from tensorflow_transform.tf_metadata import schema_utils
-
 from tfx.components.trainer.executor import TrainerFnArgs
 from tfx.components.trainer.fn_args_utils import DataAccessor
 from tfx.components.tuner.component import TunerFnResult
 from tfx_bsl.tfxio import dataset_options
-
-import features
 
 EPOCHS = 1
 TRAIN_BATCH_SIZE = 64

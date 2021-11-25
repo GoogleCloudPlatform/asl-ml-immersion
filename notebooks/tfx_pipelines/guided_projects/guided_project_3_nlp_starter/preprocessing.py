@@ -1,11 +1,6 @@
 import tensorflow as tf
+from config import FEATURE_KEY, LABEL_KEY, N_CLASSES, transformed_name
 
-from config import (
-    LABEL_KEY,
-    N_CLASSES,
-    FEATURE_KEY,
-    transformed_name
-)
 
 def _fill_in_missing(x):
     default_value = '' if x.dtype == tf.string else 0

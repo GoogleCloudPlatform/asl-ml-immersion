@@ -13,15 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Define KubeflowDagRunner to run the pipeline using Kubeflow."""
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
 import os
-from absl import logging
 
-from pipeline import configs
-from pipeline import pipeline
+from absl import logging
+from pipeline import configs, pipeline
 from tfx.orchestration.kubeflow import kubeflow_dag_runner
 from tfx.proto import trainer_pb2
 from tfx.utils import telemetry_utils

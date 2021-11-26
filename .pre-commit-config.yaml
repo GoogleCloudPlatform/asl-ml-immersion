@@ -55,3 +55,4 @@ repos:
     rev: v2.12.1
     hooks:
     -   id: pylint
+        args: ["--disable", "unexpected-keyword-arg,no-value-for-parameter,too-many-function-args"]

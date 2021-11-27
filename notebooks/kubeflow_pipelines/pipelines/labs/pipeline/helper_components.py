@@ -19,7 +19,6 @@ import sys
 from typing import NamedTuple
 
 import pandas as pd
-from googleapiclient import discovery, errors
 from sklearn.metrics import accuracy_score, recall_score
 
 
@@ -29,6 +28,9 @@ def retrieve_best_run(
     "Outputs", [("metric_value", float), ("alpha", float), ("max_iter", int)]
 ):
     """Retrieves the parameters of the best Hypertune run."""
+
+    # pylint: disable-next=import-outside-toplevel
+    from googleapiclient import discovery, errors
 
     ml = discovery.build("ml", "v1")
 

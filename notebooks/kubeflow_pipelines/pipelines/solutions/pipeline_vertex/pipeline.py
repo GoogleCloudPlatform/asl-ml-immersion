@@ -1,7 +1,8 @@
 # Copyright 2021 Google LLC
 
-# Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
-# file except in compliance with the License. You may obtain a copy of the License at
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
 
 # https://www.apache.org/licenses/LICENSE-2.0
 
@@ -28,9 +29,9 @@ SERVING_CONTAINER_IMAGE_URI = os.getenv("SERVING_CONTAINER_IMAGE_URI")
 TRAINING_FILE_PATH = os.getenv("TRAINING_FILE_PATH")
 VALIDATION_FILE_PATH = os.getenv("VALIDATION_FILE_PATH")
 
-MAX_TRIAL_COUNT = os.getenv("MAX_TRIAL_COUNT", 5)
-PARALLEL_TRIAL_COUNT = os.getenv("PARALLEL_TRIAL_COUNT", 5)
-THRESHOLD = os.getenv("THRESHOLD", 0.6)
+MAX_TRIAL_COUNT = int(os.getenv("MAX_TRIAL_COUNT", "5"))
+PARALLEL_TRIAL_COUNT = int(os.getenv("PARALLEL_TRIAL_COUNT", "5"))
+THRESHOLD = float(os.getenv("THRESHOLD", "0.6"))
 
 
 tune_hyperparameters_component = create_component_from_func_v2(
@@ -82,14 +83,16 @@ def covertype_train(
     with dsl.Condition(
         accuracy >= accuracy_deployment_threshold, name="deploy_decision"
     ):
-        train_and_deploy_op = train_and_deploy_component(
-            project=PROJECT_ID,
-            location=REGION,
-            container_uri=training_container_uri,
-            serving_container_uri=serving_container_uri,
-            training_file_path=training_file_path,
-            validation_file_path=validation_file_path,
-            staging_bucket=staging_bucket,
-            alpha=tuning_op.outputs["best_alpha"],
-            max_iter=tuning_op.outputs["best_max_iter"],
+        train_and_deploy_op = (  # pylint: disable=unused-variable
+            train_and_deploy_component(
+                project=PROJECT_ID,
+                location=REGION,
+                container_uri=training_container_uri,
+                serving_container_uri=serving_container_uri,
+                training_file_path=training_file_path,
+                validation_file_path=validation_file_path,
+                staging_bucket=staging_bucket,
+                alpha=tuning_op.outputs["best_alpha"],
+                max_iter=tuning_op.outputs["best_max_iter"],
+            )
         )

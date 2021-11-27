@@ -1,7 +1,8 @@
 # Copyright 2021 Google LLC
 
-# Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
-# file except in compliance with the License. You may obtain a copy of the License at
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
 
 # https://www.apache.org/licenses/LICENSE-2.0
 
@@ -11,6 +12,9 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 """Lightweight component training function."""
+
+
+from google.cloud import aiplatform
 
 
 def train_and_deploy(
@@ -24,7 +28,6 @@ def train_and_deploy(
     alpha: float,
     max_iter: int,
 ):
-    from google.cloud import aiplatform
 
     aiplatform.init(
         project=project, location=location, staging_bucket=staging_bucket
@@ -45,7 +48,7 @@ def train_and_deploy(
         model_serving_container_image_uri=serving_container_uri,
     )
     model = job.run(replica_count=1, model_display_name="covertype_kfp_model")
-    endpoint = model.deploy(
+    endpoint = model.deploy(  # pylint: disable=unused-variable
         traffic_split={"0": 100},
         machine_type="n1-standard-2",
     )

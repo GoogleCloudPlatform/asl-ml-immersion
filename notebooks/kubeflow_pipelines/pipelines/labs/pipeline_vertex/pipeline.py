@@ -1,7 +1,8 @@
 # Copyright 2021 Google LLC
 
-# Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
-# file except in compliance with the License. You may obtain a copy of the License at
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
 
 # https://www.apache.org/licenses/LICENSE-2.0
 
@@ -11,6 +12,7 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 """Kubeflow Covertype Pipeline."""
+# pylint: disable=unused-import,unused-argument,unused-variable
 import os
 
 from kfp import dsl
@@ -28,9 +30,9 @@ SERVING_CONTAINER_IMAGE_URI = os.getenv("SERVING_CONTAINER_IMAGE_URI")
 TRAINING_FILE_PATH = os.getenv("TRAINING_FILE_PATH")
 VALIDATION_FILE_PATH = os.getenv("VALIDATION_FILE_PATH")
 
-MAX_TRIAL_COUNT = os.getenv("MAX_TRIAL_COUNT", 5)
-PARALLEL_TRIAL_COUNT = os.getenv("PARALLEL_TRIAL_COUNT", 5)
-THRESHOLD = os.getenv("THRESHOLD", 0.6)
+MAX_TRIAL_COUNT = int(os.getenv("MAX_TRIAL_COUNT", "5"))
+PARALLEL_TRIAL_COUNT = int(os.getenv("PARALLEL_TRIAL_COUNT", "5"))
+THRESHOLD = float(os.getenv("THRESHOLD", "0.6"))
 
 
 tune_hyperparameters_component = None  # TODO

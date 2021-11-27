@@ -1,7 +1,8 @@
 # Copyright 2021 Google LLC
 
-# Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
-# file except in compliance with the License. You may obtain a copy of the License at
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
 
 # https://www.apache.org/licenses/LICENSE-2.0
 
@@ -13,6 +14,10 @@
 """Lightweight component training function."""
 
 
+from google.cloud import aiplatform
+
+
+# pylint: disable=unused-argument
 def train_and_deploy(
     project: str,
     location: str,
@@ -24,16 +29,16 @@ def train_and_deploy(
     alpha: float,
     max_iter: int,
 ):
-    from google.cloud import aiplatform
 
     aiplatform.init(
         project=project, location=location, staging_bucket=staging_bucket
     )
 
     # TODO: Launch the training using aiplatform.CustomContainerTrainingJob
+    job = None
 
     model = job.run(replica_count=1, model_display_name="covertype_kfp_model")
-    endpoint = model.deploy(
+    endpoint = model.deploy(  # pylint: disable=unused-variable
         traffic_split={"0": 100},
         machine_type="n1-standard-2",
     )

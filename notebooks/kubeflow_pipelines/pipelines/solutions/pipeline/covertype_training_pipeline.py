@@ -19,7 +19,6 @@ import kfp
 from helper_components import evaluate_model, retrieve_best_run
 from jinja2 import Template
 from kfp.components import func_to_container_op
-from kfp.dsl.types import Dict, GCPProjectID, GCPRegion, GCSPath, String
 from kfp.gcp import use_gcp_secret
 
 # Defaults and environment settings
@@ -97,7 +96,10 @@ evaluate_model_op = func_to_container_op(evaluate_model, base_image=BASE_IMAGE)
 
 @kfp.dsl.pipeline(
     name="Covertype Classifier Training",
-    description="The pipeline training and deploying the Covertype classifierpipeline_yaml",
+    description=(
+        "The pipeline training and deploying the Covertype "
+        "classifierpipeline_yaml"
+    ),
 )
 def covertype_train(
     project_id,
@@ -173,9 +175,7 @@ def covertype_train(
         "True",
     ]
 
-    job_dir = "{}/{}/{}".format(
-        gcs_root, "jobdir/hypertune", kfp.dsl.RUN_ID_PLACEHOLDER
-    )
+    job_dir = f"{gcs_root}/jobdir/hypertune/{kfp.dsl.RUN_ID_PLACEHOLDER}"
 
     hypertune = mlengine_train_op(
         project_id=project_id,
@@ -192,7 +192,7 @@ def covertype_train(
     )
 
     # Train the model on a combined training and validation datasets
-    job_dir = "{}/{}/{}".format(gcs_root, "jobdir", kfp.dsl.RUN_ID_PLACEHOLDER)
+    job_dir = f"{gcs_root}/jobdir/{kfp.dsl.RUN_ID_PLACEHOLDER}"
 
     train_args = [
         "--training_dataset_path",
@@ -226,7 +226,7 @@ def covertype_train(
     with kfp.dsl.Condition(
         eval_model.outputs["metric_value"] > evaluation_metric_threshold
     ):
-        deploy_model = mlengine_deploy_op(
+        deploy_model = mlengine_deploy_op(  # pylint: disable=unused-variable
             model_uri=train_model.outputs["job_dir"],
             project_id=project_id,
             model_id=model_id,

@@ -12,6 +12,7 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 """Kubeflow Covertype Pipeline."""
+# pylint: disable=unused-import,unused-argument,unused-variable
 import os
 
 from kfp import dsl

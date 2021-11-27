@@ -77,6 +77,7 @@ def train_evaluate(
     df_validation = df_validation.astype(num_features_type_map)
 
     print(f"Starting training: alpha={alpha}, max_iter={max_iter}")
+    # pylint: disable-next=invalid-name
     X_train = df_train.drop("Cover_Type", axis=1)
     y_train = df_train["Cover_Type"]
 
@@ -84,6 +85,7 @@ def train_evaluate(
     pipeline.fit(X_train, y_train)
 
     if hptune:
+        # pylint: disable-next=invalid-name
         X_validation = df_validation.drop("Cover_Type", axis=1)
         y_validation = df_validation["Cover_Type"]
         accuracy = pipeline.score(X_validation, y_validation)

@@ -22,6 +22,7 @@ def retrieve_best_run(
 ):
     """Retrieves the parameters of the best Hypertune run."""
 
+    # pylint: disable-next=import-outside-toplevel
     from googleapiclient import discovery, errors
 
     ml = discovery.build("ml", "v1")
@@ -33,8 +34,6 @@ def retrieve_best_run(
         response = request.execute()
     except errors.HttpError as err:
         print(err)
-    except:
-        print("Unexpected error")
 
     print(response)
 
@@ -58,7 +57,8 @@ def evaluate_model(
     ],
 ):
     """Evaluates a trained sklearn model."""
-    # import joblib
+
+    # pylint: disable=import-outside-toplevel
     import json
     import pickle
     import subprocess
@@ -69,7 +69,7 @@ def evaluate_model(
 
     df_test = pd.read_csv(dataset_path)
 
-    X_test = df_test.drop("Cover_Type", axis=1)
+    X_test = df_test.drop("Cover_Type", axis=1)  # pylint: disable=invalid-name
     y_test = df_test["Cover_Type"]
 
     # Copy the model from GCS

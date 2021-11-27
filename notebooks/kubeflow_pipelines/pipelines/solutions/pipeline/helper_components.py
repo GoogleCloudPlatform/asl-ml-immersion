@@ -12,14 +12,7 @@
 # See the License for the specific language governing permissions and
 """Helper components."""
 
-import json
-import pickle
-import subprocess
-import sys
 from typing import NamedTuple
-
-import pandas as pd
-from sklearn.metrics import accuracy_score, recall_score
 
 
 def retrieve_best_run(
@@ -64,6 +57,15 @@ def evaluate_model(
     ],
 ):
     """Evaluates a trained sklearn model."""
+
+    # pylint: disable=import-outside-toplevel
+    import json
+    import pickle
+    import subprocess
+    import sys
+
+    import pandas as pd
+    from sklearn.metrics import accuracy_score, recall_score
 
     df_test = pd.read_csv(dataset_path)
 

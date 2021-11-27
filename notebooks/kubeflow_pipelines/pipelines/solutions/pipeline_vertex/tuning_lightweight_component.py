@@ -14,9 +14,6 @@
 """Lightweight component tuning function."""
 from typing import NamedTuple
 
-from google.cloud import aiplatform
-from google.cloud.aiplatform import hyperparameter_tuning as hpt
-
 
 def tune_hyperparameters(
     project: str,
@@ -31,6 +28,10 @@ def tune_hyperparameters(
     "Outputs",
     [("best_accuracy", float), ("best_alpha", float), ("best_max_iter", int)],
 ):
+
+    # pylint: disable=import-outside-toplevel
+    from google.cloud import aiplatform
+    from google.cloud.aiplatform import hyperparameter_tuning as hpt
 
     aiplatform.init(
         project=project, location=location, staging_bucket=staging_bucket

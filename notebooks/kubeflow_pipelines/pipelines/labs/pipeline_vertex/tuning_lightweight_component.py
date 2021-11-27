@@ -14,11 +14,6 @@
 """Lightweight component tuning function."""
 from typing import NamedTuple
 
-from google.cloud import aiplatform
-
-# pylint: disable-next=unused-import
-from google.cloud.aiplatform import hyperparameter_tuning as hpt
-
 
 # pylint: disable=unused-argument
 def tune_hyperparameters(
@@ -34,6 +29,12 @@ def tune_hyperparameters(
     "Outputs",
     [("best_accuracy", float), ("best_alpha", float), ("best_max_iter", int)],
 ):
+
+    # pylint: disable=import-outside-toplevel
+    from google.cloud import aiplatform
+
+    # pylint: disable-next=unused-import
+    from google.cloud.aiplatform import hyperparameter_tuning as hpt
 
     aiplatform.init(
         project=project, location=location, staging_bucket=staging_bucket

@@ -14,9 +14,6 @@
 """Lightweight component training function."""
 
 
-from google.cloud import aiplatform
-
-
 def train_and_deploy(
     project: str,
     location: str,
@@ -28,6 +25,9 @@ def train_and_deploy(
     alpha: float,
     max_iter: int,
 ):
+
+    # pylint: disable-next=import-outside-toplevel
+    from google.cloud import aiplatform
 
     aiplatform.init(
         project=project, location=location, staging_bucket=staging_bucket

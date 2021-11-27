@@ -12,7 +12,15 @@
 # See the License for the specific language governing permissions and
 """Helper components."""
 
+import json
+import pickle
+import subprocess
+import sys
 from typing import NamedTuple
+
+import pandas as pd
+from googleapiclient import discovery, errors
+from sklearn.metrics import accuracy_score, recall_score
 
 
 def retrieve_best_run(
@@ -21,8 +29,6 @@ def retrieve_best_run(
     "Outputs", [("metric_value", float), ("alpha", float), ("max_iter", int)]
 ):
     """Retrieves the parameters of the best Hypertune run."""
-
-    from googleapiclient import discovery, errors
 
     ml = discovery.build("ml", "v1")
 
@@ -33,8 +39,6 @@ def retrieve_best_run(
         response = request.execute()
     except errors.HttpError as err:
         print(err)
-    except:
-        print("Unexpected error")
 
     print(response)
 
@@ -58,18 +62,10 @@ def evaluate_model(
     ],
 ):
     """Evaluates a trained sklearn model."""
-    # import joblib
-    import json
-    import pickle
-    import subprocess
-    import sys
-
-    import pandas as pd
-    from sklearn.metrics import accuracy_score, recall_score
 
     df_test = pd.read_csv(dataset_path)
 
-    X_test = df_test.drop("Cover_Type", axis=1)
+    X_test = df_test.drop("Cover_Type", axis=1)  # pylint: disable=invalid-name
     y_test = df_test["Cover_Type"]
 
     # Copy the model from GCS

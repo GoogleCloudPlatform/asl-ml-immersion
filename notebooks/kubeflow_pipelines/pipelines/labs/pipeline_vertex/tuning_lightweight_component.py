@@ -1,7 +1,8 @@
 # Copyright 2021 Google LLC
 
-# Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
-# file except in compliance with the License. You may obtain a copy of the License at
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
 
 # https://www.apache.org/licenses/LICENSE-2.0
 
@@ -13,7 +14,13 @@
 """Lightweight component tuning function."""
 from typing import NamedTuple
 
+from google.cloud import aiplatform
 
+# pylint: disable-next=unused-import
+from google.cloud.aiplatform import hyperparameter_tuning as hpt
+
+
+# pylint: disable=unused-argument
 def tune_hyperparameters(
     project: str,
     location: str,
@@ -27,8 +34,6 @@ def tune_hyperparameters(
     "Outputs",
     [("best_accuracy", float), ("best_alpha", float), ("best_max_iter", int)],
 ):
-    from google.cloud import aiplatform
-    from google.cloud.aiplatform import hyperparameter_tuning as hpt
 
     aiplatform.init(
         project=project, location=location, staging_bucket=staging_bucket
@@ -53,12 +58,14 @@ def tune_hyperparameters(
         }
     ]
 
-    custom_job = aiplatform.CustomJob(
+    custom_job = aiplatform.CustomJob(  # pylint: disable=unused-variable
         display_name="covertype_kfp_trial_job",
         worker_pool_specs=worker_pool_specs,
     )
 
-    # TODO: launch the hyperparameter job using aiplatform.HyperparameterTuningJob
+    # TODO: launch the hyperparameter job using
+    # aiplatform.HyperparameterTuningJob
+    hp_job = None
 
     metrics = [
         trial.final_measurement.metrics[0].value for trial in hp_job.trials

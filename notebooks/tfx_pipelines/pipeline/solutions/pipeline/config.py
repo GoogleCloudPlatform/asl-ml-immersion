@@ -28,6 +28,7 @@ class Config:
     )
     CUSTOM_SERVICE_ACCOUNT = os.getenv(
         "CUSTOM_SERVICE_ACCOUNT",
+        # pylint: disable-next=line-too-long
         "tfx-tuner-caip-service-account@dougkelly-sandbox.iam.gserviceaccount.com",
     )
     # Lab user runtime environment settings

@@ -13,13 +13,9 @@
 # limitations under the License.
 """Covertype training pipeline DSL."""
 
-import os
-from typing import Dict, List, Optional, Text
+from typing import Dict, List, Optional
 
-import features
-import kfp
 import tensorflow_model_analysis as tfma
-from absl import app, flags
 from tfx.components import (
     CsvExampleGen,
     Evaluator,
@@ -33,7 +29,6 @@ from tfx.components import (
     Trainer,
     Transform,
 )
-from tfx.components.trainer import executor as trainer_executor
 from tfx.dsl.components.base import executor_spec
 from tfx.dsl.experimental import latest_blessed_model_resolver
 from tfx.extensions.google_cloud_ai_platform.pusher import (
@@ -44,23 +39,9 @@ from tfx.extensions.google_cloud_ai_platform.trainer import (
 )
 from tfx.extensions.google_cloud_ai_platform.tuner.component import Tuner
 from tfx.orchestration import data_types, pipeline
-from tfx.orchestration.kubeflow import kubeflow_dag_runner
-from tfx.orchestration.kubeflow.proto import kubeflow_pb2
-from tfx.proto import (
-    evaluator_pb2,
-    example_gen_pb2,
-    infra_validator_pb2,
-    pusher_pb2,
-    trainer_pb2,
-    tuner_pb2,
-)
+from tfx.proto import example_gen_pb2, infra_validator_pb2, tuner_pb2
 from tfx.types import Channel
-from tfx.types.standard_artifacts import (
-    InfraBlessing,
-    Model,
-    ModelBlessing,
-    Schema,
-)
+from tfx.types.standard_artifacts import Model, ModelBlessing, Schema
 
 SCHEMA_FOLDER = "schema"
 TRANSFORM_MODULE_FILE = "preprocessing.py"
@@ -79,13 +60,16 @@ def create_pipeline(
     beam_pipeline_args: List[str],
     enable_cache: Optional[bool] = False,
 ) -> pipeline.Pipeline:
-    """Trains and deploys the Keras Covertype Classifier with TFX and Kubeflow Pipeline on Google Cloud.
+    """Trains and deploys the Keras Covertype Classifier with TFX and Kubeflow
+       Pipeline on Google Cloud.
     Args:
       pipeline_name: name of the TFX pipeline being created.
       pipeline_root: root directory of the pipeline. Should be a valid GCS path.
       data_root_uri: uri of the dataset.
-      train_steps: runtime parameter for number of model training steps for the Trainer component.
-      eval_steps: runtime parameter for number of model evaluation steps for the Trainer component.
+      train_steps: runtime parameter for number of model training steps for the
+        Trainer component.
+      eval_steps: runtime parameter for number of model evaluation steps for
+        the Trainer component.
       enable_tuning: If True, the hyperparameter tuning through CloudTuner is
         enabled.
       ai_platform_training_args: Args of CAIP training job. Please refer to
@@ -94,19 +78,21 @@ def create_pipeline(
       ai_platform_serving_args: Args of CAIP model deployment. Please refer to
         https://cloud.google.com/ml-engine/reference/rest/v1/projects.models
         for detailed description.
-      beam_pipeline_args: Optional list of beam pipeline options. Please refer to
+      beam_pipeline_args: Optional list of beam pipeline options. Please refer
+        to
         https://cloud.google.com/dataflow/docs/guides/specifying-exec-params#setting-other-cloud-dataflow-pipeline-options.
         When this argument is not provided, the default is to use GCP
         DataflowRunner with 50GB disk size as specified in this function. If an
-        empty list is passed in, default specified by Beam will be used, which can
-        be found at
+        empty list is passed in, default specified by Beam will be used, which
+        can be found at
         https://cloud.google.com/dataflow/docs/guides/specifying-exec-params#setting-other-cloud-dataflow-pipeline-options
       enable_cache: Optional boolean
     Returns:
       A TFX pipeline object.
     """
 
-    # Brings data into the pipeline and splits the data into training and eval splits
+    # Brings data into the pipeline and splits the data into training and eval
+    # splits
     output = example_gen_pb2.Output(
         split_config=example_gen_pb2.SplitConfig(
             splits=[
@@ -121,8 +107,9 @@ def create_pipeline(
     # Computes statistics over data for visualization and example validation.
     statisticsgen = StatisticsGen(examples=examplegen.outputs.examples)
 
-    # Generates schema based on statistics files. Even though, we use user-provided schema
-    # we still want to generate the schema of the newest data for tracking and comparison
+    # Generates schema based on statistics files. Even though, we use
+    # user-provided schema we still want to generate the schema of the newest
+    # data for tracking and comparison
     schemagen = SchemaGen(statistics=statisticsgen.outputs.statistics)
 
     # Import a user-provided schema
@@ -149,7 +136,8 @@ def create_pipeline(
     # function. Note that once the hyperparameters are tuned, you can drop the
     # Tuner component from pipeline and feed Trainer with tuned hyperparameters.
     if enable_tuning:
-        # The Tuner component launches 1 AI Platform Training job for flock management.
+        # The Tuner component launches 1 AI Platform Training job for flock
+        # management.
         # For example, 3 workers (defined by num_parallel_trials) in the flock
         # management AI Platform Training job, each runs Tuner.Executor.
         tuner = Tuner(
@@ -159,12 +147,15 @@ def create_pipeline(
             train_args={"num_steps": train_steps},
             eval_args={"num_steps": eval_steps},
             tune_args=tuner_pb2.TuneArgs(
-                # num_parallel_trials=3 means that 3 search loops are running in parallel.
+                # num_parallel_trials=3 means that 3 search loops are running
+                # in parallel.
                 num_parallel_trials=3
             ),
             custom_config={
-                # Configures Cloud AI Platform-specific configs. For details, see
+                # Configures Cloud AI Platform-specific configs. For details,
+                # see
                 # https://cloud.google.com/ai-platform/training/docs/reference/rest/v1/projects.jobs#traininginput.
+                # pylint: disable-next=line-too-long
                 ai_platform_trainer_executor.TRAINING_ARGS_KEY: ai_platform_training_args
             },
         )
@@ -264,6 +255,7 @@ def create_pipeline(
         model_blessing=evaluator.outputs.blessing,
         infra_blessing=infravalidator.outputs.blessing,
         custom_config={
+            # pylint: disable-next=line-too-long
             ai_platform_pusher_executor.SERVING_ARGS_KEY: ai_platform_serving_args
         },
     )

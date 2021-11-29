@@ -14,16 +14,13 @@
 """Covertype Keras WideDeep Classifier."""
 
 import functools
-import os
-from typing import List, Text
+from typing import List
 
 import absl
 import features
 import kerastuner
 import tensorflow as tf
-import tensorflow_model_analysis as tfma
 import tensorflow_transform as tft
-from tensorflow_transform.tf_metadata import schema_utils
 from tfx.components.trainer.executor import TrainerFnArgs
 from tfx.components.trainer.fn_args_utils import DataAccessor
 from tfx.components.tuner.component import TunerFnResult
@@ -40,7 +37,8 @@ def _gzip_reader_fn(filenames):
 
 
 def _get_serve_tf_examples_fn(model, tf_transform_output):
-    """Returns a function that parses a serialized tf.Example and applies TFT."""
+    """Returns a function that parses a serialized tf.Example and applies
+    TFT."""
 
     model.tft_layer = tf_transform_output.transform_features_layer()
 
@@ -194,23 +192,26 @@ def tuner_fn(fn_args: TrainerFnArgs) -> TunerFnResult:
     Returns:
       A namedtuple contains the following:
         - tuner: A BaseTuner that will be used for tuning.
-        - fit_kwargs: Args to pass to tuner's run_trial function for fitting the
-                      model , e.g., the training and validation dataset. Required
-                      args depend on the above tuner's implementation.
+        - fit_kwargs: Args to pass to tuner's run_trial function for fitting
+                      the model , e.g., the training and validation dataset.
+                      Required args depend on the above tuner's implementation.
     """
     transform_graph = tft.TFTransformOutput(fn_args.transform_graph_path)
 
-    # Construct a build_keras_model_fn that just takes hyperparams from get_hyperparameters as input.
+    # Construct a build_keras_model_fn that just takes hyperparams from
+    # get_hyperparameters as input.
     build_keras_model_fn = functools.partial(
         _build_keras_model, tf_transform_output=transform_graph
     )
 
-    # BayesianOptimization is a subclass of kerastuner.Tuner which inherits from BaseTuner.
+    # BayesianOptimization is a subclass of kerastuner.Tuner which inherits
+    # from BaseTuner.
     tuner = kerastuner.BayesianOptimization(
         build_keras_model_fn,
         max_trials=10,
         hyperparameters=_get_hyperparameters(),
-        # New entries allowed for n_units hyperparameter construction conditional on n_layers selected.
+        # New entries allowed for n_units hyperparameter construction
+        # conditional on n_layers selected.
         #       allow_new_entries=True,
         #       tune_new_entries=True,
         objective=kerastuner.Objective(
@@ -273,11 +274,11 @@ def run_fn(fn_args: TrainerFnArgs):
             fn_args.hyperparameters
         )
     else:
-        # This is a shown case when hyperparameters is decided and Tuner is removed
-        # from the pipeline. User can also inline the hyperparameters directly in
-        # _build_keras_model.
+        # This is a shown case when hyperparameters is decided and Tuner is
+        # removed from the pipeline. User can also inline the hyperparameters
+        # directly in _build_keras_model.
         hparams = _get_hyperparameters()
-    absl.logging.info("HyperParameters for training: %s" % hparams.get_config())
+    absl.logging.info(f"HyperParameters for training: {hparams.get_config()}")
 
     # Distribute training over multiple replicas on the same machine.
     mirrored_strategy = tf.distribute.MirroredStrategy()

@@ -28,7 +28,8 @@ from tfx_bsl.tfxio import dataset_options
 
 
 def _get_serve_tf_examples_fn(model, tf_transform_output):
-    """Returns a function that parses a serialized tf.Example and applies TFT."""
+    """Returns a function that parses a serialized tf.Example and applies
+    TFT."""
 
     model.tft_layer = tf_transform_output.transform_features_layer()
 
@@ -133,8 +134,8 @@ def _wide_and_deep_classifier(
     """Build a simple keras wide and deep model.
 
     Args:
-      wide_columns: Feature columns wrapped in indicator_column for wide (linear)
-        part of the model.
+      wide_columns: Feature columns wrapped in indicator_column for wide
+        (linear) part of the model.
       deep_columns: Feature columns for deep part of the model.
       dnn_hidden_units: [int], the layer sizes of the hidden DNN.
       learning_rate: [float], learning rate of the Adam optimizer.

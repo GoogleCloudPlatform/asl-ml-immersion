@@ -18,12 +18,12 @@ This file defines TFX pipeline and various components in the pipeline.
 """
 
 
-from typing import Any, Dict, List, Optional, Text
+from typing import Any, Dict, List, Optional
 
 import tensorflow_model_analysis as tfma
 from ml_metadata.proto import metadata_store_pb2
+from tfx.components import CsvExampleGen  # pylint: disable=unused-import
 from tfx.components import (
-    CsvExampleGen,
     Evaluator,
     ExampleValidator,
     Pusher,
@@ -55,7 +55,7 @@ from tfx.utils.dsl_utils import external_input
 def create_pipeline(
     pipeline_name: str,
     pipeline_root: str,
-    data_path: str,
+    data_path: str,  # pylint: disable=unused-argument
     # TODO(step 7): (Optional) Uncomment here to use BigQuery as a data source.
     query: str,
     preprocessing_fn: str,
@@ -132,6 +132,7 @@ def create_pipeline(
                     ai_platform_trainer_executor.GenericExecutor
                 ),
                 "custom_config": {
+                    # pylint: disable-next=line-too-long
                     ai_platform_trainer_executor.TRAINING_ARGS_KEY: ai_platform_training_args,
                 },
             }
@@ -202,6 +203,7 @@ def create_pipeline(
                     ai_platform_pusher_executor.Executor
                 ),
                 "custom_config": {
+                    # pylint: disable-next=line-too-long
                     ai_platform_pusher_executor.SERVING_ARGS_KEY: ai_platform_serving_args
                 },
             }
@@ -214,8 +216,8 @@ def create_pipeline(
         pipeline_name=pipeline_name,
         pipeline_root=pipeline_root,
         components=components,
-        # Change this value to control caching of execution results. Default value
-        # is `False`.
+        # Change this value to control caching of execution results. Default
+        # value is `False`.
         enable_cache=False,
         metadata_connection_config=metadata_connection_config,
         beam_pipeline_args=beam_pipeline_args,

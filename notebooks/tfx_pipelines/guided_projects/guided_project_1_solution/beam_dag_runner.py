@@ -74,6 +74,8 @@ def run():
             #               config for BigQuery with Beam DirectRunner.
             # beam_pipeline_args=configs.
             # BIG_QUERY_WITH_DIRECT_RUNNER_BEAM_PIPELINE_ARGS,
+            #
+            # pylint: disable-next=line-too-long
             metadata_connection_config=metadata.sqlite_metadata_connection_config(
                 METADATA_PATH
             ),

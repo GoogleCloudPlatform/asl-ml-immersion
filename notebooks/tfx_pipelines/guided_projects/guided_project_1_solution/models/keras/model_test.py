@@ -12,22 +12,24 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""Model Test."""
 
 
 import tensorflow as tf
 from models.keras import model
 
 
+# pylint: disable=protected-access
 class ModelTest(tf.test.TestCase):
     def testBuildKerasModel(self):
         built_model = model._build_keras_model(
             hidden_units=[1, 1], learning_rate=0.1
-        )  # pylint: disable=protected-access
+        )
         self.assertEqual(len(built_model.layers), 10)
 
         built_model = model._build_keras_model(
             hidden_units=[1], learning_rate=0.1
-        )  # pylint: disable=protected-access
+        )
         self.assertEqual(len(built_model.layers), 9)
 
 

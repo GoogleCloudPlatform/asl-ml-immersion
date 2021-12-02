@@ -77,7 +77,7 @@ _query_sample_rate = 0.0001  # Generate a 0.01% random sample.
 # used for this example is a public dataset available on Google AI Platform.
 # https://console.cloud.google.com/marketplace/details/city-of-chicago-public-data/chicago-taxi-trips
 # TODO(step 7): (Optional) Uncomment here to use BigQuery.
-BIG_QUERY_QUERY = """
+BIG_QUERY_QUERY = f"""
         SELECT
           pickup_community_area,
           fare,
@@ -100,9 +100,7 @@ BIG_QUERY_QUERY = """
           IF(tips > fare * 0.2, 1, 0) AS big_tipper
         FROM `bigquery-public-data.chicago_taxi_trips.taxi_trips`
         WHERE (ABS(FARM_FINGERPRINT(unique_key)) / 0x7FFFFFFFFFFFFFFF)
-          < {query_sample_rate}""".format(
-    query_sample_rate=_query_sample_rate
-)
+          < {_query_sample_rate}"""
 
 # Beam args to run data processing on DataflowRunner.
 #

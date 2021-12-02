@@ -18,6 +18,7 @@ This file defines TFX pipeline and various components in the pipeline.
 """
 
 
+# pylint: disable=unused-import
 from typing import Any, Dict, List, Optional, Text
 
 import tensorflow_model_analysis as tfma
@@ -131,6 +132,7 @@ def create_pipeline(
                     ai_platform_trainer_executor.GenericExecutor
                 ),
                 "custom_config": {
+                    # pylint: disable-next=line-too-long
                     ai_platform_trainer_executor.TRAINING_ARGS_KEY: ai_platform_training_args,
                 },
             }
@@ -201,6 +203,7 @@ def create_pipeline(
                     ai_platform_pusher_executor.Executor
                 ),
                 "custom_config": {
+                    # pylint: disable-next=line-too-long
                     ai_platform_pusher_executor.SERVING_ARGS_KEY: ai_platform_serving_args
                 },
             }
@@ -213,8 +216,8 @@ def create_pipeline(
         pipeline_name=pipeline_name,
         pipeline_root=pipeline_root,
         components=components,
-        # Change this value to control caching of execution results. Default value
-        # is `False`.
+        # Change this value to control caching of execution results. Default
+        # value is `False`.
         # enable_cache=True,
         metadata_connection_config=metadata_connection_config,
         beam_pipeline_args=beam_pipeline_args,

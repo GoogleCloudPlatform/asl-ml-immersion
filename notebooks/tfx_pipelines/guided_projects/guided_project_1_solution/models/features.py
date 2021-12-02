@@ -19,7 +19,7 @@ including features names, label and size of vocabulary.
 """
 
 
-from typing import List, Text
+from typing import List
 
 # At least one feature is needed.
 

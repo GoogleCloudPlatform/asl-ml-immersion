@@ -15,7 +15,6 @@
 """KFP runner configuration"""
 
 from distutils.util import strtobool
-from typing import Dict, List, Optional, Text
 
 import kfp
 from config import Config
@@ -65,17 +64,15 @@ if __name__ == "__main__":
         name="eval-steps", default=500, ptype=int
     )
 
-    pipeline_root = "{}/{}/{}".format(
-        Config.ARTIFACT_STORE_URI,
-        Config.PIPELINE_NAME,
-        kfp.dsl.RUN_ID_PLACEHOLDER,
-    )
+    # pylint: disable-next=line-too-long"
+    pipeline_root = f"{Config.ARTIFACT_STORE_URI}/{Config.PIPELINE_NAME}/{kfp.dsl.RUN_ID_PLACEHOLDER}"
 
     # Set KubeflowDagRunner settings.
     metadata_config = kubeflow_dag_runner.get_default_kubeflow_metadata_config()
 
     runner_config = kubeflow_dag_runner.KubeflowDagRunnerConfig(
         kubeflow_metadata_config=metadata_config,
+        # pylint: disable-next=line-too-long
         pipeline_operator_funcs=kubeflow_dag_runner.get_default_pipeline_operator_funcs(
             strtobool(Config.USE_KFP_SA)
         ),

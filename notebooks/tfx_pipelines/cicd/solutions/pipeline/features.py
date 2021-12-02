@@ -12,6 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Covertype model  taxi model features."""
+import tensorflow as tf
+import tensorflow_model_analysis as tfma
+import tensorflow_transform as tft
+from tensorflow_transform.tf_metadata import schema_utils
 
 NUMERIC_FEATURE_KEYS = [
     "Elevation",

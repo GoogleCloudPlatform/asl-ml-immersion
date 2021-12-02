@@ -13,19 +13,18 @@
 # limitations under the License.
 """Covertype Keras WideDeep Classifier.
 
-See additional TFX example pipelines, including the Penguin Pipeline Kubeflow GCP example
-that this pipeline is based upon: https://github.com/tensorflow/tfx/blob/master/tfx/examples.
+See additional TFX example pipelines, including the Penguin Pipeline Kubeflow
+GCP example that this pipeline is based upon:
+https://github.com/tensorflow/tfx/blob/master/tfx/examples.
 
 """
 
 import functools
-import os
-from typing import List, Text
+from typing import List
 
 import absl
 import kerastuner
 import tensorflow as tf
-import tensorflow_model_analysis as tfma
 import tensorflow_transform as tft
 from models import features
 from models.keras.constants import (
@@ -35,7 +34,6 @@ from models.keras.constants import (
     TRAIN_BATCH_SIZE,
 )
 from tensorflow_cloud import CloudTuner
-from tensorflow_transform.tf_metadata import schema_utils
 from tfx.components.trainer.executor import TrainerFnArgs
 from tfx.components.trainer.fn_args_utils import DataAccessor
 from tfx.components.tuner.component import TunerFnResult
@@ -48,7 +46,8 @@ def _gzip_reader_fn(filenames):
 
 
 def _get_serve_tf_examples_fn(model, tf_transform_output):
-    """Returns a function that parses a serialized tf.Example and applies TFT."""
+    """Returns a function that parses a serialized tf.Example and applies
+    TFT."""
 
     model.tft_layer = tf_transform_output.transform_features_layer()
 
@@ -120,7 +119,8 @@ def _get_hyperparameters() -> kerastuner.HyperParameters:
         default=1e-3,
     )
     hp.Int("n_layers", 1, 2, default=1)
-    # Based on n_layers, search for the optimal number of hidden units in each layer.
+    # Based on n_layers, search for the optimal number of hidden units in each
+    # layer.
     with hp.conditional_scope("n_layers", 1):
         hp.Int("n_units_1", min_value=8, max_value=128, step=8, default=8)
     with hp.conditional_scope("n_layers", 2):
@@ -210,23 +210,26 @@ def _build_keras_model(
 def tuner_fn(fn_args: TrainerFnArgs) -> TunerFnResult:
     """Build the tuner using CloudTuner (KerasTuner instance).
     Args:
-      fn_args: Holds args used to train and tune the model as name/value pairs. See
+      fn_args: Holds args used to train and tune the model as name/value pairs.
+        See
         https://www.tensorflow.org/tfx/api_docs/python/tfx/components/trainer/fn_args_utils/FnArgs.
     Returns:
       A namedtuple contains the following:
         - tuner: A BaseTuner that will be used for tuning.
         - fit_kwargs: Args to pass to tuner's run_trial function for fitting the
-                      model , e.g., the training and validation dataset. Required
-                      args depend on the above tuner's implementation.
+                      model , e.g., the training and validation dataset.
+                      Required args depend on the above tuner's implementation.
     """
     transform_graph = tft.TFTransformOutput(fn_args.transform_graph_path)
 
-    # Construct a build_keras_model_fn that just takes hyperparams from get_hyperparameters as input.
+    # Construct a build_keras_model_fn that just takes hyperparams from
+    # get_hyperparameters as input.
     build_keras_model_fn = functools.partial(
         _build_keras_model, tf_transform_output=transform_graph
     )
 
-    # CloudTuner is a subclass of kerastuner.Tuner which inherits from BaseTuner.
+    # CloudTuner is a subclass of kerastuner.Tuner which inherits from
+    # BaseTuner.
     tuner = CloudTuner(
         build_keras_model_fn,
         project_id=fn_args.custom_config["ai_platform_training_args"][
@@ -269,9 +272,9 @@ def tuner_fn(fn_args: TrainerFnArgs) -> TunerFnResult:
 def _copy_tensorboard_logs(local_path: str, gcs_path: str):
     """Copies Tensorboard logs from a local dir to a GCS location.
 
-    After training, batch copy Tensorboard logs locally to a GCS location. This can result
-    in faster pipeline runtimes over streaming logs per batch to GCS that can get bottlenecked
-    when streaming large volumes.
+    After training, batch copy Tensorboard logs locally to a GCS location. This
+    can result in faster pipeline runtimes over streaming logs per batch to GCS
+    that can get bottleneckedi when streaming large volumes.
 
     Args:
       local_path: local filesystem directory uri.
@@ -292,7 +295,8 @@ def _copy_tensorboard_logs(local_path: str, gcs_path: str):
 def run_fn(fn_args: TrainerFnArgs):
     """Train the model based on given args.
     Args:
-      fn_args: Holds args used to train and tune the model as name/value pairs. See
+      fn_args: Holds args used to train and tune the model as name/value pairs.
+        See
         https://www.tensorflow.org/tfx/api_docs/python/tfx/components/trainer/fn_args_utils/FnArgs.
     """
 
@@ -317,11 +321,11 @@ def run_fn(fn_args: TrainerFnArgs):
             fn_args.hyperparameters
         )
     else:
-        # This is a shown case when hyperparameters is decided and Tuner is removed
-        # from the pipeline. User can also inline the hyperparameters directly in
-        # _build_keras_model.
+        # This is a shown case when hyperparameters is decided and Tuner is
+        # removed from the pipeline. User can also inline the hyperparameters
+        # directly in _build_keras_model.
         hparams = _get_hyperparameters()
-    absl.logging.info("HyperParameters for training: %s" % hparams.get_config())
+    absl.logging.info(f"HyperParameters for training: {hparams.get_config()}")
 
     # Distribute training over multiple replicas on the same machine.
     mirrored_strategy = tf.distribute.MirroredStrategy()

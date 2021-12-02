@@ -1,5 +1,4 @@
-# Lint as: python2, python3
-# Copyright 2020 Google LLC. All Rights Reserved.
+# Copyright 2021 Google LLC. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""Model Test."""
 
 
 import tensorflow as tf
@@ -32,9 +32,8 @@ class ModelTest(tf.test.TestCase):
             eval_steps=100,
         )
         schema = schema_pb2.Schema()
-        result = model._create_train_and_eval_spec(
-            trainer_fn_args, schema
-        )  # pylint: disable=protected-access
+        # pylint: disable-next=protected-access
+        result = model._create_train_and_eval_spec(trainer_fn_args, schema)
         self.assertIsInstance(result["estimator"], tf.estimator.Estimator)
         self.assertIsInstance(result["train_spec"], tf.estimator.TrainSpec)
         self.assertIsInstance(result["eval_spec"], tf.estimator.EvalSpec)

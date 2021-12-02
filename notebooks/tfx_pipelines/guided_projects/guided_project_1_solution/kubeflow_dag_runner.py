@@ -79,7 +79,8 @@ def run():
             pipeline_name=configs.PIPELINE_NAME,
             pipeline_root=PIPELINE_ROOT,
             data_path=DATA_PATH,
-            # TODO(step 7): (Optional) Uncomment below to use BigQueryExampleGen.
+            # TODO(step 7): (Optional) Uncomment below to use
+            # BigQueryExampleGen.
             query=configs.BIG_QUERY_QUERY,
             preprocessing_fn=configs.PREPROCESSING_FN,
             run_fn=configs.RUN_FN,
@@ -87,9 +88,9 @@ def run():
             eval_args=trainer_pb2.EvalArgs(num_steps=configs.EVAL_NUM_STEPS),
             eval_accuracy_threshold=configs.EVAL_ACCURACY_THRESHOLD,
             serving_model_dir=SERVING_MODEL_DIR,
-            # TODO(step 7): (Optional) Uncomment below to use provide GCP related
-            #               config for BigQuery with Beam DirectRunner.
-            # beam_pipeline_args=configs.BIG_QUERY_WITH_DIRECT_RUNNER_BEAM_PIPELINE_ARGS,
+            # TODO(step 7): (Optional) Uncomment below to use provide GCP
+            #               related config for BigQuery with Beam DirectRunner.
+            # beam_pipeline_args=configs.BIG_QUERY_WITH_DIRECT_RUNNER_BEAM_PIPELINE_ARGS, # pylint: disable=line-too-long
             # TODO(step 8): (Optional) Uncomment below to use Dataflow.
             beam_pipeline_args=configs.DATAFLOW_BEAM_PIPELINE_ARGS,
             # TODO(step 9): (Optional) Uncomment below to use Cloud AI Platform.

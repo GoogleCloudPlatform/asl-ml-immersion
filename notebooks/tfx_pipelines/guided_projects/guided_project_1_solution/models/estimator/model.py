@@ -300,8 +300,8 @@ def run_fn(fn_args):
     )
 
     # Export an eval savedmodel for TFMA
-    # NOTE: When trained in distributed training cluster, eval_savedmodel must be
-    # exported only by the chief worker.
+    # NOTE: When trained in distributed training cluster, eval_savedmodel must
+    # be exported only by the chief worker.
     logging.info("Exporting eval_savedmodel for TFMA.")
     tfma.export.export_eval_savedmodel(
         estimator=train_and_eval_spec["estimator"],

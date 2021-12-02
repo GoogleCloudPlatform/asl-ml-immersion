@@ -28,7 +28,6 @@ class Config:
     )
     CUSTOM_SERVICE_ACCOUNT = os.getenv(
         "CUSTOM_SERVICE_ACCOUNT",
-        "tfx-tuner-caip-service-account@dougkelly-sandbox.iam.gserviceaccount.com",
     )
     # Lab user runtime environment settings
     PIPELINE_NAME = os.getenv("PIPELINE_NAME", "covertype_continuous_training")

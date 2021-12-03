@@ -31,6 +31,13 @@ It is trickier to run linters on notebooks than on simple `.py` text files, but 
 
 However there are luckily other tools that wrap around such a process, as well as handle notebook idiosyncracies such as magic cells: [nbQA](https://nbqa.readthedocs.io/en/latest/index.html) and recently even built in to [Black](https://black.readthedocs.io/en/stable/change_log.html?highlight=jupyter#id5).
 
+### Intro: pre-commit
+
+### Intro: pre-commit.ci
+
+### Putting it together
+
+### FAQ
 
 
 

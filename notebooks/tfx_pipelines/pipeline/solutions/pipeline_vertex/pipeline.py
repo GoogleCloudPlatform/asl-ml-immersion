@@ -12,40 +12,40 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Covertype training pipeline DSL."""
-
-from typing import Dict, List, Optional
+import os.path
+from typing import List, Optional
 
 import tensorflow_model_analysis as tfma
 from tfx.components import (
     CsvExampleGen,
     Evaluator,
     ExampleValidator,
-    ImporterNode,
     InfraValidator,
     Pusher,
-    ResolverNode,
     SchemaGen,
     StatisticsGen,
     Trainer,
     Transform,
 )
-from tfx.dsl.components.base import executor_spec
-from tfx.dsl.experimental import latest_blessed_model_resolver
-from tfx.extensions.google_cloud_ai_platform.pusher import (
-    executor as ai_platform_pusher_executor,
+from tfx.dsl.components.common.importer import Importer
+from tfx.dsl.components.common.resolver import Resolver
+from tfx.dsl.input_resolution.strategies.latest_blessed_model_strategy import (
+    LatestBlessedModelStrategy,
 )
-from tfx.extensions.google_cloud_ai_platform.trainer import (
-    executor as ai_platform_trainer_executor,
-)
-from tfx.extensions.google_cloud_ai_platform.tuner.component import Tuner
 from tfx.orchestration import data_types, pipeline
-from tfx.proto import example_gen_pb2, infra_validator_pb2, tuner_pb2
+from tfx.proto import (
+    example_gen_pb2,
+    infra_validator_pb2,
+    pusher_pb2,
+    trainer_pb2,
+)
 from tfx.types import Channel
 from tfx.types.standard_artifacts import Model, ModelBlessing, Schema
 
 SCHEMA_FOLDER = "schema"
 TRANSFORM_MODULE_FILE = "preprocessing.py"
 TRAIN_MODULE_FILE = "model.py"
+SERVING_MODEL_DIR = "serving-model"
 
 
 def create_pipeline(
@@ -54,46 +54,10 @@ def create_pipeline(
     data_root_uri: data_types.RuntimeParameter,
     train_steps: data_types.RuntimeParameter,
     eval_steps: data_types.RuntimeParameter,
-    enable_tuning: bool,
-    ai_platform_training_args: Dict[str, str],
-    ai_platform_serving_args: Dict[str, str],
     beam_pipeline_args: List[str],
     enable_cache: Optional[bool] = False,
-) -> pipeline.Pipeline:
-    """Trains and deploys the Keras Covertype Classifier with TFX and Kubeflow
-    Pipeline on Google Cloud.
-    Args:
-      pipeline_name: name of the TFX pipeline being created.
-      pipeline_root: root directory of the pipeline. Should be a valid GCS
-        path.
-      data_root_uri: uri of the dataset.
-      train_steps: runtime parameter for number of model training steps for the
-        Trainer component.
-      eval_steps: runtime parameter for number of model evaluation steps for the
-        Trainer component.
-      enable_tuning: If True, the hyperparameter tuning through CloudTuner is
-        enabled.
-      ai_platform_training_args: Args of CAIP training job. Please refer to
-        https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs#Job
-        for detailed description.
-      ai_platform_serving_args: Args of CAIP model deployment. Please refer to
-        https://cloud.google.com/ml-engine/reference/rest/v1/projects.models
-        for detailed description.
-      beam_pipeline_args: Optional list of beam pipeline options. Please refer
-        to
-        https://cloud.google.com/dataflow/docs/guides/specifying-exec-params#setting-other-cloud-dataflow-pipeline-options.
-        When this argument is not provided, the default is to use GCP
-        DataflowRunner with 50GB disk size as specified in this function. If an
-        empty list is passed in, default specified by Beam will be used, which
-        can be found at
-        https://cloud.google.com/dataflow/docs/guides/specifying-exec-params#setting-other-cloud-dataflow-pipeline-options
-      enable_cache: Optional boolean
-    Returns:
-      A TFX pipeline object.
-    """
+):
 
-    # Brings data into the pipeline and splits the data into training and eval
-    # splits
     output = example_gen_pb2.Output(
         split_config=example_gen_pb2.SplitConfig(
             splits=[
@@ -103,93 +67,54 @@ def create_pipeline(
         )
     )
 
-    examplegen = CsvExampleGen(input_base=data_root_uri, output_config=output)
+    examplegen = CsvExampleGen(
+        input_base=data_root_uri, output_config=output
+    ).with_id("CsvExampleGen")
 
-    # Computes statistics over data for visualization and example validation.
-    statisticsgen = StatisticsGen(examples=examplegen.outputs.examples)
+    statisticsgen = StatisticsGen(
+        examples=examplegen.outputs["examples"]
+    ).with_id("StatisticsGen")
 
-    # Generates schema based on statistics files. Even though, we use
-    # user-provided schema we still want to generate the schema of the newest
-    # data for tracking and comparison
-    schemagen = SchemaGen(statistics=statisticsgen.outputs.statistics)
+    schemagen = SchemaGen(
+        statistics=statisticsgen.outputs["statistics"]
+    ).with_id("SchemaGen")
 
-    # Import a user-provided schema
-    import_schema = ImporterNode(
-        instance_name="import_user_schema",
+    import_schema = Importer(
         source_uri=SCHEMA_FOLDER,
         artifact_type=Schema,
-    )
+    ).with_id("SchemaImporter")
 
-    # Performs anomaly detection based on statistics and data schema.
     examplevalidator = ExampleValidator(
-        statistics=statisticsgen.outputs.statistics,
-        schema=import_schema.outputs.result,
-    )
+        statistics=statisticsgen.outputs["statistics"],
+        schema=import_schema.outputs["result"],
+    ).with_id("ExampleValidator")
 
-    # Performs transformations and feature engineering in training and serving.
     transform = Transform(
-        examples=examplegen.outputs.examples,
-        schema=import_schema.outputs.result,
+        examples=examplegen.outputs["examples"],
+        schema=import_schema.outputs["result"],
         module_file=TRANSFORM_MODULE_FILE,
-    )
+    ).with_id("Transform")
 
-    # Tunes the hyperparameters for model training based on user-provided Python
-    # function. Note that once the hyperparameters are tuned, you can drop the
-    # Tuner component from pipeline and feed Trainer with tuned hyperparameters.
-    if enable_tuning:
-        # The Tuner component launches 1 AI Platform Training job for flock
-        # management.
-        # For example, 3 workers (defined by num_parallel_trials) in the flock
-        # management AI Platform Training job, each runs Tuner.Executor.
-        tuner = Tuner(
-            module_file=TRAIN_MODULE_FILE,
-            examples=transform.outputs.transformed_examples,
-            transform_graph=transform.outputs.transform_graph,
-            train_args={"num_steps": train_steps},
-            eval_args={"num_steps": eval_steps},
-            tune_args=tuner_pb2.TuneArgs(
-                # num_parallel_trials=3 means that 3 search loops are running
-                # in parallel.
-                num_parallel_trials=3
-            ),
-            custom_config={
-                # Configures Cloud AI Platform-specific configs. For details,
-                # see
-                # https://cloud.google.com/ai-platform/training/docs/reference/rest/v1/projects.jobs#traininginput.
-                # pylint: disable-next=line-too-long
-                ai_platform_trainer_executor.TRAINING_ARGS_KEY: ai_platform_training_args
-            },
-        )
-
-    # Trains the model using a user provided trainer function.
     trainer = Trainer(
-        custom_executor_spec=executor_spec.ExecutorClassSpec(
-            ai_platform_trainer_executor.GenericExecutor
-        ),
         module_file=TRAIN_MODULE_FILE,
-        transformed_examples=transform.outputs.transformed_examples,
-        schema=import_schema.outputs.result,
-        transform_graph=transform.outputs.transform_graph,
-        hyperparameters=(
-            tuner.outputs.best_hyperparameters if enable_tuning else None
+        examples=transform.outputs["transformed_examples"],
+        schema=import_schema.outputs["result"],
+        transform_graph=transform.outputs["transform_graph"],
+        train_args=trainer_pb2.TrainArgs(
+            splits=["train"], num_steps=train_steps
         ),
-        train_args={"num_steps": train_steps},
-        eval_args={"num_steps": eval_steps},
-        custom_config={"ai_platform_training_args": ai_platform_training_args},
-    )
+        eval_args=trainer_pb2.EvalArgs(splits=["eval"], num_steps=eval_steps),
+    ).with_id("Trainer")
 
-    # Get the latest blessed model for model validation.
-    resolver = ResolverNode(
-        instance_name="latest_blessed_model_resolver",
-        resolver_class=latest_blessed_model_resolver.LatestBlessedModelResolver,
+    resolver = Resolver(
+        strategy_class=LatestBlessedModelStrategy,
         model=Channel(type=Model),
         model_blessing=Channel(type=ModelBlessing),
-    )
+    ).with_id("LatestBlessedModelResolver")
 
-    # Uses TFMA to compute a evaluation statistics over features of a model.
     accuracy_threshold = tfma.MetricThreshold(
         value_threshold=tfma.GenericValueThreshold(
-            lower_bound={"value": 0.5}, upper_bound={"value": 0.99}
+            lower_bound={"value": 0.0}, upper_bound={"value": 0.99}
         ),
     )
 
@@ -213,53 +138,44 @@ def create_pipeline(
     )
 
     evaluator = Evaluator(
-        examples=examplegen.outputs.examples,
-        model=trainer.outputs.model,
-        baseline_model=resolver.outputs.model,
+        examples=examplegen.outputs["examples"],
+        model=trainer.outputs["model"],
+        baseline_model=resolver.outputs["model"],
         eval_config=eval_config,
-    )
+    ).with_id("ModelEvaluator")
 
-    # Validate model can be loaded and queried in sand-boxed environment
-    # mirroring production.
-    serving_config = infra_validator_pb2.ServingSpec(
-        tensorflow_serving=infra_validator_pb2.TensorFlowServing(
-            tags=["latest"]
-        ),
-        kubernetes=infra_validator_pb2.KubernetesConfig(),
-    )
-
-    validation_config = infra_validator_pb2.ValidationSpec(
-        max_loading_time_seconds=60,
-        num_tries=3,
-    )
-
-    request_config = infra_validator_pb2.RequestSpec(
-        tensorflow_serving=infra_validator_pb2.TensorFlowServingRequestSpec(),
-        num_examples=3,
-    )
-
+    serving_request_spec = infra_validator_pb2.TensorFlowServingRequestSpec()
     infravalidator = InfraValidator(
-        model=trainer.outputs.model,
-        examples=examplegen.outputs.examples,
-        serving_spec=serving_config,
-        validation_spec=validation_config,
-        request_spec=request_config,
-    )
-
-    # Checks whether the model passed the validation steps and pushes the model
-    # to CAIP Prediction if checks are passed.
-    pusher = Pusher(
-        custom_executor_spec=executor_spec.ExecutorClassSpec(
-            ai_platform_pusher_executor.Executor
+        model=trainer.outputs["model"],
+        examples=examplegen.outputs["examples"],
+        serving_spec=infra_validator_pb2.ServingSpec(
+            tensorflow_serving=infra_validator_pb2.TensorFlowServing(
+                tags=["latest"]
+            ),
+            local_docker=infra_validator_pb2.LocalDockerConfig(),
         ),
-        model=trainer.outputs.model,
-        model_blessing=evaluator.outputs.blessing,
-        infra_blessing=infravalidator.outputs.blessing,
-        custom_config={
-            # pylint: disable-next=line-too-long
-            ai_platform_pusher_executor.SERVING_ARGS_KEY: ai_platform_serving_args
-        },
-    )
+        validation_spec=infra_validator_pb2.ValidationSpec(
+            max_loading_time_seconds=60,
+            num_tries=5,
+        ),
+        request_spec=infra_validator_pb2.RequestSpec(
+            tensorflow_serving=serving_request_spec,
+            num_examples=5,
+        ),
+    ).with_id("ModelInfraValidator")
+
+    serving_model_dir = os.path.join(pipeline_root, SERVING_MODEL_DIR)
+
+    pusher = Pusher(
+        model=trainer.outputs["model"],
+        model_blessing=evaluator.outputs["blessing"],
+        infra_blessing=infravalidator.outputs["blessing"],
+        push_destination=pusher_pb2.PushDestination(
+            filesystem=pusher_pb2.PushDestination.Filesystem(
+                base_directory=serving_model_dir
+            )
+        ),
+    ).with_id("ModelPusher")
 
     components = [
         examplegen,
@@ -275,13 +191,12 @@ def create_pipeline(
         pusher,
     ]
 
-    if enable_tuning:
-        components.append(tuner)
-
-    return pipeline.Pipeline(
+    tfx_pipeline = pipeline.Pipeline(
         pipeline_name=pipeline_name,
         pipeline_root=pipeline_root,
         components=components,
         enable_cache=enable_cache,
         beam_pipeline_args=beam_pipeline_args,
     )
+
+    return tfx_pipeline

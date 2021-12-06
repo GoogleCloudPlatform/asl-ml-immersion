@@ -1,4 +1,4 @@
-FROM tensorflow/tfx:0.25.0
-WORKDIR ./pipeline
-COPY ./ ./
-ENV PYTHONPATH="/pipeline:${PYTHONPATH}"
+FROM gcr.io/tfx-oss-public/tfx:1.4.0
+
+RUN pip install -U pip
+RUN pip install google-cloud-aiplatform==1.7.1 kfp==1.8.1

@@ -54,8 +54,6 @@ def create_pipeline(
     data_root_uri: data_types.RuntimeParameter,
     train_steps: data_types.RuntimeParameter,
     eval_steps: data_types.RuntimeParameter,
-    beam_pipeline_args: List[str],
-    enable_cache: Optional[bool] = False,
 ):
 
     output = example_gen_pb2.Output(
@@ -144,32 +142,11 @@ def create_pipeline(
         eval_config=eval_config,
     ).with_id("ModelEvaluator")
 
-    serving_request_spec = infra_validator_pb2.TensorFlowServingRequestSpec()
-    infravalidator = InfraValidator(
-        model=trainer.outputs["model"],
-        examples=examplegen.outputs["examples"],
-        serving_spec=infra_validator_pb2.ServingSpec(
-            tensorflow_serving=infra_validator_pb2.TensorFlowServing(
-                tags=["latest"]
-            ),
-            local_docker=infra_validator_pb2.LocalDockerConfig(),
-        ),
-        validation_spec=infra_validator_pb2.ValidationSpec(
-            max_loading_time_seconds=60,
-            num_tries=5,
-        ),
-        request_spec=infra_validator_pb2.RequestSpec(
-            tensorflow_serving=serving_request_spec,
-            num_examples=5,
-        ),
-    ).with_id("ModelInfraValidator")
-
     serving_model_dir = os.path.join(pipeline_root, SERVING_MODEL_DIR)
 
     pusher = Pusher(
         model=trainer.outputs["model"],
         model_blessing=evaluator.outputs["blessing"],
-        infra_blessing=infravalidator.outputs["blessing"],
         push_destination=pusher_pb2.PushDestination(
             filesystem=pusher_pb2.PushDestination.Filesystem(
                 base_directory=serving_model_dir
@@ -187,7 +164,6 @@ def create_pipeline(
         trainer,
         resolver,
         evaluator,
-        infravalidator,
         pusher,
     ]
 
@@ -195,8 +171,6 @@ def create_pipeline(
         pipeline_name=pipeline_name,
         pipeline_root=pipeline_root,
         components=components,
-        enable_cache=enable_cache,
-        beam_pipeline_args=beam_pipeline_args,
     )
 
     return tfx_pipeline

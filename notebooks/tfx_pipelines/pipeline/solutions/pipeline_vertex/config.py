@@ -16,23 +16,23 @@
 
 import os
 
-DATA_ROOT_DEFAULT = "gs://workshop-datasets/covertype/small"
-
 
 class Config:
     """Sets configuration vars."""
 
-    REGION = os.getenv("REGION")
     PROJECT_ID = os.getenv("PROJECT_ID")
-    ARTIFACT_STORE = os.getenv("ARTIFACT_STORE")
-    PIPELINE_NAME = os.getenv("PIPELINE_NAME")
-    DATA_ROOT_URI = os.getenv("DATA_ROOT_URI", DATA_ROOT_DEFAULT)
-    TFX_IMAGE_URI = os.getenv("TFX_IMAGE_URI")
-    PIPELINE_JSON = os.getenv("PIPELINE_JSON")
-    PIPELINE_ROOT = os.path.join(ARTIFACT_STORE, PIPELINE_NAME)
+    REGION = os.getenv("REGION", "us-central1")
+    ARTIFACT_STORE = os.getenv("ARTIFACT_STORE", f"gs://{PROJECT_ID}")
+    PIPELINE_NAME = os.getenv("PIPELINE_NAME", "tfxcovertype")
 
-    TRAIN_STEPS = 2
-    EVAL_STEPS = 1
+    _DATA_ROOT_DEFAULT = f"gs://{PROJECT_ID}/data/{PIPELINE_NAME}"
+    DATA_ROOT_URI = os.getenv("DATA_ROOT_URI", _DATA_ROOT_DEFAULT)
+
+    _TFX_IMAGE_DEFAULT = f"gcr.io/{PROJECT_ID}/{PIPELINE_NAME}"
+    TFX_IMAGE_URI = os.getenv("TFX_IMAGE_URI", _TFX_IMAGE_DEFAULT)
+
+    PIPELINE_JSON = os.getenv("PIPELINE_JSON", f"{PIPELINE_NAME}.json")
+    PIPELINE_ROOT = os.path.join(ARTIFACT_STORE, PIPELINE_NAME)
 
     BEAM_DIRECT_PIPELINE_ARGS = [
         f"--project={PROJECT_ID}",
@@ -41,4 +41,11 @@ class Config:
         "--runner=DataflowRunner",
     ]
 
-    ENABLE_CACHE = False
+    ENABLE_CACHE = int(os.getenv("ENABLE_CACHE", "False"))
+
+    TRAIN_STEPS = int(os.getenv("TRAIN_STEPS", "2"))
+    EVAL_STEPS = int(os.getenv("EVAL_STEPS", "1"))
+    TRAIN_SPLIT = int(os.getenv("TRAIN_SPLIT", "4"))
+    EVAL_SPLIT = int(os.getenv("EVAL_SPLIT", "1"))
+    PUSH_LOWER_BOUND = float(os.getenv("PUSH_LOWER_BOUND", "0.0"))
+    PUSH_UPPER_BOUND = float(os.getenv("PUSH_UPPER_BOUND", "1.0"))

@@ -55,8 +55,12 @@ def create_pipeline(
     output = example_gen_pb2.Output(
         split_config=example_gen_pb2.SplitConfig(
             splits=[
-                example_gen_pb2.SplitConfig.Split(name="train", hash_buckets=4),
-                example_gen_pb2.SplitConfig.Split(name="eval", hash_buckets=1),
+                example_gen_pb2.SplitConfig.Split(
+                    name="train", hash_buckets=Config.TRAIN_SPLIT
+                ),
+                example_gen_pb2.SplitConfig.Split(
+                    name="eval", hash_buckets=Config.EVAL_SPLIT
+                ),
             ]
         )
     )
@@ -111,7 +115,8 @@ def create_pipeline(
 
     accuracy_threshold = tfma.MetricThreshold(
         value_threshold=tfma.GenericValueThreshold(
-            lower_bound={"value": 0.0}, upper_bound={"value": 0.99}
+            lower_bound={"value": Config.PUSH_LOWER_BOUND},
+            upper_bound={"value": Config.PUSH_UPPER_BOUND},
         ),
     )
 
@@ -171,7 +176,7 @@ def create_pipeline(
         pipeline_root=pipeline_root,
         components=components,
         beam_pipeline_args=beam_pipeline_args,
-        enable_cache=int(Config.ENABLE_CACHE),
+        enable_cache=Config.ENABLE_CACHE,
     )
 
     return tfx_pipeline

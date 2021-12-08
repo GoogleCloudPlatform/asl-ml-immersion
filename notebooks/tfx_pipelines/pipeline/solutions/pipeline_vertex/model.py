@@ -18,12 +18,10 @@ from typing import List
 
 import absl
 import features
-import kerastuner
 import tensorflow as tf
 import tensorflow_transform as tft
 from tfx.components.trainer.executor import TrainerFnArgs
 from tfx.components.trainer.fn_args_utils import DataAccessor
-from tfx.components.tuner.component import TunerFnResult
 from tfx_bsl.tfxio import dataset_options
 
 EPOCHS = 1
@@ -89,28 +87,21 @@ def _input_fn(
     return dataset
 
 
-def _get_hyperparameters() -> kerastuner.HyperParameters:
-    """Returns hyperparameters for building Keras model."""
-    hp = kerastuner.HyperParameters()
-    # Defines search space.
-    hp.Choice("learning_rate", [1e-2, 1e-3, 1e-4], default=1e-3)
-    hp.Int("n_layers", 1, 2, default=1)
-    with hp.conditional_scope("n_layers", 1):
-        hp.Int("n_units_1", min_value=8, max_value=128, step=8, default=8)
-    with hp.conditional_scope("n_layers", 2):
-        hp.Int("n_units_1", min_value=8, max_value=128, step=8, default=8)
-        hp.Int("n_units_2", min_value=8, max_value=128, step=8, default=8)
-
-    return hp
+def _get_hyperparameters():
+    """Returns hyperparameters"""
+    hparams = {
+        "learning_rate": 1e-3,
+        "n_layers": 2,
+        "n_units_1": 8,
+        "n_units_2": 8,
+    }
+    return hparams
 
 
-def _build_keras_model(
-    hparams: kerastuner.HyperParameters,
-    tf_transform_output: tft.TFTransformOutput,
-) -> tf.keras.Model:
+def _build_keras_model(hparams, tf_transform_output):
     """Creates a Keras WideDeep Classifier model.
     Args:
-      hparams: Holds HyperParameters for tuning.
+      hparams: Holds HyperParameters.
       tf_transform_output: A TFTransformOutput.
     Returns:
       A keras Model.
@@ -177,75 +168,6 @@ def _build_keras_model(
     return model
 
 
-# TFX Tuner will call this function.
-def tuner_fn(fn_args: TrainerFnArgs) -> TunerFnResult:
-    """Build the tuner using the KerasTuner API.
-    Args:
-      fn_args: Holds args as name/value pairs.
-        - working_dir: working dir for tuning.
-        - train_files: List of file paths containing training tf.Example data.
-        - eval_files: List of file paths containing eval tf.Example data.
-        - train_steps: number of train steps.
-        - eval_steps: number of eval steps.
-        - schema_path: optional schema of the input data.
-        - transform_graph_path: optional transform graph produced by TFT.
-    Returns:
-      A namedtuple contains the following:
-        - tuner: A BaseTuner that will be used for tuning.
-        - fit_kwargs: Args to pass to tuner's run_trial function for fitting
-                      the model , e.g., the training and validation dataset.
-                      Required args depend on the above tuner's implementation.
-    """
-    transform_graph = tft.TFTransformOutput(fn_args.transform_graph_path)
-
-    # Construct a build_keras_model_fn that just takes hyperparams from
-    # get_hyperparameters as input.
-    build_keras_model_fn = functools.partial(
-        _build_keras_model, tf_transform_output=transform_graph
-    )
-
-    # BayesianOptimization is a subclass of kerastuner.Tuner which inherits
-    # from BaseTuner.
-    tuner = kerastuner.BayesianOptimization(
-        build_keras_model_fn,
-        max_trials=10,
-        hyperparameters=_get_hyperparameters(),
-        # New entries allowed for n_units hyperparameter construction
-        # conditional on n_layers selected.
-        #       allow_new_entries=True,
-        #       tune_new_entries=True,
-        objective=kerastuner.Objective(
-            "val_sparse_categorical_accuracy", "max"
-        ),
-        directory=fn_args.working_dir,
-        project_name="covertype_tuning",
-    )
-
-    train_dataset = _input_fn(
-        fn_args.train_files,
-        fn_args.data_accessor,
-        transform_graph,
-        batch_size=TRAIN_BATCH_SIZE,
-    )
-
-    eval_dataset = _input_fn(
-        fn_args.eval_files,
-        fn_args.data_accessor,
-        transform_graph,
-        batch_size=EVAL_BATCH_SIZE,
-    )
-
-    return TunerFnResult(
-        tuner=tuner,
-        fit_kwargs={
-            "x": train_dataset,
-            "validation_data": eval_dataset,
-            "steps_per_epoch": fn_args.train_steps,
-            "validation_steps": fn_args.eval_steps,
-        },
-    )
-
-
 # TFX Trainer will call this function.
 def run_fn(fn_args: TrainerFnArgs):
     """Train the model based on given args.
@@ -269,27 +191,9 @@ def run_fn(fn_args: TrainerFnArgs):
         EVAL_BATCH_SIZE,
     )
 
-    if fn_args.hyperparameters:
-        hparams = kerastuner.HyperParameters.from_config(
-            fn_args.hyperparameters
-        )
-    else:
-        # This is a shown case when hyperparameters is decided and Tuner is
-        # removed from the pipeline. User can also inline the hyperparameters
-        # directly in _build_keras_model.
-        hparams = _get_hyperparameters()
-    absl.logging.info(f"HyperParameters for training: {hparams.get_config()}")
+    hparams = _get_hyperparameters()
 
-    # Distribute training over multiple replicas on the same machine.
-    mirrored_strategy = tf.distribute.MirroredStrategy()
-    with mirrored_strategy.scope():
-        model = _build_keras_model(
-            hparams=hparams, tf_transform_output=tf_transform_output
-        )
-
-    tensorboard_callback = tf.keras.callbacks.TensorBoard(
-        log_dir=fn_args.model_run_dir, update_freq="batch"
-    )
+    model = _build_keras_model(hparams, tf_transform_output)
 
     model.fit(
         train_dataset,
@@ -297,7 +201,6 @@ def run_fn(fn_args: TrainerFnArgs):
         steps_per_epoch=fn_args.train_steps,
         validation_data=eval_dataset,
         validation_steps=fn_args.eval_steps,
-        callbacks=[tensorboard_callback],
     )
 
     signatures = {

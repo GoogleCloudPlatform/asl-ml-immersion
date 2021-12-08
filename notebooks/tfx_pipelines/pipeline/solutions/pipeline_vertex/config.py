@@ -41,7 +41,7 @@ class Config:
         "--runner=DataflowRunner",
     ]
 
-    ENABLE_CACHE = int(os.getenv("ENABLE_CACHE", "False"))
+    ENABLE_CACHE = bool(os.getenv("ENABLE_CACHE", "False"))
 
     TRAIN_STEPS = int(os.getenv("TRAIN_STEPS", "2"))
     EVAL_STEPS = int(os.getenv("EVAL_STEPS", "1"))

@@ -13,34 +13,28 @@
 # limitations under the License.
 """Covertype training pipeline DSL."""
 import os.path
-from typing import List, Optional
 
 import tensorflow_model_analysis as tfma
-from tfx.components import (
-    CsvExampleGen,
-    Evaluator,
-    ExampleValidator,
-    InfraValidator,
-    Pusher,
-    SchemaGen,
-    StatisticsGen,
-    Trainer,
-    Transform,
-)
+from config import Config
 from tfx.dsl.components.common.importer import Importer
 from tfx.dsl.components.common.resolver import Resolver
 from tfx.dsl.input_resolution.strategies.latest_blessed_model_strategy import (
     LatestBlessedModelStrategy,
 )
 from tfx.orchestration import data_types, pipeline
-from tfx.proto import (
-    example_gen_pb2,
-    infra_validator_pb2,
-    pusher_pb2,
-    trainer_pb2,
-)
+from tfx.proto import example_gen_pb2, pusher_pb2, trainer_pb2
 from tfx.types import Channel
 from tfx.types.standard_artifacts import Model, ModelBlessing, Schema
+from tfx.v1.components import (
+    CsvExampleGen,
+    Evaluator,
+    ExampleValidator,
+    Pusher,
+    SchemaGen,
+    StatisticsGen,
+    Trainer,
+    Transform,
+)
 
 SCHEMA_FOLDER = "schema"
 TRANSFORM_MODULE_FILE = "preprocessing.py"
@@ -56,6 +50,8 @@ def create_pipeline(
     eval_steps: data_types.RuntimeParameter,
 ):
 
+    beam_pipeline_args = Config.BEAM_DIRECT_PIPELINE_ARGS
+
     output = example_gen_pb2.Output(
         split_config=example_gen_pb2.SplitConfig(
             splits=[
@@ -65,9 +61,11 @@ def create_pipeline(
         )
     )
 
-    examplegen = CsvExampleGen(
-        input_base=data_root_uri, output_config=output
-    ).with_id("CsvExampleGen")
+    examplegen = (
+        CsvExampleGen(input_base=data_root_uri, output_config=output)
+        .with_id("CsvExampleGen")
+        .with_beam_pipeline_args(beam_pipeline_args)
+    )
 
     statisticsgen = StatisticsGen(
         examples=examplegen.outputs["examples"]
@@ -91,6 +89,7 @@ def create_pipeline(
         examples=examplegen.outputs["examples"],
         schema=import_schema.outputs["result"],
         module_file=TRANSFORM_MODULE_FILE,
+        force_tf_compat_v1=True,
     ).with_id("Transform")
 
     trainer = Trainer(
@@ -171,6 +170,8 @@ def create_pipeline(
         pipeline_name=pipeline_name,
         pipeline_root=pipeline_root,
         components=components,
+        beam_pipeline_args=beam_pipeline_args,
+        enable_cache=int(Config.ENABLE_CACHE),
     )
 
     return tfx_pipeline

@@ -12,28 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """TFX runner configuration"""
-from tfx.orchestration.kubeflow.v2 import kubeflow_v2_dag_runner
-
 from config import Config
 from pipeline import create_pipeline
-
-
+from tfx.orchestration.kubeflow.v2 import kubeflow_v2_dag_runner
 
 if __name__ == "__main__":
 
     tfx_pipeline = create_pipeline(
         pipeline_name=Config.PIPELINE_NAME,
         pipeline_root=Config.PIPELINE_ROOT,
-        data_root_uri=Config.DATA_ROOT,
+        data_root_uri=Config.DATA_ROOT_URI,
         train_steps=Config.TRAIN_STEPS,
         eval_steps=Config.EVAL_STEPS,
     )
-    
+
     runner = kubeflow_v2_dag_runner.KubeflowV2DagRunner(
         config=kubeflow_v2_dag_runner.KubeflowV2DagRunnerConfig(
-            default_image=Config.TFX_IMAGE
+            default_image=Config.TFX_IMAGE_URI
         ),
         output_filename=Config.PIPELINE_JSON,
     )
-    
+
     runner.run(tfx_pipeline, write_out=True)

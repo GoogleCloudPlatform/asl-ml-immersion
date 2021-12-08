@@ -13,7 +13,6 @@
 # limitations under the License.
 """Covertype Keras WideDeep Classifier."""
 
-import functools
 from typing import List
 
 import absl

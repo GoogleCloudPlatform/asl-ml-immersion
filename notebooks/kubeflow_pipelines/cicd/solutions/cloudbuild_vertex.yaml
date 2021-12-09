@@ -14,12 +14,21 @@
 steps:
 # Build the trainer image
 - name: 'gcr.io/cloud-builders/docker'
+  id: 'Build the trainer image'
   args: ['build', '-t', 'gcr.io/$PROJECT_ID/trainer_image_covertype_vertex:latest', '.']
+  dir: trainer_image_vertex
+
+
+# Push the trainer image, to make it available in the compile step
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'Push the trainer image'
+  args: ['push', 'gcr.io/$PROJECT_ID/trainer_image_covertype_vertex:latest']
   dir: trainer_image_vertex
 
 
 # Compile the pipeline
 - name: 'gcr.io/$PROJECT_ID/kfp-cli-vertex'
+  id: 'Compile the pipeline'
   args:
   - '-c'
   - |
@@ -36,6 +45,7 @@ steps:
 
 # Run the pipeline
 - name: 'gcr.io/$PROJECT_ID/kfp-cli-vertex'
+  id: 'Run the pipeline'
   args:
   - '-c'
   - |

@@ -1,5 +1,7 @@
-FROM gcr.io/deeplearning-platform-release/tf2-cpu.2-3
-COPY requirements.txt .
-RUN python3 -m pip install -U -r requirements.txt
+FROM gcr.io/tfx-oss-public/tfx:1.4.0
+
+RUN pip install -U pip
+RUN pip install kfp==1.8.1
+
 
 ENTRYPOINT ["tfx"]

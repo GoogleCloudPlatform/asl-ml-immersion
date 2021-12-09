@@ -42,9 +42,8 @@ repos:
     hooks:
     -   id: black
         args: [-l 80]
-# black-jupyter disabled until https://github.com/psf/black/pull/2630
-#    -   id: black-jupyter
-#        args: [-l 80]
+    -   id: black-jupyter
+        args: [-l 80]
 -   repo: https://github.com/asottile/pyupgrade
     rev: v2.29.1
     hooks:

@@ -94,11 +94,15 @@ Syntax errors understandably trip multiple checks. The best way is to try to rew
 ```python
 # instead of:
 variable =  # TODO
+
 # use this:
 variable = None  # TODO
+```
 
+```python
 # instead of:
 function_name( # TODO
+
 # use this:
 function_name(
     # TODO

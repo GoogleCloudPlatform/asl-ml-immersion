@@ -11,23 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-# Submits a Cloud Build job that builds and deploys
-# the pipeline and pipelines components
-#
-# Build and deploy a TFX pipeline. This is an interim solution till tfx CLI fully
-# supports automated building and deploying.
-#
+"""Helper function to deploy a Vertex pipeline."""
 import fire
 from google.cloud import aiplatform as vertex_ai
 
 
 def run_vertex_pipeline(
-    template_path, 
-    display_name, 
-    project_id, 
-    region, 
-    enable_caching=False
+    template_path, display_name, project_id, region, enable_caching=False
 ):
     vertex_ai.init(project=project_id, location=region)
 
@@ -38,7 +28,7 @@ def run_vertex_pipeline(
     )
 
     pipeline.run()
-    
+
 
 if __name__ == "__main__":
     fire.Fire(run_vertex_pipeline)

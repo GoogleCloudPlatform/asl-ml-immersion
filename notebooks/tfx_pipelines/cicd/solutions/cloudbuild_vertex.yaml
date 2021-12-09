@@ -31,12 +31,12 @@ steps:
   env:
     - 'PROJECT_ID=$PROJECT_ID'
   dir: pipeline_vertex
-  
+
 
 # Compile the TFX pipeline
 - name: 'gcr.io/$PROJECT_ID/tfx-cli_vertex'
   args: ['-c', 'python', 'run_vertex_pipeline.py', 'tfxcovertype.json', 'tfxcovertype', '$PROJECT_ID']
   dir: pipeline_vertex
-  
+
 # Push the custom image to Container Registry
 images: ['gcr.io/$PROJECT_ID/tfxcovertype']

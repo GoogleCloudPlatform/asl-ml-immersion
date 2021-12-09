@@ -35,7 +35,7 @@ However there are luckily other tools that wrap around such a process, as well a
 
 [pre-commit](https://pre-commit.com/) allows you to define a set of passive checks or active automatic re-formats, that are executed if you request a `git commit`, and your commit is only successful, if all of these checks successfully complete. If `pre-commit` does edit your files, your commit is aborted and you have the chance to verify these changes before you'd commit again.
 
-This set of hooks is defined in the repository root in a `.pre-commit-config.yaml` file. This config will only actually be used during your commits if you first install pre-commit (both in general in your environment and specifically for your curren repo):
+This set of hooks is defined in the repository root in a `.pre-commit-config.yaml` file. This config will only actually be used during your commits if you first install pre-commit (both in general in your environment and specifically for your current repo):
 
 ```bash
 python3 -m pip install pre-commit

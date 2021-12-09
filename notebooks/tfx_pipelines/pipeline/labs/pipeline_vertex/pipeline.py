@@ -65,18 +65,29 @@ def create_pipeline(
         )
     )
 
-    examplegen = #TODO
+    examplegen = (
+        CsvExampleGen(input_base=data_root_uri, output_config=output)
+        .with_id("CsvExampleGen")
+        .with_beam_pipeline_args(beam_pipeline_args)
+    )
 
-    statisticsgen = #TODO
+    statisticsgen = StatisticsGen(
+        examples=examplegen.outputs["examples"]
+    ).with_id("StatisticsGen")
 
-    schemagen = #TODO
+    schemagen = SchemaGen(
+        statistics=statisticsgen.outputs["statistics"]
+    ).with_id("SchemaGen")
 
     import_schema = Importer(
         source_uri=SCHEMA_FOLDER,
         artifact_type=Schema,
     ).with_id("SchemaImporter")
 
-    examplevalidator = #TODO
+    examplevalidator = ExampleValidator(
+        statistics=statisticsgen.outputs["statistics"],
+        schema=import_schema.outputs["result"],
+    ).with_id("ExampleValidator")
 
     transform = Transform(
         examples=examplegen.outputs["examples"],
@@ -85,7 +96,16 @@ def create_pipeline(
         force_tf_compat_v1=True,
     ).with_id("Transform")
 
-    trainer = #TODO
+    trainer = Trainer(
+        module_file=TRAIN_MODULE_FILE,
+        examples=transform.outputs["transformed_examples"],
+        schema=import_schema.outputs["result"],
+        transform_graph=transform.outputs["transform_graph"],
+        train_args=trainer_pb2.TrainArgs(
+            splits=["train"], num_steps=train_steps
+        ),
+        eval_args=trainer_pb2.EvalArgs(splits=["eval"], num_steps=eval_steps),
+    ).with_id("Trainer")
 
     resolver = Resolver(
         strategy_class=LatestBlessedModelStrategy,
@@ -119,7 +139,12 @@ def create_pipeline(
         ],
     )
 
-    evaluator = #TODO
+    evaluator = Evaluator(
+        examples=examplegen.outputs["examples"],
+        model=trainer.outputs["model"],
+        baseline_model=resolver.outputs["model"],
+        eval_config=eval_config,
+    ).with_id("ModelEvaluator")
 
     serving_model_dir = os.path.join(pipeline_root, SERVING_MODEL_DIR)
 
@@ -146,6 +171,12 @@ def create_pipeline(
         pusher,
     ]
 
-    tfx_pipeline = pipeline.Pipeline(# TODO)
+    tfx_pipeline = pipeline.Pipeline(
+        pipeline_name=pipeline_name,
+        pipeline_root=pipeline_root,
+        components=components,
+        beam_pipeline_args=beam_pipeline_args,
+        enable_cache=Config.ENABLE_CACHE,
+    )
 
     return tfx_pipeline

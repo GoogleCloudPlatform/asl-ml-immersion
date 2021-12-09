@@ -18,6 +18,12 @@ steps:
   dir:  # TODO
 
 
+# Push the trainer image, to make it available in the compile step
+- name: # TODO
+  args: # TODO
+  dir:  # TODO
+
+
 # Compile the pipeline
 - name: 'gcr.io/$PROJECT_ID/kfp-cli-vertex'
   args:

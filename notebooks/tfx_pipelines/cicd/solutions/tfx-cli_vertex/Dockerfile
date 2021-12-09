@@ -1,7 +1,8 @@
 FROM gcr.io/tfx-oss-public/tfx:1.4.0
 
 RUN pip install -U pip
-RUN pip install kfp==1.8.1
+RUN pip install google-cloud-aiplatform==1.7.1 kfp==1.8.1 
 
+COPY tfx_pipeline_run.py .
 
-ENTRYPOINT ["tfx"]
+ENTRYPOINT ["/bin/bash"]

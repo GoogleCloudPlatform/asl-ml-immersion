@@ -18,25 +18,27 @@
 # Build and deploy a TFX pipeline. This is an interim solution till tfx CLI fully
 # supports automated building and deploying.
 #
+import fire
+from google.cloud import aiplatform as vertex_ai
 
-steps:
-# Build the image that encapsulates the TFX pipeline.
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/$PROJECT_ID/tfxcovertype', '.']
-  dir: pipeline_vertex
 
-# Compile the TFX pipeline
-- name: 'gcr.io/$PROJECT_ID/tfx-cli_vertex'
-  args: ['-c', 'tfx', 'pipeline', 'compile', '--engine', 'vertex', '--pipeline_path', 'runner.py']
-  env:
-    - 'PROJECT_ID=$PROJECT_ID'
-  dir: pipeline_vertex
-  
+def run_vertex_pipeline(
+    template_path, 
+    display_name, 
+    project_id, 
+    region, 
+    enable_caching=False
+):
+    vertex_ai.init(project=project_id, location=region)
 
-# Compile the TFX pipeline
-- name: 'gcr.io/$PROJECT_ID/tfx-cli_vertex'
-  args: ['-c', 'python', 'run_vertex_pipeline.py', 'tfxcovertype.json', 'tfxcovertype', '$PROJECT_ID']
-  dir: pipeline_vertex
-  
-# Push the custom image to Container Registry
-images: ['gcr.io/$PROJECT_ID/tfxcovertype']
+    pipeline = vertex_ai.PipelineJob(
+        display_name=display_name,
+        template_path=template_path,
+        enable_caching=enable_caching,
+    )
+
+    pipeline.run()
+    
+
+if __name__ == "__main__":
+    fire.Fire(run_vertex_pipeline)

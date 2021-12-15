@@ -1,4 +1,4 @@
-all: clean install 
+all: clean install
 
 .PHONY: clean
 clean:

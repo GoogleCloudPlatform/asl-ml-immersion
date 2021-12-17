@@ -1,0 +1,4 @@
+# Requirements for MLOps Vertex
+google-cloud-aiplatform==1.7.1
+kfp==1.8.1
+tfx==1.4.0

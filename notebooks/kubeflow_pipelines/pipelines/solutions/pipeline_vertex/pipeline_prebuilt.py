@@ -15,6 +15,11 @@
 import os
 
 from google.cloud.aiplatform import hyperparameter_tuning as hpt
+from google_cloud_pipeline_components.aiplatform import (
+    EndpointCreateOp,
+    ModelDeployOp,
+    ModelUploadOp,
+)
 from google_cloud_pipeline_components.experimental import (
     hyperparameter_tuning_job,
 )
@@ -29,6 +34,7 @@ REGION = os.getenv("REGION")
 
 TRAINING_CONTAINER_IMAGE_URI = os.getenv("TRAINING_CONTAINER_IMAGE_URI")
 SERVING_CONTAINER_IMAGE_URI = os.getenv("SERVING_CONTAINER_IMAGE_URI")
+SERVING_MACHINE_TYPE = os.getenv("SERVING_MACHINE_TYPE", "n1-standard-16")
 
 TRAINING_FILE_PATH = os.getenv("TRAINING_FILE_PATH")
 VALIDATION_FILE_PATH = os.getenv("VALIDATION_FILE_PATH")
@@ -37,10 +43,14 @@ MAX_TRIAL_COUNT = int(os.getenv("MAX_TRIAL_COUNT", "5"))
 PARALLEL_TRIAL_COUNT = int(os.getenv("PARALLEL_TRIAL_COUNT", "5"))
 THRESHOLD = float(os.getenv("THRESHOLD", "0.6"))
 
+PIPELINE_NAME = os.getenv("PIPELINE_NAME", "covertype")
+BASE_OUTPUT_DIR = os.getenv("BASE_OUTPUT_DIR", PIPELINE_ROOT)
+MODEL_DISPLAY_NAME = os.getenv("MODEL_DISPLAY_NAME", PIPELINE_NAME)
+
 
 @dsl.pipeline(
-    name="covertype-kfp-pipeline",
-    description="The pipeline training and deploying the Covertype classifier",
+    name=f"{PIPELINE_NAME}-kfp-pipeline",
+    description="Kubeflow pipeline that tunes, trains, and deploys on Vertex",
     pipeline_root=PIPELINE_ROOT,
 )
 def create_pipeline():
@@ -80,7 +90,7 @@ def create_pipeline():
     )
 
     hp_tuning_task = hyperparameter_tuning_job.HyperparameterTuningJobRunOp(
-        display_name="covertype-kfp-tuning-job",
+        display_name=f"{PIPELINE_NAME}-kfp-tuning-job",
         project=PROJECT_ID,
         location=REGION,
         worker_pool_specs=worker_pool_specs,
@@ -121,10 +131,33 @@ def create_pipeline():
         ],
     )
 
-    training_task = CustomTrainingJobOp(  # pylint: disable=unused-variable
+    training_task = CustomTrainingJobOp(
         project=PROJECT_ID,
         location=REGION,
-        display_name="covertype-kfp-training-job",
+        display_name=f"{PIPELINE_NAME}-kfp-training-job",
         worker_pool_specs=worker_pool_specs_task.output,
-        base_output_directory=PIPELINE_ROOT,
+        base_output_directory=BASE_OUTPUT_DIR,
+    )
+
+    model_upload_task = ModelUploadOp(
+        project=PROJECT_ID,
+        display_name=f"{PIPELINE_NAME}-kfp-model-upload-job",
+        artifact_uri=f"{BASE_OUTPUT_DIR}/model",
+        serving_container_image_uri=SERVING_CONTAINER_IMAGE_URI,
+    )
+    model_upload_task.after(training_task)
+
+    endpoint_create_task = EndpointCreateOp(
+        project=PROJECT_ID,
+        display_name=f"{PIPELINE_NAME}-kfp-create-endpoint-job",
+    )
+    endpoint_create_task.after(model_upload_task)
+
+    model_deploy_op = ModelDeployOp(  # pylint: disable=unused-variable
+        model=model_upload_task.outputs["model"],
+        endpoint=endpoint_create_task.outputs["endpoint"],
+        deployed_model_display_name=MODEL_DISPLAY_NAME,
+        dedicated_resources_machine_type=SERVING_MACHINE_TYPE,
+        dedicated_resources_min_replica_count=1,
+        dedicated_resources_max_replica_count=1,
     )

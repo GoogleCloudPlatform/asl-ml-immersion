@@ -26,11 +26,12 @@ from kfp.v2 import dsl
 
 PIPELINE_ROOT = os.getenv("PIPELINE_ROOT")
 PROJECT = os.getenv("PROJECT")
-DATASET_PATH = os.getenv("DATASET_PATH")
+DATASET_SOURCE = os.getenv("DATASET_SOURCE")
 PIPELINE_NAME = os.getenv("PIPELINE_NAME", "covertype")
 DISPLAY_NAME = os.getenv("MODEL_DISPLAY_NAME", PIPELINE_NAME)
 TARGET_COLUMN = os.getenv("TARGET_COLUMN", "Cover_Type")
 SERVING_MACHINE_TYPE = os.getenv("SERVING_MACHINE_TYPE", "n1-standard-16")
+
 
 
 @dsl.pipeline(
@@ -42,7 +43,7 @@ def create_pipeline():
 
     dataset_create_task = TabularDatasetCreateOp(
         display_name=DISPLAY_NAME,
-        gcs_source=DATASET_PATH,
+        bq_source=DATASET_SOURCE,
         project=PROJECT,
     )
 

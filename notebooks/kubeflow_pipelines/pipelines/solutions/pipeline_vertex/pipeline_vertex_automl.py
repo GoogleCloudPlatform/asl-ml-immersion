@@ -33,7 +33,6 @@ TARGET_COLUMN = os.getenv("TARGET_COLUMN", "Cover_Type")
 SERVING_MACHINE_TYPE = os.getenv("SERVING_MACHINE_TYPE", "n1-standard-16")
 
 
-
 @dsl.pipeline(
     name=f"{PIPELINE_NAME}-vertex-automl-pipeline",
     description=f"AutoML Vertex Pipeline for {PIPELINE_NAME}",

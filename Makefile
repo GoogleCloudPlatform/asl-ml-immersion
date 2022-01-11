@@ -26,3 +26,7 @@ install:
 	@pip install -U pip
 	@pip install -r requirements.txt
 	@pre-commit install
+
+.PHONY: precommit
+precommit:
+	@pre-commit run --all-files

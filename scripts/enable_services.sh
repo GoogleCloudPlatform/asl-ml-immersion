@@ -25,4 +25,5 @@ gcloud services enable \
   bigquery.googleapis.com \
   artifactregistry.googleapis.com \
   cloudbuild.googleapis.com \
-  container.googleapis.com
+  container.googleapis.com \
+  dataflow.googleapis.com

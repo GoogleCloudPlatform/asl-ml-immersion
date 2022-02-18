@@ -38,14 +38,14 @@ steps:
   - 'TRAINING_CONTAINER_IMAGE_URI=gcr.io/$PROJECT_ID/trainer_image_covertype_vertex:latest'
   - 'TRAINING_FILE_PATH=gs://$PROJECT_ID-kfp-artifact-store/data/training/dataset.csv'
   - 'VALIDATION_FILE_PATH=gs://$PROJECT_ID-kfp-artifact-store/data/validation/dataset.csv'
-  dir: pipeline_vertex
+  dir: $_PIPELINE_FOLDER/pipeline_vertex
 
 # Run the pipeline
 - name: 'gcr.io/$PROJECT_ID/kfp-cli-vertex'
   args:
   - '-c'
   - |
-    python kfp-cli_vertex/run_pipeline.py  # TODO
+    python $_PIPELINE_FOLDER/kfp-cli_vertex/run_pipeline.py  # TODO
 
 # Push the images to Container Registry
 # TODO: List the images to be pushed to the project Docker registry

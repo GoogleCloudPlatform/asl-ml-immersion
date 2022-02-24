@@ -148,7 +148,7 @@ def transform(inputs, numeric_cols, nbuckets):
     )
     ploc = fc.crossed_column([b_plat, b_plon], nbuckets * nbuckets)
     dloc = fc.crossed_column([b_dlat, b_dlon], nbuckets * nbuckets)
-    pd_pair = fc.crossed_column([ploc, dloc], nbuckets ** 4)
+    pd_pair = fc.crossed_column([ploc, dloc], nbuckets**4)
     feature_columns["pickup_and_dropoff"] = fc.embedding_column(pd_pair, 100)
 
     return transformed, feature_columns

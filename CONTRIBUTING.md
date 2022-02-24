@@ -116,3 +116,11 @@ However if you must exclude a file, you can do it with the [`exclude`](https://p
 pre-commit.ci comes with an autoupdate feature that cannot be disabled, it runs at least once a quarter (see in the config file `autoupdate_schedule: quarterly`).
 
 You can either accept and merge this PR, or if you probably don't want the Google CLA check to be failing, then create your own branch, run `pre-commit autoupdate`, and commit and merge the results, and delete the original PR.
+
+#### _pre-commit.ci is failing because `nbqa-black` and `black-jupyter` disagree (and maybe it worked fine locally)_
+
+`nbqa-black` uses your local version of `black` (meaning the latest version on the server side), and this can clash with the `black` version pinned in the `pre-commit-config.yaml`.
+
+The solution is to upgrade your local `black` (such as `pip install --upgrade black`), run `pre-commit autoupdate` and push the changes.
+
+(In theory there would be a solution, in the pre-commit-config.yaml file in the nbqa-black section one could add something like `additional_dependencies : ['black:21.12b0']` ([see also the same advice in the nbQA doc](https://github.com/nbQA-dev/nbQA#pre-commit)), but probably this would add an unnecessary layer of manual maintenance burden (e.g. having to manually bump this version and sync with `black`'s).)

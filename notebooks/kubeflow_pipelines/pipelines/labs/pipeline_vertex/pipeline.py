@@ -16,7 +16,6 @@
 import os
 
 from kfp import dsl
-from kfp.components import create_component_from_func_v2
 from training_lightweight_component import train_and_deploy
 from tuning_lightweight_component import tune_hyperparameters
 
@@ -33,11 +32,6 @@ VALIDATION_FILE_PATH = os.getenv("VALIDATION_FILE_PATH")
 MAX_TRIAL_COUNT = int(os.getenv("MAX_TRIAL_COUNT", "5"))
 PARALLEL_TRIAL_COUNT = int(os.getenv("PARALLEL_TRIAL_COUNT", "5"))
 THRESHOLD = float(os.getenv("THRESHOLD", "0.6"))
-
-
-tune_hyperparameters_component = None  # TODO
-
-train_and_deploy_component = None  # TODO
 
 
 @dsl.pipeline(

@@ -39,6 +39,7 @@ class Config:
         f"--temp_location={os.path.join(PIPELINE_ROOT, 'beam')}",
         f"--region={REGION}",
         "--runner=DataflowRunner",
+        "--experiments=use_runner_v2"
     ]
 
     ENABLE_CACHE = bool(os.getenv("ENABLE_CACHE", "False"))

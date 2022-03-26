@@ -43,25 +43,13 @@ def train_evaluate(
     if not hptune:
         df_train = pd.concat([df_train, df_validation])
 
-    numeric_features = [
-        "Elevation",
-        "Aspect",
-        "Slope",
-        "Horizontal_Distance_To_Hydrology",
-        "Vertical_Distance_To_Hydrology",
-        "Horizontal_Distance_To_Roadways",
-        "Hillshade_9am",
-        "Hillshade_Noon",
-        "Hillshade_3pm",
-        "Horizontal_Distance_To_Fire_Points",
-    ]
-
-    categorical_features = ["Wilderness_Area", "Soil_Type"]
+    numeric_feature_indexes = slice(0, 10)
+    categorical_feature_indexes = slice(10, 12)
 
     preprocessor = ColumnTransformer(
         transformers=[
-            ("num", StandardScaler(), numeric_features),
-            ("cat", OneHotEncoder(), categorical_features),
+            ("num", StandardScaler(), numeric_feature_indexes),
+            ("cat", OneHotEncoder(), categorical_feature_indexes),
         ]
     )
 
@@ -72,7 +60,10 @@ def train_evaluate(
         ]
     )
 
-    num_features_type_map = {feature: "float64" for feature in numeric_features}
+    num_features_type_map = {
+        feature: "float64"
+        for feature in df_train.columns[numeric_feature_indexes]
+    }
     df_train = df_train.astype(num_features_type_map)
     df_validation = df_validation.astype(num_features_type_map)
 

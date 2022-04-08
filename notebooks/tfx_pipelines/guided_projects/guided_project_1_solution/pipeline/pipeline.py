@@ -49,7 +49,6 @@ from tfx.orchestration import pipeline
 from tfx.proto import pusher_pb2, trainer_pb2
 from tfx.types import Channel
 from tfx.types.standard_artifacts import Model, ModelBlessing
-from tfx.utils.dsl_utils import external_input
 
 
 def create_pipeline(

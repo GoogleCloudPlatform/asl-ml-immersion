@@ -9,7 +9,7 @@ ci:
 
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.3.0
+    rev: v4.1.0
     hooks:
     -   id: check-ast
     -   id: check-case-conflict
@@ -38,19 +38,19 @@ repos:
     -   id: isort
         args: ["--profile", "black", "-l80"]
 -   repo: https://github.com/psf/black
-    rev: 22.6.0
+    rev: 22.3.0
     hooks:
     -   id: black
         args: [-l 80]
     -   id: black-jupyter
         args: [-l 80]
 -   repo: https://github.com/asottile/pyupgrade
-    rev: v2.34.0
+    rev: v2.31.1
     hooks:
     -   id: pyupgrade
         args: [--py36-plus]
 -   repo: https://github.com/pycqa/pylint
-    rev: v2.14.4
+    rev: v2.13.4
     hooks:
     -   id: pylint
         args: ["--disable", "unexpected-keyword-arg,no-value-for-parameter,too-many-function-args"]

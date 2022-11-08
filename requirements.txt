@@ -3,6 +3,7 @@ google-cloud-aiplatform==1.7.1
 google-cloud-pipeline-components==0.2.1
 kfp==1.8.10
 tfx==1.4.0
+apache-beam==2.39.0
 pre-commit
 
 # Requirement for local tests of hyperparameter tuning jobs

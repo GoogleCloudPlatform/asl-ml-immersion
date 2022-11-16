@@ -1,4 +1,3 @@
-%%writefile cloudbuild_vertex.yaml
 # Copyright 2021 Google LLC
 
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
@@ -16,8 +15,15 @@ steps:
 # Build the trainer image
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'gcr.io/$PROJECT_ID/trainer_image_covertype_vertex:latest', '.']
-  dir: .//trainer_image_vertex
-  
+  dir: $_PIPELINE_FOLDER/trainer_image_vertex
+
+
+# Push the trainer image, to make it available in the compile step
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'Push the trainer image'
+  args: ['push', 'gcr.io/$PROJECT_ID/trainer_image_covertype_vertex:latest']
+  dir: $_PIPELINE_FOLDER/trainer_image_vertex
+    
 
 # Compile the pipeline
 - name: 'gcr.io/$PROJECT_ID/kfp-cli-vertex'
@@ -28,7 +34,7 @@ steps:
   env:
   - 'PIPELINE_ROOT=gs://$PROJECT_ID-kfp-artifact-store/pipeline'
   - 'PROJECT_ID=$PROJECT_ID'
-  - 'REGION=us-central1'
+  - 'REGION=$_REGION'
   - 'SERVING_CONTAINER_IMAGE_URI=us-docker.pkg.dev/vertex-ai/prediction/sklearn-cpu.0-20:latest'
   - 'TRAINING_CONTAINER_IMAGE_URI=gcr.io/$PROJECT_ID/trainer_image_covertype_vertex:latest'
   - 'TRAINING_FILE_PATH=gs://$PROJECT_ID-kfp-artifact-store/data/training/dataset.csv'
@@ -40,7 +46,7 @@ steps:
   args:
   - '-c'
   - |
-    python kfp-cli_vertex/run_pipeline.py  --project_id=$PROJECT_ID --template_path=.//pipeline_vertex/covertype_kfp_pipeline.json --display_name=coverype_kfp_pipeline --region=us-central1    
+    python $_PIPELINE_FOLDER/kfp-cli_vertex/run_pipeline.py  --project_id=$PROJECT_ID --template_path=$_PIPELINE_FOLDER/pipeline_vertex/covertype_kfp_pipeline.json --display_name=coverype_kfp_pipeline --region=$_REGION    
 
 # Push the images to Container Registry
 images: ['gcr.io/$PROJECT_ID/trainer_image_covertype_vertex:latest']

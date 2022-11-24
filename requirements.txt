@@ -1,8 +1,8 @@
 # Requirements for MLOps Vertex
-google-cloud-aiplatform==1.7.1
-google-cloud-pipeline-components==0.2.1
-kfp==1.8.10
-tfx==1.4.0
+google-cloud-aiplatform==1.19.0
+google-cloud-pipeline-components==1.0.27
+kfp==1.8.16
+tfx==1.8.1
 apache-beam==2.39.0
 pre-commit
 

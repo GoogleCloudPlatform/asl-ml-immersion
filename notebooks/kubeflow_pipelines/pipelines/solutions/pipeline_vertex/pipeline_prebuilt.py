@@ -102,7 +102,7 @@ def create_pipeline():
     )
 
     trials_task = hyperparameter_tuning_job.GetTrialsOp(
-        gcp_resources=hp_tuning_task.outputs["gcp_resources"], region=REGION
+        gcp_resources=hp_tuning_task.outputs["gcp_resources"]
     )
 
     best_hyperparameters_task = (

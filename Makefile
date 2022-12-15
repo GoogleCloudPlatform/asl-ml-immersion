@@ -13,6 +13,8 @@
 # limitations under the License.
 #
 all: clean install
+kernels: reinforcement_learning_kernel
+
 
 .PHONY: clean
 clean:
@@ -30,3 +32,8 @@ install:
 .PHONY: precommit
 precommit:
 	@pre-commit run --all-files
+
+
+.PHONY: reinforcement_learning_kernel
+reinforcement_learning_kernel:
+	./kernels/reinforcement_learning.sh

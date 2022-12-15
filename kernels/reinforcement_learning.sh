@@ -11,7 +11,7 @@ MODULE=reinforcement_learning
 ENVNAME=${MODULE}_kernel
 REPO_ROOT_DIR="$(dirname $(cd $(dirname $BASH_SOURCE) && pwd))"
 
-# Cleaning up the kernel and exiting if first arg is 'clean'
+# Cleaning up the kernel and exiting if first arg is 'remove'
 if [ "$1" == "remove" ]; then
   echo Removing kernel $ENVNAME
   jupyter kernelspec remove $MODULE_NAME

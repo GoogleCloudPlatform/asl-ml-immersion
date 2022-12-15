@@ -37,3 +37,7 @@ precommit:
 .PHONY: reinforcement_learning_kernel
 reinforcement_learning_kernel:
 	./kernels/reinforcement_learning.sh
+
+.PHONY: tf_recommenders_kernel
+tf_recommenders_kernel:
+	./kernels/tf_recommenders.sh

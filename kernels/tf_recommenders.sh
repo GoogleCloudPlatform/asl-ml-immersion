@@ -11,7 +11,7 @@ MODULE=recommendation_systems
 ENVNAME=tf_recommenders_kernel
 REPO_ROOT_DIR="$(dirname $(cd $(dirname $BASH_SOURCE) && pwd))"
 
-# Cleaning up the kernel and exiting if first arg is 'clean'
+# Cleaning up the kernel and exiting if first arg is 'remove'
 if [ "$1" == "remove" ]; then
   echo Removing kernel $ENVNAME
   jupyter kernelspec remove $MODULE_NAME
@@ -32,9 +32,8 @@ pip install ipykernel
 python -m ipykernel install --user --name=$ENVNAME
 
 # Install TF Recommenders, TF-Datasets, and scann and its dependencies
-pip install tensorflow-recommenders
-pip install --upgrade tensorflow-datasets
-pip install scann
-pip install -U numpy --force-reinstall
+pip install tensorflow-recommenders==0.7.2
+pip install -U tensorflow-datasets==4.7.0
+pip install scann==1.2.9
 
 deactivate

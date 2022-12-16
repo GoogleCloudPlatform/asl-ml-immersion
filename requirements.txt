@@ -12,3 +12,6 @@ cloudml-hypertune
 # Requirments for the SNGP labs (commented out for now because it upgrades to TF 2.8)
 # which will conflicts with the MLOPs labs targeted to TF 2.6
 # tf-models-official==2.8.0
+
+# Requirements for NLP labs
+tensorflow_text==2.8.2

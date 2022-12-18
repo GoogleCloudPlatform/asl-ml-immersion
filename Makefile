@@ -12,8 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-all: clean install
-kernels: reinforcement_learning_kernel
+all: clean install kernels
+
+kernels: \
+ reinforcement_learning_kernel \
+ uncertainty_aware_models_kernel \
+ tf_recommenders_kernel
 
 
 .PHONY: clean
@@ -37,6 +41,10 @@ precommit:
 .PHONY: reinforcement_learning_kernel
 reinforcement_learning_kernel:
 	./kernels/reinforcement_learning.sh
+
+.PHONY: uncertainty_aware_models_kernel
+uncertainty_aware_models_kernel:
+	./kernels/uncertainty_aware_models.sh
 
 .PHONY: tf_recommenders_kernel
 tf_recommenders_kernel:

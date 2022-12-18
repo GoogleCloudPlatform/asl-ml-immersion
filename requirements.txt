@@ -8,7 +8,3 @@ pre-commit
 
 # Requirement for local tests of hyperparameter tuning jobs
 cloudml-hypertune
-
-# Requirments for the SNGP labs (commented out for now because it upgrades to TF 2.8)
-# which will conflicts with the MLOPs labs targeted to TF 2.6
-# tf-models-official==2.8.0

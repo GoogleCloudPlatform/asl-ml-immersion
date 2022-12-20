@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-all: clean install kernels
+all: clean install
 
 kernels: \
  reinforcement_learning_kernel \

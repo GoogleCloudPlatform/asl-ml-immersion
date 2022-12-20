@@ -18,7 +18,8 @@ kernels: \
  reinforcement_learning_kernel \
  uncertainty_aware_models_kernel \
  tf_recommenders_kernel \
- object_detection_kernel
+ object_detection_kernel \
+ pytorch_kfp_kernel
 
 .PHONY: clean
 clean:
@@ -52,3 +53,7 @@ tf_recommenders_kernel:
 .PHONY: object_detection_kernel
 object_detection_kernel:
 	./kernels/object_detection.sh
+
+.PHONY: pytorch_kfp_kernel
+pytorch_kfp_kernel:
+	./kernels/pytorch_kfp.sh

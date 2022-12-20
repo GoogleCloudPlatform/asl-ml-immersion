@@ -1,0 +1,8 @@
+torch==1.11.0
+torch-model-archiver==0.7.0
+pandas==1.3.5
+google-cloud-aiplatform[prediction]==1.19.0
+google-cloud-bigquery-storage==2.13.2
+pyarrow==5.0.0
+fsspec==2022.11.0
+gcsfs==2022.11.0

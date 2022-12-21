@@ -1,7 +1,23 @@
 #!/bin/bash
-ENVNAME=object_detection_kernel
+#
+# To build the kernel:  ./kernels/object_detection.sh
+# To remove the kernel: ./kernels/object_detection.sh remove
+#
+# This scripts will create a ipython kernel named $ENVNAME
 
-cd ~/asl-ml-immersion/notebooks/image_models/solutions
+MODULE=image_models
+ENVNAME=object_detection_kernel
+REPO_ROOT_DIR="$(dirname $(cd $(dirname $BASH_SOURCE) && pwd))"
+
+# Cleaning up the kernel and exiting if first arg is 'remove'
+if [ "$1" == "remove" ]; then
+  echo Removing kernel $ENVNAME
+  jupyter kernelspec remove $ENVNAME
+  rm -r "$REPO_ROOT_DIR/notebooks/$MODULE/$ENVNAME"
+  exit 0
+fi
+
+cd $REPO_ROOT_DIR/notebooks/$MODULE
 
 # Download the Object Detection API
 git clone --depth 1 https://github.com/tensorflow/models
@@ -15,7 +31,7 @@ source $ENVNAME/bin/activate
 python -m ipykernel install --user --name=$ENVNAME
 
 # Install Object Detection API and its dependencies
-pip install -U pip
-pip install .
+pip install -q -U pip
+pip install -q .
 
 deactivate

@@ -17,8 +17,8 @@ all: clean install
 kernels: \
  reinforcement_learning_kernel \
  uncertainty_aware_models_kernel \
- tf_recommenders_kernel
-
+ tf_recommenders_kernel \
+ object_detection_kernel
 
 .PHONY: clean
 clean:
@@ -37,7 +37,6 @@ install:
 precommit:
 	@pre-commit run --all-files
 
-
 .PHONY: reinforcement_learning_kernel
 reinforcement_learning_kernel:
 	./kernels/reinforcement_learning.sh
@@ -49,3 +48,7 @@ uncertainty_aware_models_kernel:
 .PHONY: tf_recommenders_kernel
 tf_recommenders_kernel:
 	./kernels/tf_recommenders.sh
+
+.PHONY: object_detection_kernel
+object_detection_kernel:
+	./kernels/object_detection.sh

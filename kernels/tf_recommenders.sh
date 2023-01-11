@@ -14,7 +14,7 @@ REPO_ROOT_DIR="$(dirname $(cd $(dirname $BASH_SOURCE) && pwd))"
 # Cleaning up the kernel and exiting if first arg is 'remove'
 if [ "$1" == "remove" ]; then
   echo Removing kernel $ENVNAME
-  jupyter kernelspec remove $MODULE_NAME
+  jupyter kernelspec remove $ENVNAME
   rm -r "$REPO_ROOT_DIR/notebooks/$MODULE/$ENVNAME"
   exit 0
 fi

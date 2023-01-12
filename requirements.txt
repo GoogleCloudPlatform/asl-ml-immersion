@@ -1,14 +1,13 @@
 # Requirements for MLOps Vertex
-google-cloud-aiplatform==1.7.1
-google-cloud-pipeline-components==0.2.1
-kfp==1.8.10
-tfx==1.4.0
+google-cloud-aiplatform==1.19.0
+google-cloud-pipeline-components==1.0.27
+kfp==1.8.16
+tfx==1.8.1
 apache-beam==2.39.0
 pre-commit
 
 # Requirement for local tests of hyperparameter tuning jobs
 cloudml-hypertune
 
-# Requirments for the SNGP labs (commented out for now because it upgrades to TF 2.8)
-# which will conflicts with the MLOPs labs targeted to TF 2.6
-# tf-models-official==2.8.0
+# Requirements for NLP labs
+tensorflow_text==2.8.2

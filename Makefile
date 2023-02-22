@@ -29,8 +29,8 @@ clean:
 
 .PHONY: install
 install:
-	@pip install -U pip
-	@pip install -r requirements.txt
+	@pip install --user -U pip
+	@pip install --user -r requirements.txt
 	@pre-commit install
 
 .PHONY: precommit

@@ -19,4 +19,5 @@
 
 yes | sudo apt-get install google-cloud-sdk-gke-gcloud-auth-plugin
 echo export USE_GKE_GCLOUD_AUTH_PLUGIN=True >> ~/.bashrc || source ~/.bashrc
-yes | sudo apt-get update && sudo apt-get --only-upgrade install kubectl google-cloud-sdk
+sudo apt-get update
+yes | sudo apt-get --only-upgrade install kubectl google-cloud-sdk

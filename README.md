@@ -2,7 +2,7 @@
 
 ## Overview
 This repository contains Jupyter notebooks meant to be run on Vertex AI. This is maintained by Google Cloud’s [Advanced Solutions Lab (ASL)](https://cloud.google.com/asl) team. [Vertex AI](https://cloud.google.com/vertex-ai) is the next generation AI Platform on the Google Cloud Platform.
-The material covered in this repo will take a software engineer with no exposure to machine learning to an advanced level.  
+The material covered in this repo will take a software engineer with no exposure to machine learning to an advanced level.
 
 In particular, the notebooks in this repository cover
 - A wide range of model architectures (DNN, CNN, RNN, transformers, SNGP, etc.) targeting many data modalities (tabular, image, text, time-series) implemented mainly in Tensorflow and Keras.
@@ -12,13 +12,13 @@ If you are new to machine learning or Vertex AI start here:  [Introduction to Te
 
 
 ## Repository Structure
-All notebooks are in the notebooks folder. This folder is organized by different ML topics. Each folder contains a `labs` and a `solutions` folder. Use the `labs` notebooks to test your coding skills by filling in TODOs and refer to the notebooks in the `solutions` folder to verify your code. 
+All notebooks are in the notebooks folder. This folder is organized by different ML topics. Each folder contains a `labs` and a `solutions` folder. Use the `labs` notebooks to test your coding skills by filling in TODOs and refer to the notebooks in the `solutions` folder to verify your code.
 
 We have three main folders described below:
 
 ```
-├── kernels - contains kernel scripts needed for certain notebooks in lab folder 
-├── notebooks - contains labs and solutions notebook organized by topic 
+├── kernels - contains kernel scripts needed for certain notebooks in lab folder
+├── notebooks - contains labs and solutions notebook organized by topic
 │   ├── bigquery
 │   ├── building_production_ml_systems
 │   ├── docker_and_kubernetes
@@ -48,13 +48,9 @@ Currently, only Googlers can contribute to this repo. See [CONTRIBUTING.md](http
 
 
 ## Disclaimer
-This is not an officially supported Google product. Usage of Google Cloud products will incur charges. Learn more about pricing [here](https://cloud.google.com/pricing). 
+This is not an officially supported Google product. Usage of Google Cloud products will incur charges. Learn more about pricing [here](https://cloud.google.com/pricing).
 
 ## Licensing
 All the code in  this repo is licensed under the Apache License, Version 2.0 (the "License"). You may obtain a copy of the License [here](https://www.apache.org/licenses/LICENSE-2.0).
 
 *Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License*
-
-
-
-

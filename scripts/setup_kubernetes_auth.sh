@@ -17,6 +17,6 @@
 # For the new authentication of the GKE cluster. See reference:
 # https://cloud.google.com/blog/products/containers-kubernetes/kubectl-auth-changes-in-gke
 
-sudo apt-get install google-cloud-sdk-gke-gcloud-auth-plugin
+yes | sudo apt-get install google-cloud-sdk-gke-gcloud-auth-plugin
 echo export USE_GKE_GCLOUD_AUTH_PLUGIN=True >> ~/.bashrc || source ~/.bashrc
-sudo apt-get update && sudo apt-get --only-upgrade install kubectl google-cloud-sdk
+yes | sudo apt-get update && sudo apt-get --only-upgrade install kubectl google-cloud-sdk

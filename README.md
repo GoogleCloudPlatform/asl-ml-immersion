@@ -37,7 +37,7 @@ After creating a Vertex Workbench User Managed Notebook instance, open the termi
 ```
 git clone https://github.com/GoogleCloudPlatform/asl-ml-immersion.git
 cd asl-ml-immersion
-export PATH=/home/jupyter/.local/bin:$PATH
+export PATH=$PATH:~/.local/bin
 make install
 ```
 **Note**: Some notebooks might require additional setup, please refer to the instructions in specific notebooks.

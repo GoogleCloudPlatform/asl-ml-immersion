@@ -31,6 +31,7 @@ clean:
 install:
 	@pip install --user -U pip
 	@pip install --user -r requirements.txt
+	@./scripts/setup_bash.sh
 	@pre-commit install
 
 .PHONY: precommit

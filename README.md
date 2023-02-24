@@ -30,16 +30,29 @@ For a more detailed breakdown of the notebooks in this repo, please refer to thi
 
 
 ## Environment Setup (Vertex AI)
-The code in this repository is designed to run on [Vertex AI Workbench User Managed Notebooks](https://cloud.google.com/vertex-ai/docs/workbench/user-managed/introduction), and tested on the `TensorFlow Enterprise 2.8` image. Please follow the instruction of [the official documentation](https://cloud.google.com/vertex-ai/docs/workbench/user-managed/create-user-managed-notebooks-instance-console-quickstart)  to set up a JupyterLab instance.
 
-Accelerators (GPU/TPU) are not required in most of the labs, but some notebooks recommend using them.
-After creating a Vertex Workbench User Managed Notebook instance, open the terminal and run the following commands.
+First, open [CloudShell](https://cloud.google.com/shell) and run the following instructions:
+
+```bash
+git clone https://github.com/GoogleCloudPlatform/asl-ml-immersion.git
+cd asl-ml-immersion
+./scripts/enable_services.sh
+./scripts/setup_cloud_build_for_mlops_vertex.sh
+```
+
+Second, follow the instruction of [the official documentation](https://cloud.google.com/vertex-ai/docs/workbench/user-managed/create-user-managed-notebooks-instance-console-quickstart) to set up a JupyterLab instance on [Vertex AI Workbench User Managed Notebooks](https://cloud.google.com/vertex-ai/docs/workbench/user-managed/introduction).
+The code in this repository is designed to run on [Vertex AI Workbench User Managed Notebooks](https://cloud.google.com/vertex-ai/docs/workbench/user-managed/introduction), and tested on the `TensorFlow Enterprise 2.8` image.
+**Note:** Accelerators (GPU/TPU) are not required in most of the labs, but some notebooks recommend using them.
+
+After creating a Vertex Workbench User Managed Notebook instance, open the terminal *in your JupyterLab instance* and run the following commands:
+
 ```
 git clone https://github.com/GoogleCloudPlatform/asl-ml-immersion.git
 cd asl-ml-immersion
 export PATH=$PATH:~/.local/bin
 make install
 ```
+
 **Note**: Some notebooks might require additional setup, please refer to the instructions in specific notebooks.
 
 

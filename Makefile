@@ -31,7 +31,7 @@ clean:
 install:
 	@pip install --user -U pip
 	@pip install --user -r requirements.txt
-	@./scripts/setup_bash.sh
+	@./scripts/setup_on_jupyterlab.sh
 	@pre-commit install
 
 .PHONY: precommit

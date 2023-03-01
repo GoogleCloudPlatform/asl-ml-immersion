@@ -13,9 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Configure variables
 echo 'export PATH=$PATH:~/.local/bin:' >> ~/.bash_profile
 echo 'export PATH=$PATH:~/.local/bin:' >> ~/.bashrc
 
+# Enable Google Cloud services
 gcloud services enable \
   compute.googleapis.com \
   iam.googleapis.com \

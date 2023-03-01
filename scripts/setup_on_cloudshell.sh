@@ -14,26 +14,15 @@
 # limitations under the License.
 
 
-REPO_ROOT_DIR="$(dirname $(cd $(dirname $BASH_SOURCE) && pwd))"
-SCRIPTS_DIR="$REPO_ROOT_DIR/scripts"
-
 PROJECT_ID=$(gcloud config list project --format "value(core.project)")
 PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format="value(projectNumber)")
 
-
+# Grant Editor role to Cloud Build service account
 gcloud projects add-iam-policy-binding $PROJECT_ID \
   --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
   --role roles/editor
 
+# Grant Storage Object Admin to Compute Engine service account
 gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com \
     --role roles/storage.objectAdmin
-
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-    --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
-    --role roles/aiplatform.user
-
-gcloud iam service-accounts add-iam-policy-binding \
-    $PROJECT_NUMBER-compute@developer.gserviceaccount.com \
-    --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
-    --role roles/iam.serviceAccountUser

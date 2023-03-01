@@ -36,8 +36,7 @@ First, open [CloudShell](https://cloud.google.com/shell) and run the following i
 ```bash
 git clone https://github.com/GoogleCloudPlatform/asl-ml-immersion.git
 cd asl-ml-immersion
-./scripts/enable_services.sh
-./scripts/setup_cloud_build_for_mlops_vertex.sh
+./scripts/setup_on_cloudshell.sh
 ```
 
 Second, follow the instruction of [the official documentation](https://cloud.google.com/vertex-ai/docs/workbench/user-managed/create-user-managed-notebooks-instance-console-quickstart) to set up a JupyterLab instance on [Vertex AI Workbench User Managed Notebooks](https://cloud.google.com/vertex-ai/docs/workbench/user-managed/introduction).
@@ -46,7 +45,7 @@ The code in this repository is designed to run on [Vertex AI Workbench User Mana
 
 After creating a Vertex Workbench User Managed Notebook instance, open the terminal *in your JupyterLab instance* and run the following commands:
 
-```
+```bash
 git clone https://github.com/GoogleCloudPlatform/asl-ml-immersion.git
 cd asl-ml-immersion
 export PATH=$PATH:~/.local/bin

@@ -58,3 +58,7 @@ object_detection_kernel:
 .PHONY: pytorch_kfp_kernel
 pytorch_kfp_kernel:
 	./kernels/pytorch_kfp.sh
+
+.PHONY: bert_kernel
+bert_kernel:
+	./kernels/bert_kernel.sh

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export PROJECT_ID=$1 
+export PROJECT_ID=$1
 export ENDPOINT_ID=$2
 export PORT=8080
 

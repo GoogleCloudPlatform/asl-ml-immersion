@@ -1,5 +1,5 @@
 # Advanced Solutions Lab
-The notebooks in this repository will **only run on Vertex AI Jupyter notebook instances**. Please see the instructions below on how to setup the notebook. 
+The notebooks in this repository will **only run on [Vertex AI](https://cloud.google.com/vertex-ai) [Jupyter notebook](https://cloud.google.com/vertex-ai/docs/workbench/user-managed/introduction) instances**. Please see the instructions below on how to setup the notebook. 
 
 ## Overview
 This repository contains Jupyter notebooks meant to be run on Vertex AI. This is maintained by Google Cloud’s [Advanced Solutions Lab (ASL)](https://cloud.google.com/asl) team. [Vertex AI](https://cloud.google.com/vertex-ai) is the next generation AI Platform on the Google Cloud Platform.

@@ -1,7 +1,7 @@
 #!/bin/bash
 #
-# To build the kernel:  ./kernels/reinforcement_learning.sh
-# To remove the kernel: ./kernels/reinforcement_learning.sh remove
+# To build the kernel:  ./kernels/tf_recommenders.sh
+# To remove the kernel: ./kernels/tf_recommenders.sh remove
 #
 # This scripts will create a ipython kernel named $MODULE
 # populated with the reqs in ./notebooks/$MODULE/requirements.txt
@@ -34,6 +34,11 @@ python -m ipykernel install --user --name=$ENVNAME
 # Install TF Recommenders, TF-Datasets, and scann and its dependencies
 pip install tensorflow-recommenders==0.7.2
 pip install -U tensorflow-datasets==4.7.0
-pip install scann==1.2.9
+
+# Disabling scann until it become compatible with Python 3.10
+# pip install scann==1.2.9
+
+# Downgrading protobuf for compatibility.
+pip install -U protobuf==3.20.3
 
 deactivate

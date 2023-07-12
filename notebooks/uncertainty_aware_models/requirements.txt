@@ -1,5 +1,0 @@
-matplotlib==3.5.3
-seaborn==0.12.1
-sklearn==0.0.post1
-tensorflow==2.8.4
-tf-models-official==2.8.0

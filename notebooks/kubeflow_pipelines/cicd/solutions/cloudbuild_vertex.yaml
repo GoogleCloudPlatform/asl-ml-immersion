@@ -37,7 +37,7 @@ steps:
   - 'PIPELINE_ROOT=gs://$PROJECT_ID-kfp-artifact-store/pipeline'
   - 'PROJECT_ID=$PROJECT_ID'
   - 'REGION=$_REGION'
-  - 'SERVING_CONTAINER_IMAGE_URI=us-docker.pkg.dev/vertex-ai/prediction/sklearn-cpu.0-20:latest'
+  - 'SERVING_CONTAINER_IMAGE_URI=us-docker.pkg.dev/vertex-ai/prediction/sklearn-cpu.1-0:latest'
   - 'TRAINING_CONTAINER_IMAGE_URI=gcr.io/$PROJECT_ID/trainer_image_covertype_vertex:latest'
   - 'TRAINING_FILE_PATH=gs://$PROJECT_ID-kfp-artifact-store/data/training/dataset.csv'
   - 'VALIDATION_FILE_PATH=gs://$PROJECT_ID-kfp-artifact-store/data/validation/dataset.csv'

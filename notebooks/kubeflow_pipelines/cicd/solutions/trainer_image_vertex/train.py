@@ -69,7 +69,9 @@ def train_evaluate(
     X_train = df_train.drop("Cover_Type", axis=1)
     y_train = df_train["Cover_Type"]
 
-    pipeline.set_params(classifier__alpha=alpha, classifier__max_iter=max_iter)
+    pipeline.set_params(
+        classifier__alpha=alpha, classifier__max_iter=int(max_iter)
+    )
     pipeline.fit(X_train, y_train)
 
     if hptune:

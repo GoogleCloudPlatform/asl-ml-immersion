@@ -23,7 +23,7 @@ cd $REPO_ROOT_DIR/notebooks/$MODULE
 
 # Setup virtual env and kernel
 echo creating $ENVNAME at $(pwd)
-python3 -m venv $ENVNAME
+python3 -m venv $ENVNAME --system-site-packages
 
 # Registering the venv as an ipython kernel
 source $ENVNAME/bin/activate
@@ -32,7 +32,6 @@ pip install ipykernel
 python -m ipykernel install --user --name=$ENVNAME
 
 # Install Pytorch and its dependencies
-pip install torch==1.11.0 torchtext==0.12.0 --extra-index-url https://download.pytorch.org/whl/cpu
 pip install -r pytorch_kfp_requirements.txt
 
 deactivate

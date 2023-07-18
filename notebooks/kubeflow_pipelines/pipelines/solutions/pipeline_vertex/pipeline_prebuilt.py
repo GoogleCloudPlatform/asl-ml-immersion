@@ -23,8 +23,9 @@ from google_cloud_pipeline_components.aiplatform import (
 from google_cloud_pipeline_components.experimental import (
     hyperparameter_tuning_job,
 )
-from google_cloud_pipeline_components.experimental.custom_job import (
-    CustomTrainingJobOp,
+from google_cloud_pipeline_components.v1.custom_job import CustomTrainingJobOp
+from google_cloud_pipeline_components.v1.hyperparameter_tuning_job import (
+    HyperparameterTuningJobRunOp,
 )
 from kfp.v2 import dsl
 
@@ -89,7 +90,7 @@ def create_pipeline():
         }
     )
 
-    hp_tuning_task = hyperparameter_tuning_job.HyperparameterTuningJobRunOp(
+    hp_tuning_task = HyperparameterTuningJobRunOp(
         display_name=f"{PIPELINE_NAME}-kfp-tuning-job",
         project=PROJECT_ID,
         location=REGION,

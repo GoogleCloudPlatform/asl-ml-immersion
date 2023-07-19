@@ -1,5 +1,5 @@
-FROM gcr.io/deeplearning-platform-release/base-cpu
-RUN pip install -U fire cloudml-hypertune scikit-learn==0.20.4 pandas==0.24.2
+FROM us-docker.pkg.dev/vertex-ai/training/sklearn-cpu.1-0
+RUN pip install -U fire cloudml-hypertune scikit-learn==1.2.2
 WORKDIR /app
 COPY train.py .
 

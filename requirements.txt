@@ -1,6 +1,7 @@
 # Requirements for asl-ml-immersion repository
 google-cloud-aiplatform==1.26.0
 google-cloud-pipeline-components==1.0.44
+pyyaml==5.3.1
 kfp==1.8.22
 # tfx==1.13.0
 cloudml-hypertune

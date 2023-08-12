@@ -1,4 +1,0 @@
-google-cloud-aiplatform==1.19.0
-tensorflow==2.8.4
-tensorflow_text==2.8.2
-tf-models-official==2.8.0

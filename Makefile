@@ -30,6 +30,7 @@ clean:
 .PHONY: install
 install:
 	@pip install --user -U pip
+	@pip install --user "Cython<3"
 	@pip install --user -r requirements.txt
 	@./scripts/setup_on_jupyterlab.sh
 	@pre-commit install

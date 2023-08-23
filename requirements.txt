@@ -1,13 +1,14 @@
-# Requirements for MLOps Vertex
-google-cloud-aiplatform==1.19.0
-google-cloud-pipeline-components==1.0.27
-kfp==1.8.16
-tfx==1.8.1
-apache-beam==2.39.0
-pre-commit
-
-# Requirement for local tests of hyperparameter tuning jobs
+# Requirements for asl-ml-immersion repository
+google-cloud-aiplatform==1.26.0
+google-cloud-pipeline-components==1.0.44
+pyyaml==5.3.1
+kfp==1.8.22
+# tfx==1.13.0
 cloudml-hypertune
+apache-beam==2.46.0
+tensorflow_text==2.12.1
+tf-agents==0.16.0
+tf-models-official==2.12.0
 
-# Requirements for NLP labs
-tensorflow_text==2.8.2
+# For development work
+pre-commit

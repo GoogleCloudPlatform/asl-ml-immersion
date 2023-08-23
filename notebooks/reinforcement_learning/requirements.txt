@@ -1,4 +1,6 @@
+numpy==1.21.6
 pandas==1.3.5
 tensorflow==2.11.0
 tensorflow-io==0.28.0
 tf-agents==0.11.0
+tensorflow-probability==0.19.0

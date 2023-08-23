@@ -34,9 +34,4 @@ python -m ipykernel install --user --name=$ENVNAME
 pip install -q -U pip
 pip install -q .
 
-# Add the missing builer.py file due to the breaking change.
-# https://stackoverflow.com/questions/71759248/importerror-cannot-import-name-builder-from-google-protobuf-internal
-pwd
-wget https://raw.githubusercontent.com/protocolbuffers/protobuf/main/python/google/protobuf/internal/builder.py -O /home/jupyter/.local/lib/python3.7/site-packages/google/protobuf/internal/builder.py
-
 deactivate

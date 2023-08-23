@@ -1,4 +1,4 @@
-FROM us-docker.pkg.dev/vertex-ai/training/tf-cpu.2-8:latest
+FROM us-docker.pkg.dev/vertex-ai/training/tf-cpu.2-12.py310:latest
 # TODO 3
 
 COPY . /code

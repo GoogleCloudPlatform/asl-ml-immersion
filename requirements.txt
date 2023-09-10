@@ -9,6 +9,8 @@ apache-beam==2.46.0
 tensorflow_text==2.12.1
 tf-agents==0.16.0
 tf-models-official==2.12.0
+keras_cv==0.5.1
+keras_nlp==0.5.1
 
 # For development work
 pre-commit

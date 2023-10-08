@@ -53,7 +53,7 @@ def train_evaluate(
     pipeline = Pipeline(
         [
             ("preprocessor", preprocessor),
-            ("classifier", SGDClassifier(loss="log")),
+            ("classifier", SGDClassifier(loss="log_loss")),
         ]
     )
 

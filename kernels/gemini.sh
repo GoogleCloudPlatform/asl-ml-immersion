@@ -31,6 +31,8 @@ pip install -U pip
 pip install ipykernel
 python -m ipykernel install --user --name=$ENVNAME
 
-pip install --upgrade google-cloud-aiplatform
+pip install --upgrade \
+  google-cloud-aiplatform \
+  pillow
 
 deactivate

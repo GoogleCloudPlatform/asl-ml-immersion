@@ -19,7 +19,8 @@ kernels: \
  tf_recommenders_kernel \
  object_detection_kernel \
  pytorch_kfp_kernel \
- langchain_kernel
+ langchain_kernel \
+ gemini_kernel 
 
 .PHONY: clean
 clean:
@@ -61,3 +62,7 @@ object_detection_kernel:
 .PHONY: pytorch_kfp_kernel
 pytorch_kfp_kernel:
 	./kernels/pytorch_kfp.sh
+
+.PHONY: gemini_kernel
+gemini_kernel:
+	./kernels/gemini.sh

@@ -20,7 +20,7 @@ kernels: \
  object_detection_kernel \
  pytorch_kfp_kernel \
  langchain_kernel \
- gemini_kernel 
+ gemini_kernel
 
 .PHONY: clean
 clean:

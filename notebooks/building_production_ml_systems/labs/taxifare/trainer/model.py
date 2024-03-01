@@ -140,9 +140,7 @@ def transform(inputs, nbuckets):
 
     # Embedding with Embedding layer
     transformed["pd_embed"] = Flatten()(
-        Embedding(input_dim=nbuckets**4, output_dim=10, name="pd_embed")(
-            pd_fc
-        )
+        Embedding(input_dim=nbuckets**4, output_dim=10, name="pd_embed")(pd_fc)
     )
 
     transformed["passenger_count"] = inputs["passenger_count"]

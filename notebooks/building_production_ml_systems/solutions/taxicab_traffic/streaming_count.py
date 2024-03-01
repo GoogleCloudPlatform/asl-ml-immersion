@@ -1,7 +1,6 @@
 """A streaming dataflow pipeline to count pub/sub messages.
 """
 
-
 import argparse
 import logging
 from datetime import datetime

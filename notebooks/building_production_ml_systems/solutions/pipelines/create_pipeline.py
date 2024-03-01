@@ -1,4 +1,5 @@
 """Generates the taxifare pipeline."""
+
 from os import path
 
 import kfp.components as comp

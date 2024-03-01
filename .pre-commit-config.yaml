@@ -38,7 +38,7 @@ repos:
     -   id: isort
         args: ["--profile", "black", "-l80"]
 -   repo: https://github.com/psf/black
-    rev: 23.12.1
+    rev: 24.2.0
     hooks:
     -   id: black
         args: [-l 80]

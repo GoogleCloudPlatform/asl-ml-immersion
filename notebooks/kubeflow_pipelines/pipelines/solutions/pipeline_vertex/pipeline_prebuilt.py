@@ -55,7 +55,6 @@ MODEL_DISPLAY_NAME = os.getenv("MODEL_DISPLAY_NAME", PIPELINE_NAME)
     pipeline_root=PIPELINE_ROOT,
 )
 def create_pipeline():
-
     worker_pool_specs = [
         {
             "machine_spec": {

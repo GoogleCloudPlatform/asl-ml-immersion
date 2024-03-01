@@ -36,7 +36,6 @@ def tune_hyperparameters(
     "Outputs",
     [("best_accuracy", float), ("best_alpha", float), ("best_max_iter", int)],
 ):
-
     # pylint: disable=import-outside-toplevel
     from google.cloud import aiplatform
 

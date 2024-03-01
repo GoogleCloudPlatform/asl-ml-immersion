@@ -39,7 +39,6 @@ SERVING_MACHINE_TYPE = os.getenv("SERVING_MACHINE_TYPE", "n1-standard-16")
     pipeline_root=PIPELINE_ROOT,
 )
 def create_pipeline():
-
     dataset_create_task = TabularDatasetCreateOp(
         display_name=DISPLAY_NAME,
         bq_source=DATASET_SOURCE,

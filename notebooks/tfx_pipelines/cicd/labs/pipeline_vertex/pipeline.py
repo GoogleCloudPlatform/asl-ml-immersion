@@ -49,7 +49,6 @@ def create_pipeline(
     train_steps: data_types.RuntimeParameter,
     eval_steps: data_types.RuntimeParameter,
 ):
-
     beam_pipeline_args = Config.BEAM_DIRECT_PIPELINE_ARGS
 
     output = example_gen_pb2.Output(

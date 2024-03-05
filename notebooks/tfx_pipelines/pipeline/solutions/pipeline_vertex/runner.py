@@ -17,7 +17,6 @@ from pipeline import create_pipeline
 from tfx.orchestration.kubeflow.v2 import kubeflow_v2_dag_runner
 
 if __name__ == "__main__":
-
     tfx_pipeline = create_pipeline(
         pipeline_name=Config.PIPELINE_NAME,
         pipeline_root=Config.PIPELINE_ROOT,

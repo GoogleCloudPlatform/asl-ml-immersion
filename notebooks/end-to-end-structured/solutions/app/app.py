@@ -1,5 +1,6 @@
 """Simple webapp illustrating how to query a Vertex model.
 """
+
 import json
 import os
 

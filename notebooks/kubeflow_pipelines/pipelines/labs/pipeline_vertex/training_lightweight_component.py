@@ -32,7 +32,6 @@ def train_and_deploy(
     alpha: float,
     max_iter: int,
 ):
-
     # pylint: disable-next=import-outside-toplevel
     from google.cloud import aiplatform
 

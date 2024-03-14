@@ -9,3 +9,6 @@ huggingface-hub==0.17.2
 multiprocess==0.70.15
 responses==0.18.0
 xxhash==3.3.0
+
+# XAI
+saliency==0.2.0

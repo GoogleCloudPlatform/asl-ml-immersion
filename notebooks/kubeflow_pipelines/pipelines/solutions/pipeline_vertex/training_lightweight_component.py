@@ -55,5 +55,5 @@ def train_and_deploy(
     model = job.run(replica_count=1, model_display_name="covertype_kfp_model")
     endpoint = model.deploy(  # pylint: disable=unused-variable
         traffic_split={"0": 100},
-        machine_type="n1-standard-2",
+        machine_type="e2-standard-2",
     )

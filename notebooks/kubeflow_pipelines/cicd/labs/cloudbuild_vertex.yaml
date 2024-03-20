@@ -25,7 +25,7 @@ steps:
 
 
 # Compile the pipeline
-- name: 'gcr.io/$PROJECT_ID/kfp-cli-vertex'
+- name: 'us-docker.pkg.dev/$PROJECT_ID/asl-artifact-repo/kfp-cli-vertex'
   args:
   - '-c'
   - |
@@ -35,13 +35,13 @@ steps:
   - 'PROJECT_ID=$PROJECT_ID'
   - 'REGION=$_REGION'
   - 'SERVING_CONTAINER_IMAGE_URI=us-docker.pkg.dev/vertex-ai/prediction/sklearn-cpu.1-0:latest'
-  - 'TRAINING_CONTAINER_IMAGE_URI=gcr.io/$PROJECT_ID/trainer_image_covertype_vertex:latest'
+  - 'TRAINING_CONTAINER_IMAGE_URI=us-docker.pkg.dev/$PROJECT_ID/asl-artifact-repo/trainer_image_covertype_vertex:latest'
   - 'TRAINING_FILE_PATH=gs://$PROJECT_ID-kfp-artifact-store/data/training/dataset.csv'
   - 'VALIDATION_FILE_PATH=gs://$PROJECT_ID-kfp-artifact-store/data/validation/dataset.csv'
   dir: $_PIPELINE_FOLDER/pipeline_vertex
 
 # Run the pipeline
-- name: 'gcr.io/$PROJECT_ID/kfp-cli-vertex'
+- name: 'us-docker.pkg.dev/$PROJECT_ID/asl-artifact-repo/kfp-cli-vertex'
   args:
   - '-c'
   - |

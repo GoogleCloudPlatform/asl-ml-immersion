@@ -15,19 +15,19 @@ steps:
 # Build the trainer image
 - name: 'gcr.io/cloud-builders/docker'
   id: 'Build the trainer image'
-  args: ['build', '-t', 'gcr.io/$PROJECT_ID/trainer_image_covertype_vertex:latest', '.']
+  args: ['build', '-t', 'us-docker.pkg.dev/$PROJECT_ID/asl-artifact-repo/trainer_image_covertype_vertex:latest', '.']
   dir: $_PIPELINE_FOLDER/trainer_image_vertex
 
 
 # Push the trainer image, to make it available in the compile step
 - name: 'gcr.io/cloud-builders/docker'
   id: 'Push the trainer image'
-  args: ['push', 'gcr.io/$PROJECT_ID/trainer_image_covertype_vertex:latest']
+  args: ['push', 'us-docker.pkg.dev/$PROJECT_ID/asl-artifact-repo/trainer_image_covertype_vertex:latest']
   dir: $_PIPELINE_FOLDER/trainer_image_vertex
 
 
 # Compile the pipeline
-- name: 'gcr.io/$PROJECT_ID/kfp-cli-vertex'
+- name: 'us-docker.pkg.dev/$PROJECT_ID/asl-artifact-repo/kfp-cli-vertex'
   id: 'Compile the pipeline'
   args:
   - '-c'
@@ -38,21 +38,21 @@ steps:
   - 'PROJECT_ID=$PROJECT_ID'
   - 'REGION=$_REGION'
   - 'SERVING_CONTAINER_IMAGE_URI=us-docker.pkg.dev/vertex-ai/prediction/sklearn-cpu.1-0:latest'
-  - 'TRAINING_CONTAINER_IMAGE_URI=gcr.io/$PROJECT_ID/trainer_image_covertype_vertex:latest'
+  - 'TRAINING_CONTAINER_IMAGE_URI=us-docker.pkg.dev/$PROJECT_ID/asl-artifact-repo/trainer_image_covertype_vertex:latest'
   - 'TRAINING_FILE_PATH=gs://$PROJECT_ID-kfp-artifact-store/data/training/dataset.csv'
   - 'VALIDATION_FILE_PATH=gs://$PROJECT_ID-kfp-artifact-store/data/validation/dataset.csv'
   dir: $_PIPELINE_FOLDER/pipeline_vertex
 
 # Run the pipeline
-- name: 'gcr.io/$PROJECT_ID/kfp-cli-vertex'
+- name: 'us-docker.pkg.dev/$PROJECT_ID/asl-artifact-repo/kfp-cli-vertex'
   id: 'Run the pipeline'
   args:
   - '-c'
   - |
     python $_PIPELINE_FOLDER/kfp-cli_vertex/run_pipeline.py --project_id=$PROJECT_ID --template_path=$_PIPELINE_FOLDER/pipeline_vertex/covertype_kfp_pipeline.json --display_name=coverype_kfp_pipeline --region=$_REGION
 
-# Push the images to Container Registry
-images: ['gcr.io/$PROJECT_ID/trainer_image_covertype_vertex:latest']
+# Push the images to Artifact Registry
+images: ['us-docker.pkg.dev/$PROJECT_ID/asl-artifact-repo/trainer_image_covertype_vertex:latest']
 
 # This is required since the pipeline run overflows the default timeout
 timeout: 10800s

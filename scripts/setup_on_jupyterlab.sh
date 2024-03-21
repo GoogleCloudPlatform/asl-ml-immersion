@@ -31,3 +31,10 @@ gcloud services enable \
   cloudbuild.googleapis.com \
   container.googleapis.com \
   dataflow.googleapis.com
+
+# Setup Artifact Registry
+export PROJECT_ID=$(gcloud config get-value project)
+export REGION=us
+export ARTIFACT_REG_REPO=asl-artifact-repo
+
+gcloud artifacts repositories create $ARTIFACT_REG_REPO --project=$PROJECT_ID --location=$REGION --repository-format=docker

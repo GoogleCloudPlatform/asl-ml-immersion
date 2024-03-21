@@ -47,7 +47,7 @@ steps:
   - |
     python $_PIPELINE_FOLDER/kfp-cli_vertex/run_pipeline.py  # TODO
 
-# Push the images to Container Registry
+# Push the images to Artifact Registry
 # TODO: List the images to be pushed to the project Docker registry
 images: # TODO
 

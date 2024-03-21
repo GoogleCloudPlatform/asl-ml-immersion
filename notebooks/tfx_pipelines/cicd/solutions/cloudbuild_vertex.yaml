@@ -39,5 +39,5 @@ steps:
   args: ['-c', 'python /tfx/src/tfx_pipeline_run.py tfxcovertype.json tfxcovertype $PROJECT_ID $_REGION']
   dir: pipeline_vertex
 
-# Push the custom image to Container Registry
+# Push the custom image to Artifact Registry
 images: ['gcr.io/$PROJECT_ID/tfxcovertype']

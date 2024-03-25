@@ -11,4 +11,4 @@ responses==0.18.0
 xxhash==3.3.0
 
 # XAI
-saliency==0.2.0
+saliency==0.2.1

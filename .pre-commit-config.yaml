@@ -24,7 +24,7 @@ repos:
     -   id: trailing-whitespace
     -   id: mixed-line-ending
 -   repo: https://github.com/nbQA-dev/nbQA
-    rev: 1.7.1
+    rev: 1.8.5
     hooks:
     -   id: nbqa-black
         args: [-l80]
@@ -38,19 +38,19 @@ repos:
     -   id: isort
         args: ["--profile", "black", "-l80"]
 -   repo: https://github.com/psf/black
-    rev: 24.2.0
+    rev: 24.3.0
     hooks:
     -   id: black
         args: [-l 80]
     -   id: black-jupyter
         args: [-l 80]
 -   repo: https://github.com/asottile/pyupgrade
-    rev: v3.15.0
+    rev: v3.15.2
     hooks:
     -   id: pyupgrade
         args: [--py36-plus]
 -   repo: https://github.com/pycqa/pylint
-    rev: v3.0.3
+    rev: v3.1.0
     hooks:
     -   id: pylint
         args: ["--disable", "unexpected-keyword-arg,no-value-for-parameter,too-many-function-args"]

@@ -37,4 +37,8 @@ export PROJECT_ID=$(gcloud config get-value project)
 export REGION=us
 export ARTIFACT_REG_REPO=asl-artifact-repo
 
-gcloud artifacts repositories create $ARTIFACT_REG_REPO --project=$PROJECT_ID --location=$REGION --repository-format=docker
+if ! gcloud artifacts repositories describe $ARTIFACT_REG_REPO \
+       --location=$REGION > /dev/null 2>&1; then
+    gcloud artifacts repositories create $ARTIFACT_REG_REPO \
+    --project=$PROJECT_ID --location=$REGION --repository-format=docker
+fi

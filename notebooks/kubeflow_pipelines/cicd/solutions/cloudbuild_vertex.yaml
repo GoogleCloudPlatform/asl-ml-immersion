@@ -32,7 +32,7 @@ steps:
   args:
   - '-c'
   - |
-    dsl-compile-v2 --py pipeline.py --output covertype_kfp_pipeline.json
+    kfp dsl compile --py pipeline.py --output covertype_kfp_pipeline.yaml
   env:
   - 'PIPELINE_ROOT=gs://$PROJECT_ID-kfp-artifact-store/pipeline'
   - 'PROJECT_ID=$PROJECT_ID'
@@ -49,7 +49,7 @@ steps:
   args:
   - '-c'
   - |
-    python $_PIPELINE_FOLDER/kfp-cli_vertex/run_pipeline.py --project_id=$PROJECT_ID --template_path=$_PIPELINE_FOLDER/pipeline_vertex/covertype_kfp_pipeline.json --display_name=coverype_kfp_pipeline --region=$_REGION
+    python $_PIPELINE_FOLDER/kfp-cli_vertex/run_pipeline.py --project_id=$PROJECT_ID --template_path=$_PIPELINE_FOLDER/pipeline_vertex/covertype_kfp_pipeline.yaml --display_name=coverype_kfp_pipeline --region=$_REGION
 
 # Push the images to Artifact Registry
 images: ['us-docker.pkg.dev/$PROJECT_ID/asl-artifact-repo/trainer_image_covertype_vertex:latest']

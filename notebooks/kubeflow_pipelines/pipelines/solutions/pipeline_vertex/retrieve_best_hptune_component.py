@@ -54,8 +54,9 @@ def retrieve_best_hptune_result(
         trial.final_measurement.metrics[0].value for trial in hp_job.trials
     ]
     goal = hp_job.to_dict()["studySpec"]["metrics"][0]["goal"]
-    f = min if goal == "MINIMIZE" else max  # MINIMIZE or MAXIMIZE
-    best_trial = hp_job.trials[metrics.index(f(metrics))]
+    goal_f = min if goal == "MINIMIZE" else max  # MINIMIZE or MAXIMIZE
+    best_result = goal_f(metrics)
+    best_trial = hp_job.trials[metrics.index(best_result)]
 
     best_parameters = {
         param.parameter_id: param.value for param in best_trial.parameters

@@ -15,19 +15,20 @@
 import os
 
 from google.cloud.aiplatform import hyperparameter_tuning as hpt
-from google_cloud_pipeline_components.aiplatform import (
+from google_cloud_pipeline_components.types import artifact_types
+from google_cloud_pipeline_components.v1.custom_job import CustomTrainingJobOp
+from google_cloud_pipeline_components.v1.endpoint import (
     EndpointCreateOp,
     ModelDeployOp,
-    ModelUploadOp,
 )
-from google_cloud_pipeline_components.experimental import (
-    hyperparameter_tuning_job,
-)
-from google_cloud_pipeline_components.v1.custom_job import CustomTrainingJobOp
 from google_cloud_pipeline_components.v1.hyperparameter_tuning_job import (
     HyperparameterTuningJobRunOp,
+    serialize_metrics,
+    serialize_parameters,
 )
-from kfp.v2 import dsl
+from google_cloud_pipeline_components.v1.model import ModelUploadOp
+from kfp import dsl
+from retrieve_best_hptune_component import retrieve_best_hptune_result
 
 PIPELINE_ROOT = os.getenv("PIPELINE_ROOT")
 PROJECT_ID = os.getenv("PROJECT_ID")
@@ -74,11 +75,9 @@ def create_pipeline():
         }
     ]
 
-    metric_spec = hyperparameter_tuning_job.serialize_metrics(
-        {"accuracy": "maximize"}
-    )
+    metric_spec = serialize_metrics({"accuracy": "maximize"})
 
-    parameter_spec = hyperparameter_tuning_job.serialize_parameters(
+    parameter_spec = serialize_parameters(
         {
             "alpha": hpt.DoubleParameterSpec(
                 min=1.0e-4, max=1.0e-1, scale="linear"
@@ -101,51 +100,35 @@ def create_pipeline():
         base_output_directory=PIPELINE_ROOT,
     )
 
-    trials_task = hyperparameter_tuning_job.GetTrialsOp(
-        gcp_resources=hp_tuning_task.outputs["gcp_resources"]
-    )
-
-    best_hyperparameters_task = (
-        hyperparameter_tuning_job.GetBestHyperparametersOp(
-            trials=trials_task.output, study_spec_metrics=metric_spec
-        )
-    )
-
-    # Construct new worker_pool_specs and
-    # train new model based on best hyperparameters
-    worker_pool_specs_task = hyperparameter_tuning_job.GetWorkerPoolSpecsOp(
-        best_hyperparameters=best_hyperparameters_task.output,
-        worker_pool_specs=[
-            {
-                "machine_spec": {"machine_type": "n1-standard-4"},
-                "replica_count": 1,
-                "container_spec": {
-                    "image_uri": TRAINING_CONTAINER_IMAGE_URI,
-                    "args": [
-                        f"--training_dataset_path={TRAINING_FILE_PATH}",
-                        f"--validation_dataset_path={VALIDATION_FILE_PATH}",
-                        "--nohptune",
-                    ],
-                },
-            }
-        ],
+    best_retrieval_task = retrieve_best_hptune_result(
+        project=PROJECT_ID,
+        location=REGION,
+        gcp_resources=hp_tuning_task.outputs["gcp_resources"],
+        container_uri=TRAINING_CONTAINER_IMAGE_URI,
+        training_file_path=TRAINING_FILE_PATH,
+        validation_file_path=VALIDATION_FILE_PATH,
     )
 
     training_task = CustomTrainingJobOp(
         project=PROJECT_ID,
         location=REGION,
         display_name=f"{PIPELINE_NAME}-kfp-training-job",
-        worker_pool_specs=worker_pool_specs_task.output,
+        worker_pool_specs=best_retrieval_task.outputs["best_worker_pool_spec"],
         base_output_directory=BASE_OUTPUT_DIR,
     )
+
+    importer_spec = dsl.importer(
+        artifact_uri=f"{BASE_OUTPUT_DIR}/model",
+        artifact_class=artifact_types.UnmanagedContainerModel,
+        metadata={"containerSpec": {"imageUri": SERVING_CONTAINER_IMAGE_URI}},
+    )
+    importer_spec.after(training_task)
 
     model_upload_task = ModelUploadOp(
         project=PROJECT_ID,
         display_name=f"{PIPELINE_NAME}-kfp-model-upload-job",
-        artifact_uri=f"{BASE_OUTPUT_DIR}/model",
-        serving_container_image_uri=SERVING_CONTAINER_IMAGE_URI,
+        unmanaged_container_model=importer_spec.output,
     )
-    model_upload_task.after(training_task)
 
     endpoint_create_task = EndpointCreateOp(
         project=PROJECT_ID,

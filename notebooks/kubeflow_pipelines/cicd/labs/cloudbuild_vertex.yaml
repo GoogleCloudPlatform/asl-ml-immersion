@@ -29,7 +29,7 @@ steps:
   args:
   - '-c'
   - |
-    dsl-compile-v2 # TODO
+    kfp dsl compile # TODO
   env:
   - 'PIPELINE_ROOT=gs://$PROJECT_ID-kfp-artifact-store/pipeline'
   - 'PROJECT_ID=$PROJECT_ID'

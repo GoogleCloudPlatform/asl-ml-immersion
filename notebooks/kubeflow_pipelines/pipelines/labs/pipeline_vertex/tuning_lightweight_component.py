@@ -14,13 +14,12 @@
 """Lightweight component tuning function."""
 from typing import NamedTuple
 
-from kfp.v2.dsl import component
+from kfp.dsl import component
 
 
 # pylint: disable=unused-argument
 @component(
     base_image="python:3.8",
-    output_component_file="covertype_kfp_tune_hyperparameters.yaml",
     packages_to_install=["google-cloud-aiplatform"],
 )
 def tune_hyperparameters(

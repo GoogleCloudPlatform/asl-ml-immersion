@@ -49,8 +49,9 @@ def tune_hyperparameters(
         {
             "machine_spec": {
                 "machine_type": "n1-standard-4",
-                "accelerator_type": "NVIDIA_TESLA_K80",
-                "accelerator_count": 1,
+                # Enable if you want to use GPU.
+                # "accelerator_type": "NVIDIA_TESLA_K80",
+                # "accelerator_count": 1,
             },
             "replica_count": 1,
             "container_spec": {

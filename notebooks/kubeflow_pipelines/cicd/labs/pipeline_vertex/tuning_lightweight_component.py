@@ -74,7 +74,7 @@ def tune_hyperparameters(
         },
         parameter_spec={
             "alpha": hpt.DoubleParameterSpec(
-                min=1.0e-4, max=1.0e-1, scale="linear"
+                min=1.0e-4, max=1.0e-1, scale="log"
             ),
             "max_iter": hpt.DiscreteParameterSpec(
                 values=[1, 2], scale="linear"

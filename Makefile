@@ -32,7 +32,7 @@ clean:
 install:
 	@pip install --user -U pip
 	@pip install --user "Cython<3"
-	@pip install --user -r requirements.txt
+	@pip install --user -e .
 	@pip install --user --no-deps -r requirements-without-deps.txt
 	@./scripts/setup_on_jupyterlab.sh
 	@pre-commit install
@@ -61,3 +61,7 @@ object_detection_kernel:
 .PHONY: pytorch_kfp_kernel
 pytorch_kfp_kernel:
 	./kernels/pytorch_kfp.sh
+
+.PHONY: tests
+tests:
+	pytest tests/unit

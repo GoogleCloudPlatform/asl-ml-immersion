@@ -55,7 +55,7 @@ def covertype_train(
 
     accuracy = tuning_op.outputs["best_accuracy"]
 
-    with dsl.Condition(
+    with dsl.If(
         accuracy >= accuracy_deployment_threshold, name="deploy_decision"
     ):
         train_and_deploy_op = None  # TODO

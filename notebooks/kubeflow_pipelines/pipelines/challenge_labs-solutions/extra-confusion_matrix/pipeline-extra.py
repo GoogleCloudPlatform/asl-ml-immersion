@@ -15,6 +15,7 @@
 """Kubeflow Covertype Pipeline."""
 import os
 
+from cls_metrics import compute_cls_metrics
 from extract_bq import extract_bq_op
 from google.cloud.aiplatform import hyperparameter_tuning as hpt
 from google_cloud_pipeline_components.types import artifact_types
@@ -196,3 +197,9 @@ def create_pipeline():
         starting_replica_count=2,
         max_replica_count=10,
     ).set_display_name("Batch Prediction")
+
+    compute_cls_metrics_op = compute_cls_metrics(
+        batch_pred_result=batch_predict_op.outputs["bigquery_output_table"],
+        class_names=["0", "1", "2", "3", "4", "5", "6"],
+        label_column="Cover_Type",
+    ).set_display_name("Log Confusion Matrix")

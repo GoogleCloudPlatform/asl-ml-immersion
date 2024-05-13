@@ -6,6 +6,9 @@ kfp==2.4.0
 # tfx==1.13.0
 cloudml-hypertune
 apache-beam==2.46.0
+tensorflow==2.12.0
+tensorflow-io==0.32.0
+tensorflow-serving-api==2.12.1
 tensorflow_text==2.12.1
 tf-agents==0.16.0
 tf-models-official==2.12.0
@@ -13,7 +16,3 @@ tensorflow-model-remediation==0.1.7.1
 keras_cv==0.5.1
 keras_nlp==0.5.1
 fire==0.6.0
-
-# For development work
-pre-commit
-pytest

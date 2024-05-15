@@ -17,7 +17,6 @@ install: asl_kernel setup
 
 kernels: \
  asl_kernel \
- tf_recommenders_kernel \
  object_detection_kernel \
  pytorch_kfp_kernel \
  langchain_kernel
@@ -46,10 +45,6 @@ asl_kernel:
 .PHONY: langchain_kernel
 langchain_kernel:
 	./kernels/langchain.sh
-
-.PHONY: tf_recommenders_kernel
-tf_recommenders_kernel:
-	./kernels/tf_recommenders.sh
 
 .PHONY: object_detection_kernel
 object_detection_kernel:

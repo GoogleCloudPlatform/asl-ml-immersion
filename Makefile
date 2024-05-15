@@ -66,4 +66,4 @@ pytorch_kfp_kernel:
 
 .PHONY: tests
 tests:
-	pytest tests/unit
+	. asl_kernel/bin/activate; python -m pytest tests/unit

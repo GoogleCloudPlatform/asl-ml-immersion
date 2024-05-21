@@ -12,11 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-all: clean als_kernel install
-install: asl_kernel setup
+all: clean install
 
 kernels: \
- asl_kernel \
  object_detection_kernel \
  pytorch_kfp_kernel \
  langchain_kernel
@@ -28,11 +26,15 @@ clean:
 	@find . -name '__pycache__' -delete
 	@find . -name '*egg-info' -delete
 
-.PHONY: setup
+.PHONY: install
 install:
-	@pip install -U pre-commit pytest
+	@pip install --user -U pip
+	@pip install --user "Cython<3"
+	@pip install --user -e .
+	@pip install --user --no-deps -r requirements-without-deps.txt
 	@./scripts/setup_on_jupyterlab.sh
 	@pre-commit install
+	@sudo apt-get -y install graphviz
 
 .PHONY: precommit
 precommit:
@@ -56,4 +58,4 @@ pytorch_kfp_kernel:
 
 .PHONY: tests
 tests:
-	. asl_kernel/bin/activate; python -m pytest tests/unit
+	pytest tests/unit

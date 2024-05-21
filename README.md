@@ -43,7 +43,7 @@ Second, follow the instruction of [the official documentation](https://cloud.goo
 
 **Note:** Accelerators (GPU/TPU) are not required in most of the labs, but some notebooks recommend using them.
 
-After creating a Vertex Workbench Instance, open the jupyter lab and run the following command *in your JupyterLab instance*:
+After creating a Vertex Workbench Instance, open the terminal *in your JupyterLab instance* and run the following commands:
 
 ```bash
 git clone https://github.com/GoogleCloudPlatform/asl-ml-immersion.git

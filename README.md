@@ -54,6 +54,7 @@ make install
 
 **Note**: Some notebooks might require additional setup, please refer to the instructions in specific notebooks.
 
+After running these commands, you can open and execute a notebook on the base "Python 3" kernel.
 
 ## Contributions
 Currently, only Googlers can contribute to this repo. See [CONTRIBUTING.md](https://github.com/GoogleCloudPlatform/asl-ml-immersion/blob/master/CONTRIBUTING.md) for more details on the contribution workflow.

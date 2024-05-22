@@ -18,3 +18,8 @@ tensorflow-recommenders==0.7.2
 keras_cv==0.5.1
 keras_nlp==0.5.1
 fire==0.6.0
+
+
+# For development work
+pre-commit
+pytest

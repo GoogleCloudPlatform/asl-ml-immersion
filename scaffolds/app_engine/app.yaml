@@ -1,0 +1,10 @@
+runtime: python310
+entrypoint: gunicorn -b :$PORT asl.server:app
+
+runtime_config:
+  operating_system: "ubuntu22"
+
+env_variables:
+  BUCKET: "dherin-dev"
+  LOCATION: "us-central1"
+  PROJECT: "dherin-dev"

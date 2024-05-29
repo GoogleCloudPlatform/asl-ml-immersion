@@ -1,5 +1,6 @@
 """ Integration tests for server.py
 """
+
 from app import server
 
 

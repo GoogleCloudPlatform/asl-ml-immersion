@@ -1,9 +1,9 @@
 """ Flask serving API and small demo UI.
 """
+
 import logging
 
 from flask import Flask, jsonify, request, send_file
-
 
 app = Flask(__name__)
 

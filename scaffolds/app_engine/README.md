@@ -1,10 +1,10 @@
-# Development Workflow 
+# Development Workflow
 
 ## Local development
 
-The workflow described here works from CloudShell or any node with the [gcloud CLI](https://cloud.google.com/sdk/docs/install) has been properly installed and authenticated. 
+The workflow described here works from CloudShell or any node with the [gcloud CLI](https://cloud.google.com/sdk/docs/install) has been properly installed and authenticated.
 
-This means that you can develop your application fully locally on your laptop for example, as long as you have run `make auth` after installing the [gcloud CLI](https://cloud.google.com/sdk/docs/install) on it. 
+This means that you can develop your application fully locally on your laptop for example, as long as you have run `make auth` after installing the [gcloud CLI](https://cloud.google.com/sdk/docs/install) on it.
 
 The first step is to add your `PROJECT` and `BUCKET` names in the following files:
 * `./scripts/config.sh`
@@ -23,14 +23,14 @@ The second step is to create and populate the virtual environment with
 ```bash
 make venv
 ```
-After this step you should find a new folder called `venv` containing the virtual environment. 
+After this step you should find a new folder called `venv` containing the virtual environment.
 
 At this point you should already be able to run the tests by running
 ```bash
 make tests
 ```
 
-To run the app locally, simply run 
+To run the app locally, simply run
 ```bash
 make run
 ```
@@ -48,4 +48,3 @@ make deploy
 1. Run the tests with `make tests`
 1. Test the app local with `make run`
 1. Deploy the app on AppEngine with `make deploy`
-

@@ -1,6 +1,6 @@
-PROJECT="dherin-dev"
+PROJECT="<YOUR_PROJECT>"
 LOCATION="us-central1"
-BUCKET="dherin-dev"
+BUCKET="<YOUR_BUCKET>"
 
 # Compute various paths from the ROOT_DIR
 ROOT_DIR="$(dirname $(cd $(dirname $BASH_SOURCE) && pwd))"

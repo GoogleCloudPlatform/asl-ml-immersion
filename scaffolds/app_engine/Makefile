@@ -23,6 +23,7 @@ tests:
 
 .PHONY: deploy
 deploy: clean
+	./scripts/create_app.sh
 	./scripts/deploy.sh
 
 .PHONY: run

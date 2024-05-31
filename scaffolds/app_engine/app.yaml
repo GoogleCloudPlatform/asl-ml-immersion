@@ -5,6 +5,6 @@ runtime_config:
   operating_system: "ubuntu22"
 
 env_variables:
-  BUCKET: "<YOUR_BUCKET>"
+  BUCKET: "dherin-dev"
   LOCATION: "us-central1"
-  PROJECT: "<YOUR_PROJECT>"
+  PROJECT: "dherin-dev"

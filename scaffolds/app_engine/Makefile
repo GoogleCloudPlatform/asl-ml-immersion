@@ -36,6 +36,10 @@ deploy: clean
 run:
 	./scripts/run_locally.sh
 
+.PHONY: setup
+setup:
+	./scripts/setup.sh
+
 .PHONY: notebook
 notebook:
 	@. venv/bin/activate && jupyter lab

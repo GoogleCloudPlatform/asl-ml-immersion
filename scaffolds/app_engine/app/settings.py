@@ -44,8 +44,8 @@ class Config:
     PALM_TOP_P = float(os.environ.get("PALM_TOP_P", 0.95))
     PALM_TOP_K = int(os.environ.get("PALM_TOP_K", 40))
     PALM_MAX_OUTPUT_TOKENS = int(os.environ.get("PALM_MAX_OUTPUT_TOKENS", 1024))
-    RETRIEVAL_CHUNK_SIZE = int(os.environ.get("RETRIEVAL_CHUNK_SIZE", 800))
-    RETRIEVAL_OVERLAP_SIZE = int(os.environ.get("RETRIEVAL_CHUNK_SIZE", 400))
+    RETRIEVAL_CHUNK_SIZE = int(os.environ.get("RETRIEVAL_CHUNK_SIZE", 2000))
+    RETRIEVAL_OVERLAP_SIZE = int(os.environ.get("RETRIEVAL_CHUNK_SIZE", 0))
     RETRIEVAL_SEARCH_TYPE = os.environ.get(
         "RETRIEVAL_SEARCH_TYPE", "similarity"
     )

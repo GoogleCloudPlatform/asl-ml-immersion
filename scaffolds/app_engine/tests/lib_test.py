@@ -4,7 +4,7 @@ import json
 
 import pandas as pd
 
-from asl import lib
+from app import lib
 
 
 def test_extract_relative_path():

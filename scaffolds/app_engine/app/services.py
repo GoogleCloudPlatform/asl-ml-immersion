@@ -65,7 +65,7 @@ class CSVDocumentStore:
     @property
     def raw_data(self):
         if self._raw_data is None:
-            self._raw_data = pd.read_csv(self._data_path)
+            self._raw_data = lib.load_csv_as_df(self._data_path)
         return self._raw_data
 
     @property

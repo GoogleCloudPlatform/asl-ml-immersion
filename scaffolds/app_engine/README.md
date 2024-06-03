@@ -6,11 +6,19 @@ The workflow described here works from CloudShell or any node with the [gcloud C
 
 This means that you can develop your application fully locally on your laptop for example, as long as you have run `make auth` after installing the [gcloud CLI](https://cloud.google.com/sdk/docs/install) on it.
 
-The first step is to add your `PROJECT` and `BUCKET` names in the following files:
-* `./scripts/config.sh`
-* `app.yaml`
-
 For local development, install then the gcloud CLI following [these instructions](https://cloud.google.com/sdk/docs/install).
+
+The first step is to set you SDK project and compute/zone variables:
+```bash
+gcloud config set compute/zone <YOUR_REGION> 
+gcloud config set project <YOUR_PROJECT> 
+```
+The scripts in `./scripts` will you use these variables. By default,
+the app bucket name will be the same as your project name.
+
+**Caution:** Edit the `PROJECT`, `BUCKET`, and `REGION` variables in `app.yaml` to 
+match the configuration described above.
+
 
 Make sure to accept upgrading Python to 3.10 if prompted, then authenticate for local development by running:
 
@@ -18,7 +26,12 @@ Make sure to accept upgrading Python to 3.10 if prompted, then authenticate for 
 make auth
 ```
 
-The second step is to create and populate the virtual environment with
+To enable the GCP services we need, and setup the permission to these services, please run:
+```bash
+make setup
+```
+
+The next step is to create and populate the virtual environment with
 
 ```bash
 make venv

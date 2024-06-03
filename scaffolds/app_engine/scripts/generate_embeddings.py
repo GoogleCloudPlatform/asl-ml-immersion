@@ -8,5 +8,5 @@ if __name__ == "__main__":
     print(f"PROJECT={Config.PROJECT}")
     print(f"BUCKET={Config.BUCKET}")
     rag_svc = create_rag_service()
-    print("rag service created")
+    print("Rag service created")
     rag_svc.generate_embeddings()

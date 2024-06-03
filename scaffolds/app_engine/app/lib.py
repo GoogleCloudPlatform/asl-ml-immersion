@@ -1,10 +1,28 @@
 """ Utils and raw calls to GCP APIs.
 """
+from io import StringIO
 import os
 import tempfile
 
 import pandas as pd
 from google.cloud import storage
+
+
+def load_csv_as_df(gcs_path):
+    """Download a csv file into a pandas DataFrame from GCS."""
+    gcs_path = gcs_path.replace('gs://', '')
+    bucket_name = gcs_path.split('/')[0]
+    object_name = gcs_path.replace(bucket_name, '').lstrip('/')
+
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.get_blob(object_name)
+    if not blob:
+        raise ValueError(
+            f"{object_name} does not exist in GCS bucket {bucket_name}"
+        )
+    content = StringIO(blob.download_as_text())
+    return pd.read_csv(content)
 
 
 def extract_relative_path(root_path, path):

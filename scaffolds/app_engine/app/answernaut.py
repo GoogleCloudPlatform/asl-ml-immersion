@@ -1,6 +1,6 @@
 """ Application logic: Assemble data from all services.
 """
-from asl.services import create_rag_service
+from app.services import create_rag_service
 
 _NO_PROMPT = "Please enter a question."
 _SUFFIX = """
@@ -40,10 +40,10 @@ def create_answernaut():
 
 
 def _extract_link_from_source(source):
-    url = source.metadata.get("Submission")
+    url = source.metadata.get("url")
     html = None
     if url:
-        title = source.metadata["Course Title"]
+        title = source.metadata["title"]
         html = f"<li><a href='{url}'>{title}</a></li>\n"
     return html
 
@@ -62,4 +62,4 @@ def _generate_sources_html(sources):
 
 
 def _generate_answer_html(result):
-    return f"<h1>Answernaut dixit:</h1>\n {result}"
+    return f"<h1>Answernaut:</h1>\n {result}"

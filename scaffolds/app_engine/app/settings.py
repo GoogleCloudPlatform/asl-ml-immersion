@@ -50,5 +50,5 @@ class Config:
         "RETRIEVAL_SEARCH_TYPE", "similarity"
     )
     RETRIEVAL_NEAREST_NEIGHBORS = int(
-        os.environ.get("RETRIEVAL_NEAREST_NEIGHBORS", 30)
+        os.environ.get("RETRIEVAL_NEAREST_NEIGHBORS", 5)
     )

@@ -1,5 +1,6 @@
 """ Application logic: Assemble data from all services.
 """
+
 from app.services import create_rag_service
 
 _NO_PROMPT = "Please enter a question."

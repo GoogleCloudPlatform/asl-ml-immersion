@@ -1,8 +1,9 @@
 """ Utils and raw calls to GCP APIs.
 """
-from io import StringIO
+
 import os
 import tempfile
+from io import StringIO
 
 import pandas as pd
 from google.cloud import storage
@@ -10,9 +11,9 @@ from google.cloud import storage
 
 def load_csv_as_df(gcs_path):
     """Download a csv file into a pandas DataFrame from GCS."""
-    gcs_path = gcs_path.replace('gs://', '')
-    bucket_name = gcs_path.split('/')[0]
-    object_name = gcs_path.replace(bucket_name, '').lstrip('/')
+    gcs_path = gcs_path.replace("gs://", "")
+    bucket_name = gcs_path.split("/")[0]
+    object_name = gcs_path.replace(bucket_name, "").lstrip("/")
 
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)

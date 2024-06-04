@@ -1,8 +1,10 @@
 """Classes and factories for quering GCP services.
 """
+
 import os
 
-import pandas as pd
+from app import lib
+from app.settings import Config
 from google.cloud import aiplatform
 from langchain.chains import RetrievalQA
 from langchain.document_loaders import DataFrameLoader
@@ -10,9 +12,6 @@ from langchain.embeddings import VertexAIEmbeddings
 from langchain.llms import VertexAI
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import Chroma
-
-from app import lib
-from app.settings import Config
 
 
 class StorageService:

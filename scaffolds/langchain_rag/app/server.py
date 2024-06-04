@@ -3,10 +3,8 @@
 
 import logging
 
-from flask import Flask, jsonify, request, send_file
-
 from app.rag import create_rag
-
+from flask import Flask, jsonify, request, send_file
 
 rag = create_rag()
 app = Flask(__name__)

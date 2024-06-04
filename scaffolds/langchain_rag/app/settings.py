@@ -13,9 +13,7 @@ class Config:
     LOCAL_STORAGE = os.environ.get("LOCAL_STORAGE", "/tmp/answernaut")
 
     # Datasheet Service Config
-    DATASHEET_PATH = os.environ.get(
-        "DATASHEET_PATH", f"gs://{BUCKET}/data.csv"
-    )
+    DATASHEET_PATH = os.environ.get("DATASHEET_PATH", f"gs://{BUCKET}/data.csv")
     DATASHEET_CONTENT_COLUMNS = list(
         os.environ.get(
             "DATASHEET_CONTENT_COLUMNS",

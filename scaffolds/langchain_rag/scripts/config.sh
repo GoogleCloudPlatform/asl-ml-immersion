@@ -12,4 +12,3 @@ SCRIPTS_DIR="$ROOT_DIR/scripts"
 APP_YAML="$ROOT_DIR/app.yaml"
 VENV="$ROOT_DIR/venv"
 DATA_CSV="$ROOT_DIR/data/data.csv"
-

@@ -11,13 +11,13 @@ For local development, install the gcloud CLI following [these instructions](htt
 The first step is to set your GCP project and compute/zone variables:
 
 ```bash
-gcloud config set compute/zone <YOUR_REGION> 
-gcloud config set project <YOUR_PROJECT> 
+gcloud config set compute/zone <YOUR_REGION>
+gcloud config set project <YOUR_PROJECT>
 ```
 The scripts in `./scripts` will use these variables. By default,
 the app bucket name will be the same as the name of your  project.
 
-**Caution:** Edit the `PROJECT`, `BUCKET`, and `LOCATION` variables in `app.yaml` to 
+**Caution:** Edit the `PROJECT`, `BUCKET`, and `LOCATION` variables in `app.yaml` to
 match the configuration described above.
 
 
@@ -69,4 +69,3 @@ make deploy
 1. Run the tests with `make tests`
 1. Test the app local with `make run`
 1. Deploy the app on AppEngine with `make deploy`
-

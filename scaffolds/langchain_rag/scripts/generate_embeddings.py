@@ -1,5 +1,6 @@
 """ Generate answernaut embeddings and store them in GCS.
 """
+
 from app.services import create_rag_service
 from app.settings import Config
 

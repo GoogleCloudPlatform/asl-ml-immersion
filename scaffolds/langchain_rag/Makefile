@@ -22,7 +22,7 @@ tests:
 	./scripts/run_tests.sh
 
 .PHONY: ingest
-ingest: 
+ingest:
 	./scripts/upload_data_to_gcs.sh
 	./scripts/generate_embeddings.sh
 

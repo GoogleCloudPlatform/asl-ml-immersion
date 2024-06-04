@@ -1,9 +1,9 @@
 """ Unit tests for lib.py
 """
+
 import json
 
 import pandas as pd
-
 from app import lib
 
 

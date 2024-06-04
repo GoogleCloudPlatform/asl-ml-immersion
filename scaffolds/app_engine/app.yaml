@@ -1,0 +1,10 @@
+runtime: python310
+entrypoint: gunicorn -b :$PORT app.server:app
+
+runtime_config:
+  operating_system: "ubuntu22"
+
+env_variables:
+  BUCKET: "<YOUR_BUCKET>"
+  LOCATION: "us-central1"
+  PROJECT: "<YOUR_PROJECT>"

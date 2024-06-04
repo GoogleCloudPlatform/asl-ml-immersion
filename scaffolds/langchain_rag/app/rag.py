@@ -10,7 +10,7 @@ converted into HTML tags.
 """
 
 
-class Answernaut:
+class Rag:
     """Main controller."""
 
     def __init__(self, rag_svc):
@@ -34,9 +34,9 @@ class Answernaut:
         return f"{answer} \n {sources}"
 
 
-def create_answernaut():
+def create_rag():
     rag_svc = create_rag_service()
-    return Answernaut(rag_svc)
+    return Rag(rag_svc)
 
 
 def _extract_link_from_source(source):
@@ -62,4 +62,4 @@ def _generate_sources_html(sources):
 
 
 def _generate_answer_html(result):
-    return f"<h1>Answernaut:</h1>\n {result}"
+    return f"<h1>Rag:</h1>\n {result}"

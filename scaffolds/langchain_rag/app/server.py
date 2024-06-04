@@ -5,10 +5,10 @@ import logging
 
 from flask import Flask, jsonify, request, send_file
 
-from app.answernaut import create_answernaut
+from app.rag import create_rag
 
 
-answernaut = create_answernaut()
+rag = create_rag()
 app = Flask(__name__)
 
 
@@ -20,7 +20,7 @@ def _index():
 
 @app.route("/myapp", methods=["GET"])
 def _myapp():
-    return jsonify({"answer": answernaut.query(request.args["query"])})
+    return jsonify({"answer": rag.query(request.args["query"])})
 
 
 @app.errorhandler(500)

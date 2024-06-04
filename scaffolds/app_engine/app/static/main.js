@@ -1,3 +1,9 @@
+/* Simple Google search like UI in plain Javascript. 
+The init function attaches event listeners to the query-form
+and input form, while queryAPI sends the prompt to the backend
+API. 
+*/
+
 async function queryApi(prompt) {
     const endpoint = `/myapp?query=${prompt}`
     const response = await fetch(endpoint)

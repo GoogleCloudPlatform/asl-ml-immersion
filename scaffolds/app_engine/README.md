@@ -4,7 +4,7 @@
 
 The workflow described here works from CloudShell or any node with the [gcloud CLI](https://cloud.google.com/sdk/docs/install) has been properly installed and authenticated.
 
-This means that you can develop your application fully locally on your laptop for example, as long as you have run `make auth` after installing the [gcloud CLI](https://cloud.google.com/sdk/docs/install) on it.
+This means that you can develop your application locally on your laptop for example, as long as you have run `make auth` after installing the [gcloud CLI](https://cloud.google.com/sdk/docs/install) on it.
 
 For local development, install the gcloud CLI following [these instructions](https://cloud.google.com/sdk/docs/install).
 

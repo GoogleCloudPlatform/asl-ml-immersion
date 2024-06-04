@@ -19,7 +19,7 @@ def _index():
 
 
 @app.route("/myapp", methods=["GET"])
-def _answernaut():
+def _myapp():
     return jsonify({"answer": answernaut.query(request.args["query"])})
 
 

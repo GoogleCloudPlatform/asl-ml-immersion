@@ -14,13 +14,12 @@
 """Lightweight component tuning function."""
 from typing import NamedTuple
 
-from kfp.v2.dsl import component
+from kfp.dsl import component
 
 
 # pylint: disable=unused-argument
 @component(
     base_image="python:3.8",
-    output_component_file="covertype_kfp_tune_hyperparameters.yaml",
     packages_to_install=["google-cloud-aiplatform"],
 )
 def tune_hyperparameters(
@@ -50,8 +49,9 @@ def tune_hyperparameters(
         {
             "machine_spec": {
                 "machine_type": "n1-standard-4",
-                "accelerator_type": "NVIDIA_TESLA_K80",
-                "accelerator_count": 1,
+                # Enable if you want to use GPU.
+                # "accelerator_type": "NVIDIA_TESLA_K80",
+                # "accelerator_count": 1,
             },
             "replica_count": 1,
             "container_spec": {

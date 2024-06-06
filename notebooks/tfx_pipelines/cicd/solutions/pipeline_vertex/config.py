@@ -36,7 +36,7 @@ class Config:
 
     BEAM_DIRECT_PIPELINE_ARGS = [
         f"--project={PROJECT_ID}",
-        f"--temp_location={os.path.join(PIPELINE_ROOT, 'beam')}",
+        f"--temp_location={os.path.join(PIPELINE_ROOT, 'beam')}",  # pylint: disable=inconsistent-quotes
         f"--region={REGION}",
         "--runner=DataflowRunner",
         "--experiments=use_runner_v2",

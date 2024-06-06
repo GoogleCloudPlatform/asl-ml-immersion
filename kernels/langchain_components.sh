@@ -31,5 +31,6 @@ pip install chromadb==0.3.26
 pip install pydantic==1.10.8
 pip install google-cloud-aiplatform==1.48.0
 pip install faiss-cpu==1.7.4
+pip install unstructured==0.14.4
 
 deactivate

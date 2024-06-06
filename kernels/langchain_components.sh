@@ -30,5 +30,6 @@ pip install langchain-google-vertexai==1.0.1
 pip install chromadb==0.3.26
 pip install pydantic==1.10.8
 pip install google-cloud-aiplatform==1.48.0
+pip install faiss-cpu==1.7.4
 
 deactivate

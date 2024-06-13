@@ -63,10 +63,6 @@ object_detection_kernel:
 pytorch_kfp_kernel:
 	./kernels/pytorch_kfp.sh
 
-.PHONY: langchain_components_kernel
-langchain_components_kernel:
-	./kernels/langchain_components.sh
-
 .PHONY: tests
 tests:
 	pytest tests/unit

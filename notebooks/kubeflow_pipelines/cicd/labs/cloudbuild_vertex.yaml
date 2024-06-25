@@ -51,6 +51,8 @@ steps:
 # TODO: List the images to be pushed to the project Docker registry
 images: # TODO
 
+options:
+  logging: CLOUD_LOGGING_ONLY
 
 # This is required since the pipeline run overflows the default timeout
 timeout: 10800s

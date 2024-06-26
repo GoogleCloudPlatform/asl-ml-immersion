@@ -19,8 +19,7 @@ kernels: \
  tf_recommenders_kernel \
  object_detection_kernel \
  pytorch_kfp_kernel \
- langchain_kernel \
- langchain_components_kernel
+ langchain_kernel
 
 .PHONY: clean
 clean:

@@ -39,6 +39,7 @@ The next step is to create and populate the virtual environment with
 make venv
 ```
 After this step you should find a new folder called `venv` containing the virtual environment.
+Use `source venv/bin/activate` to activate the virtual environment.
 
 Before running the app, you'll need to ingest the data and generate the embeddings that will be stored in `Chroma`; for that run
 

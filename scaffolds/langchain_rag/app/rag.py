@@ -1,9 +1,16 @@
 """ Application logic: Assemble data from all services.
+
+Note: The _extract_link_from_source function assumes
+the existence of a `url` and a `title` column among
+the metadata columns defined in settings.py
 """
 
 from app.services import create_rag_service
 
 _NO_PROMPT = "Please enter a question."
+
+# _SUFFIX is appended to the end of every prompt and
+# can be modified to format answers for example.
 _SUFFIX = """
 Format your answer in HTML and not in markdown.
 Make sure every markdown tags in the answer are

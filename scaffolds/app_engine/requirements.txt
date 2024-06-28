@@ -1,4 +1,0 @@
-Flask==3.0.0
-gunicorn==20.1.0
-pre-commit==3.7.1
-pytest==7.0.1

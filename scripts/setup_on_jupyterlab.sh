@@ -30,7 +30,8 @@ gcloud services enable \
   artifactregistry.googleapis.com \
   cloudbuild.googleapis.com \
   container.googleapis.com \
-  dataflow.googleapis.com
+  dataflow.googleapis.com \
+  run.googleapis.com
 
 # Setup Artifact Registry
 export PROJECT_ID=$(gcloud config get-value project)

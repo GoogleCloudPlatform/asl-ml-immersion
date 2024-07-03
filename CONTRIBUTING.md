@@ -67,6 +67,18 @@ This repo's `.pre-commit-config.yaml` includes:
 
 ### FAQ
 
+#### _Local pre-commit results is different from the GitHub pre-commit.ci?_
+
+- Check the local pre-commit environment is up to date. If not, pull the latest repository and run `pre-commit install` at the repository root.
+
+- If not fixed yet, use the command below to reproduce the same environment as the pre-commit.ci and debug the issue.
+
+```
+docker run -v $PWD:/src:rw --workdir /src --rm \
+-ti ghcr.io/pre-commit-ci/runner-image \
+pre-commit install && pre-commit run --all-files
+```
+
 #### _How can I ask `pylint` to ignore something?_
 
 With comments like `# pylint: disable=[rule]`, see [the docs](https://pylint.pycqa.org/en/latest/user_guide/message-control.html).

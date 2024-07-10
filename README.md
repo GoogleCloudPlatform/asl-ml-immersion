@@ -39,12 +39,11 @@ cd asl-ml-immersion
 ./scripts/setup_on_cloudshell.sh
 ```
 
-Second, follow the instruction of [the official documentation](https://cloud.google.com/vertex-ai/docs/workbench/user-managed/create-user-managed-notebooks-instance-console-quickstart) to set up a JupyterLab instance on [Vertex AI Workbench User Managed Notebooks](https://cloud.google.com/vertex-ai/docs/workbench/user-managed/introduction).
-The code in this repository is designed to run on [Vertex AI Workbench User Managed Notebooks](https://cloud.google.com/vertex-ai/docs/workbench/user-managed/introduction), and tested on the `Devian 11` -> `TensorFlow Enterprise 2.12` image.
+Second, follow the instruction of [the official documentation](https://cloud.google.com/vertex-ai/docs/workbench/instances/create-console-quickstart) to set up a JupyterLab instance on [Vertex AI Workbench Instance](https://cloud.google.com/vertex-ai/docs/workbench/instances/introduction).
 
 **Note:** Accelerators (GPU/TPU) are not required in most of the labs, but some notebooks recommend using them.
 
-After creating a Vertex Workbench User Managed Notebook instance, open the terminal *in your JupyterLab instance* and run the following commands:
+After creating a Vertex Workbench Instance, open the terminal *in your JupyterLab instance* and run the following commands:
 
 ```bash
 git clone https://github.com/GoogleCloudPlatform/asl-ml-immersion.git
@@ -55,6 +54,7 @@ make install
 
 **Note**: Some notebooks might require additional setup, please refer to the instructions in specific notebooks.
 
+After running these commands, you can open and execute a notebook on the base "Python 3" kernel.
 
 ## Contributions
 Currently, only Googlers can contribute to this repo. See [CONTRIBUTING.md](https://github.com/GoogleCloudPlatform/asl-ml-immersion/blob/master/CONTRIBUTING.md) for more details on the contribution workflow.

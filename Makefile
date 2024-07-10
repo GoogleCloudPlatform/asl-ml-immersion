@@ -15,8 +15,6 @@
 all: clean install
 
 kernels: \
- reinforcement_learning_kernel \
- tf_recommenders_kernel \
  object_detection_kernel \
  pytorch_kfp_kernel \
  langchain_kernel
@@ -42,17 +40,13 @@ install:
 precommit:
 	@pre-commit run --all-files
 
+.PHONY: asl_kernel
+asl_kernel:
+	./kernels/asl_kernel.sh
+
 .PHONY: langchain_kernel
 langchain_kernel:
 	./kernels/langchain.sh
-
-.PHONY: reinforcement_learning_kernel
-reinforcement_learning_kernel:
-	./kernels/reinforcement_learning.sh
-
-.PHONY: tf_recommenders_kernel
-tf_recommenders_kernel:
-	./kernels/tf_recommenders.sh
 
 .PHONY: object_detection_kernel
 object_detection_kernel:

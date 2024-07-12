@@ -51,6 +51,8 @@ steps:
   - |
     python $_PIPELINE_FOLDER/kfp-cli_vertex/run_pipeline.py --project_id=$PROJECT_ID --template_path=$_PIPELINE_FOLDER/pipeline_vertex/covertype_kfp_pipeline.yaml --display_name=coverype_kfp_pipeline --region=$_REGION
 
+logsBucket: 'gs://$PROJECT_ID-cloudbuild'
+
 # Push the images to Artifact Registry
 images: ['us-docker.pkg.dev/$PROJECT_ID/asl-artifact-repo/trainer_image_covertype_vertex:latest']
 

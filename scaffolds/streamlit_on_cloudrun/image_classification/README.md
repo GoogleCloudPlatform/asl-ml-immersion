@@ -6,9 +6,9 @@ For all the step by step instructions, refer to the `train_and_deploy.ipynb` whi
 
 Or, if you want to quickly deploy and check the application, follow the steps below:
 
-1. Open `deploy.sh` and change the PROJECT_ID variable to your project id.
+1. Open `deploy.sh` and change the PROJECT variable to your project id.
 
-2. Run `deploy.sh` and deploy the application to Cloud Run.
+2. Run `deploy.sh` in this directory and deploy the application to Cloud Run.
 ```
 . deploy.sh
 ```

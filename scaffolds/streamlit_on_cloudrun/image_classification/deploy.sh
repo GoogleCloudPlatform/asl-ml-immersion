@@ -1,5 +1,5 @@
 STREAMLIT_ARTIFACT_REG_REPO=flower-classification-app
-PROJECT_ID=<YOUR PROJECT ID>
+PROJECT=<YOUR PROJECT ID>
 REGION=us-central1
 CONTAINER_PATH=us-central1-docker.pkg.dev/$PROJECT/$STREAMLIT_ARTIFACT_REG_REPO/app
 APP_NAME=flower-classification

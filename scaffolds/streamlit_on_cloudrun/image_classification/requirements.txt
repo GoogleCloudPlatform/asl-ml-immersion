@@ -1,0 +1,3 @@
+numpy==1.23.5
+streamlit==1.29.0
+tensorflow==2.12.0

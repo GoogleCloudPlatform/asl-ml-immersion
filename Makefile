@@ -17,7 +17,8 @@ all: clean install
 kernels: \
  object_detection_kernel \
  pytorch_kfp_kernel \
- langchain_kernel
+ langchain_kernel \
+ langchain_components_kernel
 
 .PHONY: clean
 clean:
@@ -47,6 +48,10 @@ asl_kernel:
 .PHONY: langchain_kernel
 langchain_kernel:
 	./kernels/langchain.sh
+
+.PHONY: langchain_components_kernel
+langchain_components_kernel:
+	./kernels/langchain_components.sh
 
 .PHONY: object_detection_kernel
 object_detection_kernel:

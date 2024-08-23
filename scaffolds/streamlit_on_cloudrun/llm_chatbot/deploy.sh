@@ -1,5 +1,5 @@
 STREAMLIT_ARTIFACT_REG_REPO=gemini-chatbot-app
-PROJECT_ID=<YOUR PROJECT ID>
+PROJECT=<YOUR PROJECT ID>
 REGION=us-central1
 CONTAINER_PATH=us-central1-docker.pkg.dev/$PROJECT/$STREAMLIT_ARTIFACT_REG_REPO/app
 APP_NAME=gemini-chatbot-app
@@ -18,7 +18,7 @@ echo 'Deploying the application to Cloud Run...'
 gcloud run deploy $APP_NAME \
   --image $CONTAINER_PATH:latest --min-instances 1 --max-instances 1 --cpu 1 \
   --memory 4Gi --region us-central1 \
-  --update-env-vars GCP_PROJECT=$PROJECT_ID,GCP_REGION=$REGION > /dev/null 2>&1 && \
+  --update-env-vars GCP_PROJECT=$PROJECT,GCP_REGION=$REGION > /dev/null 2>&1 && \
 echo 'Deployment Done.'
 
 echo "Follow these steps to open the app from Cloud Shell.

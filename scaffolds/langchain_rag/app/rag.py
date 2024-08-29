@@ -7,7 +7,15 @@ the metadata columns defined in settings.py
 
 from app.services import create_rag_service
 
-_NO_PROMPT = "Please enter a question."
+_NO_PROMPT = """
+As a technical expert overseeing app support, you will review and assess two responses using the criteria outlined below
+
+    1.  The given answer must correctly and relevantly address the question or issue, as compared to the true answer.
+    2.  The answer should be clear and easy to understand, with any technical terms or jargon explained adequately.
+    3.  The answer should be pertinent to the specific application or context of the query and focused on the issue at hand.
+    4.  The response should provide practical and actionable guidance that effectively helps resolve the issue.
+    5.  The answer should be well-structured and logically organized, with a clear introduction, body, and conclusion.
+"""
 
 # _SUFFIX is appended to the end of every prompt and
 # can be modified to format answers for example.
@@ -38,36 +46,12 @@ class Rag:
 
     def _postprocess_response(self, response):
         answer = _generate_answer_html(response["result"])
-        sources = _generate_sources_html(response["source_documents"])
-        return f"{answer} \n {sources}"
+        return f"{answer} \n "
 
 
 def create_rag():
     rag_svc = create_rag_service()
     return Rag(rag_svc)
-
-
-def _extract_link_from_source(source):
-    url = source.metadata.get("url")
-    html = None
-    if url:
-        title = source.metadata["title"]
-        html = f"<li><a href='{url}'>{title}</a></li>\n"
-    return html
-
-
-def _generate_sources_html(sources):
-    html = "<h1>Analyzed sources ranked by relevance:</h1>\n"
-    html += "<ul>\n"
-    seen = set()
-    for source in sources:
-        link = _extract_link_from_source(source)
-        if link and not link in seen:
-            html += _extract_link_from_source(source)
-            seen.add(link)
-    html += "</ul>"
-    return html
-
 
 def _generate_answer_html(result):
     return f"<h1>Rag:</h1>\n {result}"

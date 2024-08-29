@@ -18,8 +18,8 @@ class Config:
         os.environ.get(
             "DATASHEET_CONTENT_COLUMNS",
             [
-                "title",
-                "abstract",
+                "tweet_id",
+                "in_response_to_tweet_text",
             ],
         )
     )
@@ -27,8 +27,8 @@ class Config:
         os.environ.get(
             "DATASHEET_METADATA_COLUMNS",
             [
-                "title",
-                "url",
+                "tweet_id",
+                "in_response_to_tweet_text",
             ],
         )
     )
@@ -48,5 +48,5 @@ class Config:
         "RETRIEVAL_SEARCH_TYPE", "similarity"
     )
     RETRIEVAL_NEAREST_NEIGHBORS = int(
-        os.environ.get("RETRIEVAL_NEAREST_NEIGHBORS", 5)
+        os.environ.get("RETRIEVAL_NEAREST_NEIGHBORS", 20)
     )

@@ -10,7 +10,7 @@ gcloud services --project=$PROJECT enable \
 
 # App Engine
 gcloud projects add-iam-policy-binding $PROJECT \
-    --member="serviceAccount:$PROJECT@appspot.gserviceaccount.com" \
+    --member="serviceAccount:977058370535-compute@developer.gserviceaccount.com" \
     --role="roles/aiplatform.admin" \
     --role="roles/storage.admin" \
     --role="roles/storage.objectViewer"

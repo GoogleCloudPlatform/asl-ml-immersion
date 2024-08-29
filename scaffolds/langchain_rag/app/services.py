@@ -15,7 +15,7 @@ from langchain.vectorstores import Chroma
 
 
 class StorageService:
-    """Light front to GCS."""
+    """Light front t o GCS."""
 
     def __init__(self, bucket_name, local_dir):
         self.bucket_name = bucket_name.replace("gs://", "")

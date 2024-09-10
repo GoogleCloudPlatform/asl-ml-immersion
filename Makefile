@@ -18,7 +18,8 @@ kernels: \
  object_detection_kernel \
  pytorch_kfp_kernel \
  langchain_kernel \
- langchain_components_kernel
+ langchain_components_kernel \
+ lit_kernel
 
 .PHONY: clean
 clean:
@@ -64,6 +65,10 @@ pytorch_kfp_kernel:
 .PHONY: gemini_kernel
 gemini_kernel:
 	./kernels/gemini.sh
+
+.PHONY: lit_kernel
+lit_kernel:
+	./kernels/lit.sh
 
 
 .PHONY: tests

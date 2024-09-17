@@ -35,6 +35,7 @@ install:
 	@pip install --user --no-deps -r requirements-without-deps.txt
 	@./scripts/setup_on_jupyterlab.sh
 	@pre-commit install
+	@sudo apt-get update
 	@sudo apt-get -y install graphviz
 
 .PHONY: precommit

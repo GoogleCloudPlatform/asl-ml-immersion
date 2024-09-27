@@ -18,16 +18,16 @@ if [ "$1" == "remove" ]; then
   exit 0
 fi
 
-conda create -n $ENVNAME python=3.10.14 -y
+conda create -q -n $ENVNAME python=3.10.14 -y
 conda activate $ENVNAME
 
 # Install packages using a pip local to the conda environment.
-conda install pip
-pip install ipykernel
+conda install -q pip
+pip install -q ipykernel
 # Adds the conda kernel.
 DL_ANACONDA_ENV_HOME="${DL_ANACONDA_HOME}/envs/$ENVNAME"
 python -m ipykernel install --prefix "${DL_ANACONDA_ENV_HOME}" --name $ENVNAME --display-name "$KERNEL_DISPLAY_NAME"
 
-pip install tensorflow==2.14.1 lit-nlp keras_nlp
+pip install -q tensorflow==2.14.1 lit-nlp keras_nlp
 
 conda deactivate

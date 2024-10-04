@@ -17,11 +17,6 @@
 PROJECT_ID=$(gcloud config list project --format "value(core.project)")
 PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format="value(projectNumber)")
 
-# Grant Editor role to Cloud Build service account
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-  --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
-  --role roles/editor
-
 # Grant Storage Object Admin to Compute Engine service account
 gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com \

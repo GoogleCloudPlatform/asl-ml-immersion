@@ -17,7 +17,9 @@ all: clean install
 kernels: \
  object_detection_kernel \
  pytorch_kfp_kernel \
- langchain_kernel
+ langchain_kernel \
+ langchain_components_kernel \
+ lit_kernel
 
 .PHONY: clean
 clean:
@@ -34,6 +36,7 @@ install:
 	@pip install --user --no-deps -r requirements-without-deps.txt
 	@./scripts/setup_on_jupyterlab.sh
 	@pre-commit install
+	@sudo apt-get update
 	@sudo apt-get -y install graphviz
 
 .PHONY: precommit
@@ -48,6 +51,10 @@ asl_kernel:
 langchain_kernel:
 	./kernels/langchain.sh
 
+.PHONY: langchain_components_kernel
+langchain_components_kernel:
+	./kernels/langchain_components.sh
+
 .PHONY: object_detection_kernel
 object_detection_kernel:
 	./kernels/object_detection.sh
@@ -55,6 +62,15 @@ object_detection_kernel:
 .PHONY: pytorch_kfp_kernel
 pytorch_kfp_kernel:
 	./kernels/pytorch_kfp.sh
+
+.PHONY: gemini_kernel
+gemini_kernel:
+	./kernels/gemini.sh
+
+.PHONY: lit_kernel
+lit_kernel:
+	./kernels/lit.sh
+
 
 .PHONY: tests
 tests:

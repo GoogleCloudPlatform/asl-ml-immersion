@@ -27,7 +27,7 @@ python -m ipykernel install --user --name=$ENVNAME
 pip install -q -U pip
 pip install -q -U langchain==0.1.2
 pip install -q -U langchain-google-vertexai==1.0.1
-pip install -q -U chromadb
+pip install -q -U langchain-chroma==0.1.2
 pip install -q -U pydantic==2.8.2
 pip install -q -U google-cloud-aiplatform==1.48.0
 pip install -q -U faiss-cpu==1.7.4

@@ -31,8 +31,7 @@ pip install -q -U langchain-community==0.2.11
 pip install -q -U langchain-core==0.2.29
 pip install -q -U langchain-google-vertexai==1.0.8
 pip install -q -U langchain-text-splitters==0.2.2
-pip install -q -U chromadb==0.3.26
-pip install -q -U pydantic==1.10.8
+pip install -q -U pydantic==2.8.2
 pip install -q -U pypdf==4.3.1
 pip install -q -U google-cloud-aiplatform==1.58.0
 pip install -q -U faiss-cpu==1.7.4

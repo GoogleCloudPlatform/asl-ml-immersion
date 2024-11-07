@@ -9,7 +9,7 @@ ci:
 
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
     -   id: check-ast
     -   id: check-case-conflict
@@ -24,7 +24,7 @@ repos:
     -   id: trailing-whitespace
     -   id: mixed-line-ending
 -   repo: https://github.com/nbQA-dev/nbQA
-    rev: 1.8.5
+    rev: 1.8.7
     hooks:
     -   id: nbqa-black
         args: [-l80]
@@ -38,19 +38,19 @@ repos:
     -   id: isort
         args: ["--profile", "black", "-l80"]
 -   repo: https://github.com/psf/black
-    rev: 24.4.2
+    rev: 24.10.0
     hooks:
     -   id: black
         args: [-l 80]
     -   id: black-jupyter
         args: [-l 80]
 -   repo: https://github.com/asottile/pyupgrade
-    rev: v3.16.0
+    rev: v3.17.0
     hooks:
     -   id: pyupgrade
         args: [--py36-plus]
 -   repo: https://github.com/pycqa/pylint
-    rev: v3.2.4
+    rev: v3.3.1
     hooks:
     -   id: pylint
         args: ["--disable", "unexpected-keyword-arg,no-value-for-parameter,too-many-function-args"]

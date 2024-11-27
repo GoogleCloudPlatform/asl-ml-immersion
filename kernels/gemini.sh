@@ -25,5 +25,5 @@ source $ENVNAME/bin/activate
 python -m ipykernel install --user --name=$ENVNAME
 
 pip install -q -U pip
-pip install -U google-cloud-aiplatform==1.70.0
+pip install -q -U google-cloud-aiplatform==1.70.0
 deactivate

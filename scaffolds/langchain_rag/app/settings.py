@@ -41,7 +41,9 @@ class Config:
     GEMINI_TEMPERATURE = float(os.environ.get("GEMINI_TEMPERATURE", 0.5))
     GEMINI_TOP_P = float(os.environ.get("GEMINI_TOP_P", 0.95))
     GEMINI_TOP_K = int(os.environ.get("GEMINI_TOP_K", 40))
-    GEMINI_MAX_OUTPUT_TOKENS = int(os.environ.get("GEMINI_MAX_OUTPUT_TOKENS", 1024))
+    GEMINI_MAX_OUTPUT_TOKENS = int(
+        os.environ.get("GEMINI_MAX_OUTPUT_TOKENS", 1024)
+    )
     RETRIEVAL_CHUNK_SIZE = int(os.environ.get("RETRIEVAL_CHUNK_SIZE", 2000))
     RETRIEVAL_OVERLAP_SIZE = int(os.environ.get("RETRIEVAL_CHUNK_SIZE", 0))
     RETRIEVAL_SEARCH_TYPE = os.environ.get(

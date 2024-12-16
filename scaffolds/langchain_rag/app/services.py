@@ -7,11 +7,11 @@ from app import lib
 from app.settings import Config
 from google.cloud import aiplatform
 from langchain.chains import RetrievalQA
-from langchain.document_loaders import DataFrameLoader
-from langchain.embeddings import VertexAIEmbeddings
-from langchain.llms import VertexAI
+from langchain_community.document_loaders import DataFrameLoader
+from langchain_google_vertexai import VertexAIEmbeddings
+from langchain_google_vertexai import VertexAI
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.vectorstores import Chroma
+from langchain_chroma import Chroma
 
 
 class StorageService:
@@ -185,14 +185,14 @@ def create_rag_service():
         staging_bucket=Config.BUCKET,
     )
     embedding = VertexAIEmbeddings(
-        model_name=Config.PALM_EMBBEDING_MODEL,
+        model_name=Config.GEMINI_EMBBEDING_MODEL,
     )
     llm = VertexAI(
-        model_name=Config.PALM_TEXT_MODEL,
-        temperature=Config.PALM_TEMPERATURE,
-        max_output_tokens=Config.PALM_MAX_OUTPUT_TOKENS,
-        top_p=Config.PALM_TOP_P,
-        top_k=Config.PALM_TOP_K,
+        model_name=Config.GEMINI_TEXT_MODEL,
+        temperature=Config.GEMINI_TEMPERATURE,
+        max_output_tokens=Config.GEMINI_MAX_OUTPUT_TOKENS,
+        top_p=Config.GEMINI_TOP_P,
+        top_k=Config.GEMINI_TOP_K,
     )
     return RAGService(
         embedding_engine=embedding,

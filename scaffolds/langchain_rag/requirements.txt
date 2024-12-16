@@ -3,7 +3,7 @@ gunicorn==20.1.0
 pre_commit==4.0.1
 pytest==8.3.3
 google-cloud-aiplatform==1.74.0
-llangchain==0.3.12
+langchain==0.3.12
 langchain-chroma==0.1.4
 langchain-community==0.3.12
 langchain-core==0.3.25

@@ -63,10 +63,6 @@ object_detection_kernel:
 pytorch_kfp_kernel:
 	./kernels/pytorch_kfp.sh
 
-.PHONY: gemini_kernel
-gemini_kernel:
-	./kernels/gemini.sh
-
 .PHONY: lit_kernel
 lit_kernel:
 	./kernels/lit.sh

@@ -1,7 +1,7 @@
 # Requirements for asl-ml-immersion repository
 
 # Google Cloud
-google-genai==0.2.2 # tentative version
+google-genai==0.3.0 # tentative version
 google-api-core==2.24.0
 google-cloud-storage==2.19.0
 google-cloud-aiplatform==1.74.0

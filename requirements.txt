@@ -12,6 +12,7 @@ apache-beam==2.46.0
 # Machine Learning Frameworks
 tensorflow==2.12.0
 tensorflow-io==0.32.0
+tensorflow-hub==0.14.0
 tensorflow-serving-api==2.12.1
 tensorflow_text==2.12.1
 tf-agents==0.16.0

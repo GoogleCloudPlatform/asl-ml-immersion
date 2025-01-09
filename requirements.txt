@@ -35,6 +35,7 @@ saliency==0.2.1
 # Langchain dependencies
 langchain==0.3.14
 langsmith==0.1.129
+langgraph==0.2.61
 langchain-chroma==0.1.4
 chroma-hnswlib==0.7.3
 chromadb==0.4.14

@@ -1,10 +1,10 @@
 # Requirements for asl-ml-immersion repository
 
 # Google Cloud
-google-genai==1.2.0
+google-genai==1.7.0
 google-api-core==2.24.0
 google-cloud-storage==2.19.0
-google-cloud-aiplatform==1.76.0
+google-cloud-aiplatform==1.85.0
 google-cloud-bigquery==3.21.0
 cloudml-hypertune
 apache-beam==2.46.0
@@ -40,8 +40,8 @@ langchain-chroma==0.1.4
 chroma-hnswlib==0.7.3
 chromadb==0.4.14
 langchain-community==0.3.14
-langchain-core==0.3.29
-langchain-google-vertexai==2.0.10
+langchain-core==0.3.47
+langchain-google-vertexai==2.0.15
 langchain-text-splitters==0.3.5
 
 # Utilities

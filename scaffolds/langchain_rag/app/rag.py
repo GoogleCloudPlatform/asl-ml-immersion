@@ -1,4 +1,4 @@
-""" Application logic: Assemble data from all services.
+"""Application logic: Assemble data from all services.
 
 Note: The _extract_link_from_source function assumes
 the existence of a `url` and a `title` column among

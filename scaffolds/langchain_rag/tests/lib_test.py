@@ -1,5 +1,4 @@
-""" Unit tests for lib.py
-"""
+"""Unit tests for lib.py"""
 
 import json
 

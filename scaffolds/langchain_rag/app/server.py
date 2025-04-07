@@ -1,5 +1,4 @@
-""" Flask serving API and small demo UI.
-"""
+"""Flask serving API and small demo UI."""
 
 import logging
 

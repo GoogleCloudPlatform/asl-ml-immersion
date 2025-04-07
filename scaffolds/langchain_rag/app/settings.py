@@ -1,5 +1,4 @@
-""" Config retrieves and stores all the constant settings..
-"""
+"""Config retrieves and stores all the constant settings.."""
 
 import os
 

@@ -1,5 +1,4 @@
-""" Utils and GCP APIs wrappers.
-"""
+"""Utils and GCP APIs wrappers."""
 
 import os
 

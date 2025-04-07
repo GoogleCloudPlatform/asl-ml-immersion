@@ -1,14 +1,18 @@
 # Requirements for asl-ml-immersion repository
-google-cloud-aiplatform==1.43.0
-google-cloud-pipeline-components==2.8.0
+
+# Google Cloud
+google-genai==1.7.0
+google-api-core==2.24.0
+google-cloud-storage==2.19.0
+google-cloud-aiplatform==1.85.0
 google-cloud-bigquery==3.21.0
-pyyaml==5.3.1
-kfp==2.4.0
-# tfx==1.13.0
 cloudml-hypertune
 apache-beam==2.46.0
+
+# Machine Learning Frameworks
 tensorflow==2.12.0
 tensorflow-io==0.32.0
+tensorflow-hub==0.14.0
 tensorflow-serving-api==2.12.1
 tensorflow_text==2.12.1
 tf-agents==0.16.0
@@ -17,8 +21,38 @@ tensorflow-model-remediation==0.1.7.1
 tensorflow-recommenders==0.7.2
 keras_cv==0.5.1
 keras_nlp==0.5.1
-fire==0.6.0
+jax==0.4.30
 
+# MLOps
+kubernetes==17.17.0
+kfp==2.4.0
+google-cloud-pipeline-components==2.8.0
+# tfx==1.13.0
+
+# Explainable AI
+saliency==0.2.1
+
+# Langchain dependencies
+langchain==0.3.14
+langsmith==0.1.129
+langgraph==0.2.61
+langchain-chroma==0.1.4
+chroma-hnswlib==0.7.3
+chromadb==0.4.14
+langchain-community==0.3.14
+langchain-core==0.3.47
+langchain-google-vertexai==2.0.15
+langchain-text-splitters==0.3.5
+
+# Utilities
+pyyaml==5.3.1
+pydantic==2.9.2
+pypdf==4.3.1
+faiss-cpu==1.7.4
+unstructured==0.14.4
+unstructured-client==0.22.0
+wikipedia==1.4.0
+fire==0.6.0
 
 # For development work
 pre-commit

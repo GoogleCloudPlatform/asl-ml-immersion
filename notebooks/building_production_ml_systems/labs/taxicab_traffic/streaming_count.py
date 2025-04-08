@@ -1,5 +1,4 @@
-"""A streaming dataflow pipeline to count pub/sub messages.
-"""
+"""A streaming dataflow pipeline to count pub/sub messages."""
 
 import argparse
 import logging

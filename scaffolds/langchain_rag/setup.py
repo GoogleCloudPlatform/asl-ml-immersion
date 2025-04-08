@@ -1,5 +1,4 @@
-""" Setup for pip install -e .
-"""
+"""Setup for pip install -e ."""
 
 from setuptools import find_packages, setup
 

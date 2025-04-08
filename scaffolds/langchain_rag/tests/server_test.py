@@ -1,5 +1,4 @@
-""" Integration tests for server.py
-"""
+"""Integration tests for server.py"""
 
 from app import server
 

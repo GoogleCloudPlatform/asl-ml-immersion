@@ -1,5 +1,4 @@
-"""Classes and factories for quering GCP services.
-"""
+"""Classes and factories for quering GCP services."""
 
 import os
 

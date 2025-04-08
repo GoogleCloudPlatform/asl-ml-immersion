@@ -1,5 +1,4 @@
-""" Utils and raw calls to GCP APIs.
-"""
+"""Utils and raw calls to GCP APIs."""
 
 import os
 import tempfile

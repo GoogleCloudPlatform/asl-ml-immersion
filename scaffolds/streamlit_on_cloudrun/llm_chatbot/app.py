@@ -4,8 +4,8 @@ import os
 import time
 
 import streamlit as st
-import vertexai
-from vertexai.generative_models import Content, GenerativeModel, Part
+from google import genai
+from google.genai.types import Content, Part
 
 st.set_page_config(page_title="Chat with Gemini", page_icon="♊")
 
@@ -16,12 +16,10 @@ st.markdown("Welcome to this simple web application to chat with Gemini")
 PROJECT_ID = os.environ.get("GCP_PROJECT")
 LOCATION = os.environ.get("GCP_REGION")
 
-vertexai.init(project=PROJECT_ID, location=LOCATION)
+client = genai.Client(project=PROJECT_ID, vertexai=True, location=LOCATION)
 
 if "gemini_model" not in st.session_state:
-    st.session_state["gemini_model"] = "gemini-1.5-flash-001"
-
-model = GenerativeModel(st.session_state["gemini_model"])
+    st.session_state["gemini_model"] = "gemini-2.0-flash"
 
 # Initialize chat history
 if "messages" not in st.session_state:
@@ -34,11 +32,15 @@ for message in st.session_state.messages:
 
 
 def generate_response(input_text):
-    chat = model.start_chat(
+    chat = client.chats.create(
+        model=st.session_state["gemini_model"],
         history=[
-            Content(role=m["role"], parts=[Part.from_text(m["content"])])
-            for m in st.session_state.messages[:-1]
-        ]
+            Content(
+                role=message["role"],
+                parts=[Part.from_text(text=message["content"])],
+            )
+            for message in st.session_state.messages[:-1]
+        ],
     )
     return chat.send_message(input_text)
 
@@ -66,7 +68,7 @@ if prompt := st.chat_input("Write a promt"):
     # 4. Add Gemini response to message history
     st.session_state.messages.append(
         {
-            "role": "assistant",
+            "role": "model",
             "content": response.text,
             "avatar": "assets/gemini-icon.png",
         }

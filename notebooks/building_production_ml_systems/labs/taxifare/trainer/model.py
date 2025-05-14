@@ -5,7 +5,7 @@ import os
 
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras import callbacks, models
+from tensorflow.keras import callbacks,  models
 from tensorflow.keras.layers import (
     Concatenate,
     Dense,
@@ -37,7 +37,6 @@ UNWANTED_COLS = ["pickup_datetime", "key"]
 INPUT_COLS = [
     c for c in CSV_COLUMNS if c != LABEL_COLUMN and c not in UNWANTED_COLS
 ]
-
 
 def features_and_labels(row_data):
     for unwanted_col in UNWANTED_COLS:
@@ -140,11 +139,13 @@ def transform(inputs, nbuckets):
 
     # Embedding with Embedding layer
     transformed["pd_embed"] = Flatten()(
-        Embedding(input_dim=nbuckets**4, output_dim=10, name="pd_embed")(pd_fc)
+        Embedding(input_dim=nbuckets**4, output_dim=10, name="pd_embed")(
+            pd_fc
+        )
     )
 
     transformed["passenger_count"] = inputs["passenger_count"]
-
+    
     return transformed
 
 
@@ -152,7 +153,7 @@ def rmse(y_true, y_pred):
     return tf.sqrt(tf.reduce_mean(tf.square(y_pred - y_true)))
 
 
-def build_dnn_model(nbuckets, nnsize, lr):  # pylint: disable=unused-argument
+def build_dnn_model(nbuckets, nnsize, lr):
     inputs = {
         colname: Input(name=colname, shape=(1,), dtype="float32")
         for colname in INPUT_COLS
@@ -168,14 +169,17 @@ def build_dnn_model(nbuckets, nnsize, lr):  # pylint: disable=unused-argument
     output = Dense(1, name="fare")(x)
 
     model = models.Model(inputs, output)
-
-    # TODO 1a: Your code here
+    model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=lr), loss="mse", )
 
     return model
 
 
 def train_and_evaluate(hparams):
     # TODO 1b: Your code here
+    nbuckets = hparams["nbuckets"]
+    nnsize = hparams["nnsize"]
+    lr = hparams["lr"]
+    batch_size = hparams["batch_size"]
 
     nnsize = [int(s) for s in hparams["nnsize"].split()]
     eval_data_path = hparams["eval_data_path"]
@@ -191,21 +195,13 @@ def train_and_evaluate(hparams):
     if tf.io.gfile.exists(output_dir):
         tf.io.gfile.rmtree(output_dir)
 
-    model = build_dnn_model(
-        nbuckets, nnsize, lr  # pylint: disable=undefined-variable
-    )
+    model = build_dnn_model(nbuckets, nnsize, lr)
     logging.info(model.summary())
 
-    trainds = create_train_dataset(
-        train_data_path, batch_size  # pylint: disable=undefined-variable
-    )
-    evalds = create_eval_dataset(
-        eval_data_path, batch_size  # pylint: disable=undefined-variable
-    )
+    trainds = create_train_dataset(train_data_path, batch_size)
+    evalds = create_eval_dataset(eval_data_path, batch_size)
 
-    steps_per_epoch = num_examples_to_train_on // (
-        batch_size * num_evals  # pylint: disable=undefined-variable
-    )
+    steps_per_epoch = num_examples_to_train_on // (batch_size * num_evals)
 
     checkpoint_cb = callbacks.ModelCheckpoint(
         checkpoint_path, save_weights_only=True, verbose=1

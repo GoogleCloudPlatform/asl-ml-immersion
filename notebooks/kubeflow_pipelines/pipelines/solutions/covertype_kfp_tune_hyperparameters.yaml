@@ -1,0 +1,178 @@
+# PIPELINE DEFINITION
+# Name: tune-hyperparameters
+# Inputs:
+#    container_uri: str
+#    location: str
+#    max_trial_count: int
+#    parallel_trial_count: int
+#    project: str
+#    staging_bucket: str
+#    training_file_path: str
+#    validation_file_path: str
+# Outputs:
+#    best_accuracy: float
+#    best_alpha: float
+#    best_max_iter: int
+components:
+  comp-tune-hyperparameters:
+    executorLabel: exec-tune-hyperparameters
+    inputDefinitions:
+      parameters:
+        container_uri:
+          parameterType: STRING
+        location:
+          parameterType: STRING
+        max_trial_count:
+          parameterType: NUMBER_INTEGER
+        parallel_trial_count:
+          parameterType: NUMBER_INTEGER
+        project:
+          parameterType: STRING
+        staging_bucket:
+          parameterType: STRING
+        training_file_path:
+          parameterType: STRING
+        validation_file_path:
+          parameterType: STRING
+    outputDefinitions:
+      parameters:
+        best_accuracy:
+          parameterType: NUMBER_DOUBLE
+        best_alpha:
+          parameterType: NUMBER_DOUBLE
+        best_max_iter:
+          parameterType: NUMBER_INTEGER
+deploymentSpec:
+  executors:
+    exec-tune-hyperparameters:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - tune_hyperparameters
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.4.0'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"'  &&\
+          \  python3 -m pip install --quiet --no-warn-script-location 'google-cloud-aiplatform'\
+          \ && \"$0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef tune_hyperparameters(\n    project: str,\n    location: str,\n\
+          \    container_uri: str,\n    training_file_path: str,\n    validation_file_path:\
+          \ str,\n    staging_bucket: str,\n    max_trial_count: int,\n    parallel_trial_count:\
+          \ int,\n) -> NamedTuple(\n    \"Outputs\",\n    [(\"best_accuracy\", float),\
+          \ (\"best_alpha\", float), (\"best_max_iter\", int)],\n):\n    # pylint:\
+          \ disable=import-outside-toplevel\n    from google.cloud import aiplatform\n\
+          \    from google.cloud.aiplatform import hyperparameter_tuning as hpt\n\n\
+          \    aiplatform.init(\n        project=project, location=location, staging_bucket=staging_bucket\n\
+          \    )\n\n    worker_pool_specs = [\n        {\n            \"machine_spec\"\
+          : {\n                \"machine_type\": \"n1-standard-4\",\n            \
+          \    # Enable if you want to use GPU.\n                # \"accelerator_type\"\
+          : \"NVIDIA_TESLA_K80\",\n                # \"accelerator_count\": 1,\n \
+          \           },\n            \"replica_count\": 1,\n            \"container_spec\"\
+          : {\n                \"image_uri\": container_uri,\n                \"args\"\
+          : [\n                    f\"--training_dataset_path={training_file_path}\"\
+          ,\n                    f\"--validation_dataset_path={validation_file_path}\"\
+          ,\n                    \"--hptune\",\n                ],\n            },\n\
+          \        }\n    ]\n\n    custom_job = aiplatform.CustomJob(\n        display_name=\"\
+          covertype_kfp_trial_job\",\n        worker_pool_specs=worker_pool_specs,\n\
+          \    )\n\n    hp_job = aiplatform.HyperparameterTuningJob(\n        display_name=\"\
+          covertype_kfp_tuning_job\",\n        custom_job=custom_job,\n        metric_spec={\n\
+          \            \"accuracy\": \"maximize\",\n        },\n        parameter_spec={\n\
+          \            \"alpha\": hpt.DoubleParameterSpec(\n                min=1.0e-4,\
+          \ max=1.0e-1, scale=\"log\"\n            ),\n            \"max_iter\": hpt.DiscreteParameterSpec(\n\
+          \                values=[1, 2], scale=\"linear\"\n            ),\n     \
+          \   },\n        max_trial_count=max_trial_count,\n        parallel_trial_count=parallel_trial_count,\n\
+          \    )\n\n    hp_job.run()\n\n    metrics = [\n        trial.final_measurement.metrics[0].value\
+          \ for trial in hp_job.trials\n    ]\n    best_trial = hp_job.trials[metrics.index(max(metrics))]\n\
+          \    best_accuracy = float(best_trial.final_measurement.metrics[0].value)\n\
+          \    best_alpha = float(best_trial.parameters[0].value)\n    best_max_iter\
+          \ = int(best_trial.parameters[1].value)\n\n    return best_accuracy, best_alpha,\
+          \ best_max_iter\n\n"
+        image: python:3.8
+pipelineInfo:
+  name: tune-hyperparameters
+root:
+  dag:
+    outputs:
+      parameters:
+        best_accuracy:
+          valueFromParameter:
+            outputParameterKey: best_accuracy
+            producerSubtask: tune-hyperparameters
+        best_alpha:
+          valueFromParameter:
+            outputParameterKey: best_alpha
+            producerSubtask: tune-hyperparameters
+        best_max_iter:
+          valueFromParameter:
+            outputParameterKey: best_max_iter
+            producerSubtask: tune-hyperparameters
+    tasks:
+      tune-hyperparameters:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-tune-hyperparameters
+        inputs:
+          parameters:
+            container_uri:
+              componentInputParameter: container_uri
+            location:
+              componentInputParameter: location
+            max_trial_count:
+              componentInputParameter: max_trial_count
+            parallel_trial_count:
+              componentInputParameter: parallel_trial_count
+            project:
+              componentInputParameter: project
+            staging_bucket:
+              componentInputParameter: staging_bucket
+            training_file_path:
+              componentInputParameter: training_file_path
+            validation_file_path:
+              componentInputParameter: validation_file_path
+        taskInfo:
+          name: tune-hyperparameters
+  inputDefinitions:
+    parameters:
+      container_uri:
+        parameterType: STRING
+      location:
+        parameterType: STRING
+      max_trial_count:
+        parameterType: NUMBER_INTEGER
+      parallel_trial_count:
+        parameterType: NUMBER_INTEGER
+      project:
+        parameterType: STRING
+      staging_bucket:
+        parameterType: STRING
+      training_file_path:
+        parameterType: STRING
+      validation_file_path:
+        parameterType: STRING
+  outputDefinitions:
+    parameters:
+      best_accuracy:
+        parameterType: NUMBER_DOUBLE
+      best_alpha:
+        parameterType: NUMBER_DOUBLE
+      best_max_iter:
+        parameterType: NUMBER_INTEGER
+schemaVersion: 2.1.0
+sdkVersion: kfp-2.4.0

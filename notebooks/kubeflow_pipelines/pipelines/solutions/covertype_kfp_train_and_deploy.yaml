@@ -1,0 +1,137 @@
+# PIPELINE DEFINITION
+# Name: train-and-deploy
+# Inputs:
+#    alpha: float
+#    container_uri: str
+#    location: str
+#    max_iter: int
+#    project: str
+#    serving_container_uri: str
+#    staging_bucket: str
+#    training_file_path: str
+#    validation_file_path: str
+components:
+  comp-train-and-deploy:
+    executorLabel: exec-train-and-deploy
+    inputDefinitions:
+      parameters:
+        alpha:
+          parameterType: NUMBER_DOUBLE
+        container_uri:
+          parameterType: STRING
+        location:
+          parameterType: STRING
+        max_iter:
+          parameterType: NUMBER_INTEGER
+        project:
+          parameterType: STRING
+        serving_container_uri:
+          parameterType: STRING
+        staging_bucket:
+          parameterType: STRING
+        training_file_path:
+          parameterType: STRING
+        validation_file_path:
+          parameterType: STRING
+deploymentSpec:
+  executors:
+    exec-train-and-deploy:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - train_and_deploy
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.4.0'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"'  &&\
+          \  python3 -m pip install --quiet --no-warn-script-location 'google-cloud-aiplatform'\
+          \ && \"$0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef train_and_deploy(\n    project: str,\n    location: str,\n  \
+          \  container_uri: str,\n    serving_container_uri: str,\n    training_file_path:\
+          \ str,\n    validation_file_path: str,\n    staging_bucket: str,\n    alpha:\
+          \ float,\n    max_iter: int,\n):\n    # pylint: disable-next=import-outside-toplevel\n\
+          \    from google.cloud import aiplatform\n\n    aiplatform.init(\n     \
+          \   project=project, location=location, staging_bucket=staging_bucket\n\
+          \    )\n    job = aiplatform.CustomContainerTrainingJob(\n        display_name=\"\
+          covertype_kfp_training\",\n        container_uri=container_uri,\n      \
+          \  command=[\n            \"python\",\n            \"train.py\",\n     \
+          \       f\"--training_dataset_path={training_file_path}\",\n           \
+          \ f\"--validation_dataset_path={validation_file_path}\",\n            f\"\
+          --alpha={alpha}\",\n            f\"--max_iter={max_iter}\",\n          \
+          \  \"--nohptune\",\n        ],\n        staging_bucket=staging_bucket,\n\
+          \        model_serving_container_image_uri=serving_container_uri,\n    )\n\
+          \    model = job.run(replica_count=1, model_display_name=\"covertype_kfp_model\"\
+          )\n    endpoint = model.deploy(  # pylint: disable=unused-variable\n   \
+          \     traffic_split={\"0\": 100},\n        machine_type=\"n1-standard-2\"\
+          ,\n    )\n\n"
+        image: python:3.8
+pipelineInfo:
+  name: train-and-deploy
+root:
+  dag:
+    tasks:
+      train-and-deploy:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-train-and-deploy
+        inputs:
+          parameters:
+            alpha:
+              componentInputParameter: alpha
+            container_uri:
+              componentInputParameter: container_uri
+            location:
+              componentInputParameter: location
+            max_iter:
+              componentInputParameter: max_iter
+            project:
+              componentInputParameter: project
+            serving_container_uri:
+              componentInputParameter: serving_container_uri
+            staging_bucket:
+              componentInputParameter: staging_bucket
+            training_file_path:
+              componentInputParameter: training_file_path
+            validation_file_path:
+              componentInputParameter: validation_file_path
+        taskInfo:
+          name: train-and-deploy
+  inputDefinitions:
+    parameters:
+      alpha:
+        parameterType: NUMBER_DOUBLE
+      container_uri:
+        parameterType: STRING
+      location:
+        parameterType: STRING
+      max_iter:
+        parameterType: NUMBER_INTEGER
+      project:
+        parameterType: STRING
+      serving_container_uri:
+        parameterType: STRING
+      staging_bucket:
+        parameterType: STRING
+      training_file_path:
+        parameterType: STRING
+      validation_file_path:
+        parameterType: STRING
+schemaVersion: 2.1.0
+sdkVersion: kfp-2.4.0

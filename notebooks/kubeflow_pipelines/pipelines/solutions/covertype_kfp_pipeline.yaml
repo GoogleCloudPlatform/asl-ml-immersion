@@ -1,108 +1,580 @@
 # PIPELINE DEFINITION
 # Name: covertype-kfp-pipeline
-# Description: The pipeline training and deploying the Covertype classifier
-# Inputs:
-#    accuracy_deployment_threshold: float [Default: 0.6]
-#    max_trial_count: int [Default: 5.0]
-#    parallel_trial_count: int [Default: 5.0]
-#    pipeline_root: str [Default: 'gs://qwiklabs-asl-01-19968276eb55-kfp-artifact-store/pipeline']
-#    serving_container_uri: str [Default: 'us-docker.pkg.dev/vertex-ai/prediction/sklearn-cpu.1-0:latest']
-#    training_container_uri: str [Default: 'us-docker.pkg.dev/qwiklabs-asl-01-19968276eb55/asl-artifact-repo/trainer_image_covertype_vertex:latest']
-#    training_file_path: str [Default: 'gs://qwiklabs-asl-01-19968276eb55-kfp-artifact-store/data/training/dataset.csv']
-#    validation_file_path: str [Default: 'gs://qwiklabs-asl-01-19968276eb55-kfp-artifact-store/data/validation/dataset.csv']
+# Description: Kubeflow pipeline that tunes, trains, and deploys on Vertex
 components:
-  comp-condition-1:
-    dag:
-      tasks:
-        train-and-deploy:
-          cachingOptions:
-            enableCache: true
-          componentRef:
-            name: comp-train-and-deploy
-          inputs:
-            parameters:
-              alpha:
-                componentInputParameter: pipelinechannel--tune-hyperparameters-best_alpha
-              container_uri:
-                componentInputParameter: pipelinechannel--training_container_uri
-              location:
-                runtimeValue:
-                  constant: us-central1
-              max_iter:
-                componentInputParameter: pipelinechannel--tune-hyperparameters-best_max_iter
-              pipelinechannel--pipeline_root:
-                componentInputParameter: pipelinechannel--pipeline_root
-              project:
-                runtimeValue:
-                  constant: qwiklabs-asl-01-19968276eb55
-              serving_container_uri:
-                componentInputParameter: pipelinechannel--serving_container_uri
-              staging_bucket:
-                runtimeValue:
-                  constant: '{{$.inputs.parameters[''pipelinechannel--pipeline_root'']}}/staging'
-              training_file_path:
-                componentInputParameter: pipelinechannel--training_file_path
-              validation_file_path:
-                componentInputParameter: pipelinechannel--validation_file_path
-          taskInfo:
-            name: train-and-deploy
+  comp-custom-training-job:
+    executorLabel: exec-custom-training-job
     inputDefinitions:
       parameters:
-        pipelinechannel--accuracy_deployment_threshold:
-          parameterType: NUMBER_DOUBLE
-        pipelinechannel--pipeline_root:
+        base_output_directory:
+          defaultValue: ''
+          description: The Cloud Storage location to store the output of this CustomJob
+            or HyperparameterTuningJob. See [more information ](https://cloud.google.com/vertex-ai/docs/reference/rest/v1/GcsDestination).
+          isOptional: true
           parameterType: STRING
-        pipelinechannel--serving_container_uri:
+        display_name:
+          description: The name of the CustomJob.
           parameterType: STRING
-        pipelinechannel--training_container_uri:
+        enable_web_access:
+          defaultValue: false
+          description: Whether you want Vertex AI to enable [interactive shell access
+            ](https://cloud.google.com/vertex-ai/docs/training/monitor-debug-interactive-shell)
+            to training containers. If `True`, you can access interactive shells at
+            the URIs given by [CustomJob.web_access_uris][].
+          isOptional: true
+          parameterType: BOOLEAN
+        encryption_spec_key_name:
+          defaultValue: ''
+          description: Customer-managed encryption key options for the CustomJob.
+            If this is set, then all resources created by the CustomJob will be encrypted
+            with the provided encryption key.
+          isOptional: true
           parameterType: STRING
-        pipelinechannel--training_file_path:
-          parameterType: STRING
-        pipelinechannel--tune-hyperparameters-best_accuracy:
-          parameterType: NUMBER_DOUBLE
-        pipelinechannel--tune-hyperparameters-best_alpha:
-          parameterType: NUMBER_DOUBLE
-        pipelinechannel--tune-hyperparameters-best_max_iter:
-          parameterType: NUMBER_INTEGER
-        pipelinechannel--validation_file_path:
-          parameterType: STRING
-  comp-train-and-deploy:
-    executorLabel: exec-train-and-deploy
-    inputDefinitions:
-      parameters:
-        alpha:
-          parameterType: NUMBER_DOUBLE
-        container_uri:
-          parameterType: STRING
+        labels:
+          defaultValue: {}
+          description: The labels with user-defined metadata to organize the CustomJob.
+            See [more information](https://goo.gl/xmQnxf).
+          isOptional: true
+          parameterType: STRUCT
         location:
+          defaultValue: us-central1
+          description: Location for creating the custom training job. If not set,
+            default to us-central1.
+          isOptional: true
           parameterType: STRING
-        max_iter:
-          parameterType: NUMBER_INTEGER
+        network:
+          defaultValue: ''
+          description: The full name of the Compute Engine network to which the job
+            should be peered. For example, `projects/12345/global/networks/myVPC`.
+            Format is of the form `projects/{project}/global/networks/{network}`.
+            Where `{project}` is a project number, as in `12345`, and `{network}`
+            is a network name. Private services access must already be configured
+            for the network. If left unspecified, the job is not peered with any network.
+          isOptional: true
+          parameterType: STRING
         project:
+          defaultValue: '{{$.pipeline_google_cloud_project_id}}'
+          description: Project to create the custom training job in. Defaults to the
+            project in which the PipelineJob is run.
+          isOptional: true
           parameterType: STRING
-        serving_container_uri:
+        reserved_ip_ranges:
+          defaultValue: []
+          description: A list of names for the reserved IP ranges under the VPC network
+            that can be used for this job. If set, we will deploy the job within the
+            provided IP ranges. Otherwise, the job will be deployed to any IP ranges
+            under the provided VPC network.
+          isOptional: true
+          parameterType: LIST
+        restart_job_on_worker_restart:
+          defaultValue: false
+          description: Restarts the entire CustomJob if a worker gets restarted. This
+            feature can be used by distributed training jobs that are not resilient
+            to workers leaving and joining a job.
+          isOptional: true
+          parameterType: BOOLEAN
+        service_account:
+          defaultValue: ''
+          description: Sets the default service account for workload run-as account.
+            The [service account ](https://cloud.google.com/vertex-ai/docs/pipelines/configure-project#service-account)
+            running the pipeline submitting jobs must have act-as permission on this
+            run-as account. If unspecified, the Vertex AI Custom Code [Service Agent
+            ](https://cloud.google.com/vertex-ai/docs/general/access-control#service-agents)
+            for the CustomJob's project.
+          isOptional: true
           parameterType: STRING
-        staging_bucket:
+        tensorboard:
+          defaultValue: ''
+          description: The name of a Vertex AI TensorBoard resource to which this
+            CustomJob will upload TensorBoard logs.
+          isOptional: true
           parameterType: STRING
-        training_file_path:
+        timeout:
+          defaultValue: 604800s
+          description: 'The maximum job running time. The default is 7 days. A duration
+            in seconds with up to nine fractional digits, terminated by ''s'', for
+            example: "3.5s".'
+          isOptional: true
           parameterType: STRING
-        validation_file_path:
+        worker_pool_specs:
+          defaultValue: []
+          description: Serialized json spec of the worker pools including machine
+            type and Docker image. All worker pools except the first one are optional
+            and can be skipped by providing an empty value. See [more information](https://cloud.google.com/vertex-ai/docs/reference/rest/v1/CustomJobSpec#WorkerPoolSpec).
+          isOptional: true
+          parameterType: LIST
+    outputDefinitions:
+      parameters:
+        gcp_resources:
+          description: Serialized JSON of `gcp_resources` [proto](https://github.com/kubeflow/pipelines/tree/master/components/google-cloud/google_cloud_pipeline_components/proto)
+            which tracks the CustomJob.
           parameterType: STRING
-  comp-tune-hyperparameters:
-    executorLabel: exec-tune-hyperparameters
+  comp-endpoint-create:
+    executorLabel: exec-endpoint-create
     inputDefinitions:
       parameters:
-        container_uri:
+        description:
+          defaultValue: ''
+          description: The description of the Endpoint.
+          isOptional: true
+          parameterType: STRING
+        display_name:
+          description: The user-defined name of the Endpoint. The name can be up to
+            128 characters long and can be consist of any UTF-8 characters.
+          parameterType: STRING
+        encryption_spec_key_name:
+          defaultValue: ''
+          description: 'Customer-managed encryption key spec for an Endpoint. If set,
+            this Endpoint and all of this Endoint''s sub-resources will be secured
+            by this key. Has the form: `projects/my-project/locations/my-location/keyRings/my-kr/cryptoKeys/my-key`.
+            The key needs to be in the same region as where the compute resource is
+            created.  If set, this Endpoint and all sub-resources of this Endpoint
+            will be secured by this key.'
+          isOptional: true
+          parameterType: STRING
+        labels:
+          defaultValue: {}
+          description: The labels with user-defined metadata to organize your Endpoints.  Label
+            keys and values can be no longer than 64 characters (Unicode codepoints),
+            can only contain lowercase letters, numeric characters, underscores and
+            dashes. International characters are allowed.  See https://goo.gl/xmQnxf
+            for more information and examples of labels.
+          isOptional: true
+          parameterType: STRUCT
+        location:
+          defaultValue: us-central1
+          description: Location to create the Endpoint. If not set, default to us-central1.
+          isOptional: true
+          parameterType: STRING
+        network:
+          defaultValue: ''
+          description: 'The full name of the Google Compute Engine network to which
+            the Endpoint should be peered. Private services access must already be
+            configured for the network. If left unspecified, the Endpoint is not peered
+            with any network. [Format](https://cloud.google.com/compute/docs/reference/rest/v1/networks/insert):
+            `projects/{project}/global/networks/{network}`. Where `{project}` is a
+            project number, as in `''12345''`, and `{network}` is network name.'
+          isOptional: true
+          parameterType: STRING
+        project:
+          defaultValue: '{{$.pipeline_google_cloud_project_id}}'
+          description: Project to create the Endpoint. Defaults to the project in
+            which the PipelineJob is run.
+          isOptional: true
+          parameterType: STRING
+    outputDefinitions:
+      artifacts:
+        endpoint:
+          artifactType:
+            schemaTitle: google.VertexEndpoint
+            schemaVersion: 0.0.1
+          description: Artifact tracking the created Endpoint.
+      parameters:
+        gcp_resources:
+          description: Serialized JSON of `gcp_resources` [proto](https://github.com/kubeflow/pipelines/tree/master/components/google-cloud/google_cloud_pipeline_components/proto)
+            which tracks the create Endpoint's long-running operation.
+          parameterType: STRING
+  comp-hyperparameter-tuning-job:
+    executorLabel: exec-hyperparameter-tuning-job
+    inputDefinitions:
+      parameters:
+        base_output_directory:
+          description: 'The Cloud Storage location to store the output of this HyperparameterTuningJob.
+            The base_output_directory of each child CustomJob backing a Trial is set
+            to a subdirectory with name as the trial id under its parent HyperparameterTuningJob''s
+            `base_output_directory`. The following Vertex AI environment variables
+            will be passed to containers or Python modules when this field is set:
+            * AIP_MODEL_DIR = `\/\/model\/` * AIP_CHECKPOINT_DIR = `\/\/checkpoints\/`
+            * AIP_TENSORBOARD_LOG_DIR = `\/\/logs\/`'
+          parameterType: STRING
+        display_name:
+          description: The user-defined name of the HyperparameterTuningJob. The name
+            can be up to 128 characters long and can be consist of any UTF-8 characters.
+          parameterType: STRING
+        encryption_spec_key_name:
+          defaultValue: ''
+          description: 'Customer-managed encryption key options for a HyperparameterTuningJob.
+            If this is set, then all resources created by the HyperparameterTuningJob
+            will be encrypted with the provided encryption key. Has the form: `projects/my-project/locations/my-location/keyRings/my-kr/cryptoKeys/my-key`.
+            The key needs to be in the same region as where the compute resource is
+            created.'
+          isOptional: true
           parameterType: STRING
         location:
+          defaultValue: us-central1
+          description: Location to run the HyperparameterTuningJob in, defaults to
+            `'us-central1'`.
+          isOptional: true
           parameterType: STRING
+        max_failed_trial_count:
+          defaultValue: 0.0
+          description: The number of failed Trials that need to be seen before failing
+            the HyperparameterTuningJob. If set to 0, Vertex AI decides how many Trials
+            must fail before the whole job fails.
+          isOptional: true
+          parameterType: NUMBER_INTEGER
         max_trial_count:
+          description: The desired total number of Trials.
           parameterType: NUMBER_INTEGER
+        network:
+          defaultValue: ''
+          description: The full name of the Compute Engine network to which the job
+            should be peered. For example, `projects/12345/global/networks/myVPC`.
+            Private services access must already be configured for the network. If
+            left unspecified, the job is not peered with any network.
+          isOptional: true
+          parameterType: STRING
         parallel_trial_count:
+          description: The desired number of Trials to run in parallel.
           parameterType: NUMBER_INTEGER
         project:
+          defaultValue: '{{$.pipeline_google_cloud_project_id}}'
+          description: Project to run the HyperparameterTuningJob in. Defaults to
+            the project in which the PipelineJob is run.
+          isOptional: true
           parameterType: STRING
-        staging_bucket:
+        service_account:
+          defaultValue: ''
+          description: Specifies the service account for workload run-as account.
+            Users submitting jobs must have act-as permission on this run-as account.
+          isOptional: true
+          parameterType: STRING
+        study_spec_algorithm:
+          defaultValue: ALGORITHM_UNSPECIFIED
+          description: 'The search algorithm specified for the Study. Accepts one
+            of the following:
+
+            * `''ALGORITHM_UNSPECIFIED''` - If you do not specify an algorithm, your
+            job uses the default Vertex AI algorithm. The default algorithm applies
+            Bayesian optimization to arrive at the optimal solution with a more effective
+            search over the parameter space.
+
+            * `''GRID_SEARCH''` - A simple grid search within the feasible space.
+            This option is particularly useful if you want to specify a quantity of
+            trials that is greater than the number of points in the feasible space.
+            In such cases, if you do not specify a grid search, the Vertex AI default
+            algorithm may generate duplicate suggestions. To use grid search, all
+            parameter specs must be of type `IntegerParameterSpec`, `CategoricalParameterSpace`,
+            or `DiscreteParameterSpec`.
+
+            * `''RANDOM_SEARCH''` - A simple random search within the feasible space.'
+          isOptional: true
+          parameterType: STRING
+        study_spec_measurement_selection_type:
+          defaultValue: BEST_MEASUREMENT
+          description: 'This indicates which measurement to use if/when the service
+            automatically selects the final measurement from previously reported intermediate
+            measurements. Accepts: `''BEST_MEASUREMENT''` or `''LAST_MEASUREMENT''`.
+            Choose this based on two considerations: A) Do you expect your measurements
+            to monotonically improve? If so, choose `''LAST_MEASUREMENT''`. On the
+            other hand, if you''re in a situation where your system can "over-train"
+            and you expect the performance to get better for a while but then start
+            declining, choose `''BEST_MEASUREMENT''`. B) Are your measurements significantly
+            noisy and/or irreproducible? If so, `''BEST_MEASUREMENT''` will tend to
+            be over-optimistic, and it may be better to choose `''LAST_MEASUREMENT''`.
+            If both or neither of (A) and (B) apply, it doesn''t matter which selection
+            type is chosen.'
+          isOptional: true
+          parameterType: STRING
+        study_spec_metrics:
+          description: 'List serialized from dictionary representing the metrics to
+            optimize. The dictionary key is the metric_id, which is reported by your
+            training job, and the dictionary value is the optimization goal of the
+            metric (`''minimize''` or `''maximize''`). Example:
+
+            metrics = hyperparameter_tuning_job.serialize_metrics({ ''loss'': ''minimize'',
+            ''accuracy'': ''maximize'' })'
+          parameterType: LIST
+        study_spec_parameters:
+          description: 'List serialized from the parameter dictionary. The dictionary
+            represents parameters to optimize. The dictionary key is the parameter_id,
+            which is passed into your training job as a command line key word argument,
+            and the dictionary value is the parameter specification of the metric.
+            Example:
+
+            from google.cloud.aiplatform import hyperparameter_tuning as hpt
+
+            from google_cloud_pipeline_components.v1 import hyperparameter_tuning_job
+
+            parameters = hyperparameter_tuning_job.serialize_parameters({ ''lr'':
+            hpt.DoubleParameterSpec(min=0.001, max=0.1, scale=''log''), ''units'':
+            hpt.IntegerParameterSpec(min=4, max=128, scale=''linear''), ''activation'':
+            hpt.CategoricalParameterSpec(values=[''relu'', ''selu'']), ''batch_size'':
+            hpt.DiscreteParameterSpec(values=[128, 256], scale=''linear'') })'
+          parameterType: LIST
+        worker_pool_specs:
+          description: The spec of the worker pools including machine type and Docker
+            image. All worker pools except the first one are optional and can be skipped
+            by providing an empty value.
+          parameterType: LIST
+    outputDefinitions:
+      parameters:
+        gcp_resources:
+          description: Serialized JSON of `gcp_resources` [proto](https://github.com/kubeflow/pipelines/tree/master/components/google-cloud/google_cloud_pipeline_components/proto)
+            which contains the GCP resource ID of the Hyperparameter Tuning job.
+          parameterType: STRING
+  comp-importer:
+    executorLabel: exec-importer
+    inputDefinitions:
+      parameters:
+        uri:
+          parameterType: STRING
+    outputDefinitions:
+      artifacts:
+        artifact:
+          artifactType:
+            schemaTitle: google.UnmanagedContainerModel
+            schemaVersion: 0.0.1
+  comp-model-deploy:
+    executorLabel: exec-model-deploy
+    inputDefinitions:
+      artifacts:
+        endpoint:
+          artifactType:
+            schemaTitle: google.VertexEndpoint
+            schemaVersion: 0.0.1
+          description: The Endpoint to be deployed to.
+          isOptional: true
+        model:
+          artifactType:
+            schemaTitle: google.VertexModel
+            schemaVersion: 0.0.1
+          description: The model to be deployed.
+      parameters:
+        automatic_resources_max_replica_count:
+          defaultValue: 0.0
+          description: The maximum number of replicas this DeployedModel may be deployed
+            on when the traffic against it increases. If the requested value is too
+            large, the deployment will error, but if deployment succeeds then the
+            ability to scale the model to that many replicas is guaranteed (barring
+            service outages). If traffic against the DeployedModel increases beyond
+            what its replicas at maximum may handle, a portion of the traffic will
+            be dropped. If this value is not provided, a no upper bound for scaling
+            under heavy traffic will be assume, though Vertex AI may be unable to
+            scale beyond certain replica number.
+          isOptional: true
+          parameterType: NUMBER_INTEGER
+        automatic_resources_min_replica_count:
+          defaultValue: 0.0
+          description: The minimum number of replicas this DeployedModel will be always
+            deployed on. If traffic against it increases, it may dynamically be deployed
+            onto more replicas up to `automatic_resources_max_replica_count`, and
+            as traffic decreases, some of these extra replicas may be freed. If the
+            requested value is too large, the deployment will error.  This field is
+            required if `dedicated_resources_machine_type` is not specified.
+          isOptional: true
+          parameterType: NUMBER_INTEGER
+        dedicated_resources_accelerator_count:
+          defaultValue: 0.0
+          description: The number of accelerators to attach to a worker replica.
+          isOptional: true
+          parameterType: NUMBER_INTEGER
+        dedicated_resources_accelerator_type:
+          defaultValue: ''
+          description: Hardware accelerator type. Must also set accelerator_count
+            if used. See [available options](https://cloud.google.com/vertex-ai/docs/reference/rest/v1/MachineSpec#AcceleratorType).  This
+            field is required if `dedicated_resources_machine_type` is specified.
+          isOptional: true
+          parameterType: STRING
+        dedicated_resources_machine_type:
+          defaultValue: ''
+          description: The specification of a single machine used by the prediction.  This
+            field is required if `automatic_resources_min_replica_count` is not specified.  See
+            [more information](https://cloud.google.com/vertex-ai/docs/reference/rest/v1/projects.locations.endpoints#dedicatedresources).
+          isOptional: true
+          parameterType: STRING
+        dedicated_resources_max_replica_count:
+          defaultValue: 0.0
+          description: The maximum number of replicas this deployed model may the
+            larger value of min_replica_count or 1 will be used. If value provided
+            is smaller than min_replica_count, it will automatically be increased
+            to be min_replica_count. The maximum number of replicas this deployed
+            model may be deployed on when the traffic against it increases. If requested
+            value is too large, the deployment will error, but if deployment succeeds
+            then the ability to scale the model to that many replicas is guaranteed
+            (barring service outages). If traffic against the deployed model increases
+            beyond what its replicas at maximum may handle, a portion of the traffic
+            will be dropped. If this value is not provided, will use `dedicated_resources_min_replica_count`
+            as the default value.
+          isOptional: true
+          parameterType: NUMBER_INTEGER
+        dedicated_resources_min_replica_count:
+          defaultValue: 0.0
+          description: The minimum number of machine replicas this DeployedModel will
+            be always deployed on. This value must be greater than or equal to 1.
+            If traffic against the DeployedModel increases, it may dynamically be
+            deployed onto more replicas, and as traffic decreases, some of these extra
+            replicas may be freed.
+          isOptional: true
+          parameterType: NUMBER_INTEGER
+        deployed_model_display_name:
+          defaultValue: ''
+          description: The display name of the DeployedModel. If not provided upon
+            creation, the Model's display_name is used.
+          isOptional: true
+          parameterType: STRING
+        disable_container_logging:
+          defaultValue: false
+          description: For custom-trained Models and AutoML Tabular Models, the container
+            of the DeployedModel instances will send stderr and stdout streams to
+            Stackdriver Logging by default. Please note that the logs incur cost,
+            which are subject to Cloud Logging pricing.  User can disable container
+            logging by setting this flag to true.
+          isOptional: true
+          parameterType: BOOLEAN
+        enable_access_logging:
+          defaultValue: false
+          description: These logs are like standard server access logs, containing
+            information like timestamp and latency for each prediction request.  Note
+            that Stackdriver logs may incur a cost, especially if your project receives
+            prediction requests at a high queries per second rate (QPS). Estimate
+            your costs before enabling this option.
+          isOptional: true
+          parameterType: BOOLEAN
+        explanation_metadata:
+          defaultValue: {}
+          description: Metadata describing the Model's input and output for explanation.
+            See [more information](https://cloud.google.com/vertex-ai/docs/reference/rest/v1/ExplanationSpec#explanationmetadata).
+          isOptional: true
+          parameterType: STRUCT
+        explanation_parameters:
+          defaultValue: {}
+          description: Parameters that configure explaining information of the Model's
+            predictions. See [more information](https://cloud.google.com/vertex-ai/docs/reference/rest/v1/ExplanationSpec#explanationmetadata).
+          isOptional: true
+          parameterType: STRUCT
+        service_account:
+          defaultValue: ''
+          description: The service account that the DeployedModel's container runs
+            as. Specify the email address of the service account. If this service
+            account is not specified, the container runs as a service account that
+            doesn't have access to the resource project.  Users deploying the Model
+            must have the `iam.serviceAccounts.actAs` permission on this service account.
+          isOptional: true
+          parameterType: STRING
+        traffic_split:
+          defaultValue: {}
+          description: A map from a DeployedModel's ID to the percentage of this Endpoint's
+            traffic that should be forwarded to that DeployedModel.  If this field
+            is non-empty, then the Endpoint's trafficSplit will be overwritten with
+            it. To refer to the ID of the just being deployed Model, a "0" should
+            be used, and the actual ID of the new DeployedModel will be filled in
+            its place by this method. The traffic percentage values must add up to
+            100.  If this field is empty, then the Endpoint's trafficSplit is not
+            updated.
+          isOptional: true
+          parameterType: STRUCT
+    outputDefinitions:
+      parameters:
+        gcp_resources:
+          description: Serialized JSON of `gcp_resources` [proto](https://github.com/kubeflow/pipelines/tree/master/components/google-cloud/google_cloud_pipeline_components/proto)
+            which tracks the deploy Model's long-running operation.
+          parameterType: STRING
+  comp-model-upload:
+    executorLabel: exec-model-upload
+    inputDefinitions:
+      artifacts:
+        parent_model:
+          artifactType:
+            schemaTitle: google.VertexModel
+            schemaVersion: 0.0.1
+          description: An artifact of a model which to upload a new version to. Only
+            specify this field when uploading a new version. [More information.](https://cloud.google.com/vertex-ai/docs/reference/rest/v1/projects.locations.models/upload#request-body)
+          isOptional: true
+        unmanaged_container_model:
+          artifactType:
+            schemaTitle: google.UnmanagedContainerModel
+            schemaVersion: 0.0.1
+          description: 'The unmanaged container model to be uploaded.  The Model can
+            be passed from an upstream step or imported via a KFP `dsl.importer`.
+            Example:
+
+            from kfp import dsl
+
+            from google_cloud_pipeline_components.types import artifact_types
+
+
+            importer_spec = dsl.importer( artifact_uri=''gs://managed-pipeline-gcpc-e2e-test/automl-tabular/model'',
+            artifact_class=artifact_types.UnmanagedContainerModel, metadata={ ''containerSpec'':
+            { ''imageUri'': ''us-docker.pkg.dev/vertex-ai/automl-tabular/prediction-server:prod''
+            } })'
+          isOptional: true
+      parameters:
+        description:
+          defaultValue: ''
+          description: The description of the Model. [More information.](https://cloud.google.com/vertex-ai/docs/reference/rest/v1/projects.locations.models#Model)
+          isOptional: true
+          parameterType: STRING
+        display_name:
+          description: The display name of the Model. The name can be up to 128 characters
+            long and can be consist of any UTF-8 characters. [More information.](https://cloud.google.com/vertex-ai/docs/reference/rest/v1/projects.locations.models#Model)
+          parameterType: STRING
+        encryption_spec_key_name:
+          defaultValue: ''
+          description: 'Customer-managed encryption key spec for a Model. If set,
+            this Model and all sub-resources of this Model will be secured by this
+            key.  Has the form: `projects/my-project/locations/my-location/keyRings/my-kr/cryptoKeys/my-key`.
+            The key needs to be in the same region as where the compute resource is
+            created.'
+          isOptional: true
+          parameterType: STRING
+        explanation_metadata:
+          defaultValue: {}
+          description: Metadata describing the Model's input and output for explanation.
+            Both `explanation_metadata` and `explanation_parameters` must be passed
+            together when used. [More information.](https://cloud.google.com/vertex-ai/docs/reference/rest/v1/ExplanationSpec#explanationmetadata)
+          isOptional: true
+          parameterType: STRUCT
+        explanation_parameters:
+          defaultValue: {}
+          description: Parameters to configure explaining for Model's predictions.  [More
+            information.](https://cloud.google.com/vertex-ai/docs/reference/rest/v1/ExplanationSpec#ExplanationParameters)
+          isOptional: true
+          parameterType: STRUCT
+        labels:
+          defaultValue: {}
+          description: The labels with user-defined metadata to organize your model.  Label
+            keys and values can be no longer than 64 characters (Unicode codepoints),
+            can only contain lowercase letters, numeric characters, underscores and
+            dashes. International characters are allowed.  See https://goo.gl/xmQnxf
+            for more information and examples of labels.
+          isOptional: true
+          parameterType: STRUCT
+        location:
+          defaultValue: us-central1
+          description: Optional location to upload this Model to. If not set, defaults
+            to `us-central1`.
+          isOptional: true
+          parameterType: STRING
+        project:
+          defaultValue: '{{$.pipeline_google_cloud_project_id}}'
+          description: Project to upload this Model to. Defaults to the project in
+            which the PipelineJob is run.
+          isOptional: true
+          parameterType: STRING
+    outputDefinitions:
+      artifacts:
+        model:
+          artifactType:
+            schemaTitle: google.VertexModel
+            schemaVersion: 0.0.1
+          description: Artifact tracking the created Model version.
+      parameters:
+        gcp_resources:
+          description: Serialized JSON of `gcp_resources` [proto](https://github.com/kubeflow/pipelines/tree/master/components/google-cloud/google_cloud_pipeline_components/proto)
+            which tracks the upload Model's long-running operation.
+          parameterType: STRING
+  comp-retrieve-best-hptune-result:
+    executorLabel: exec-retrieve-best-hptune-result
+    inputDefinitions:
+      parameters:
+        container_uri:
+          parameterType: STRING
+        gcp_resources:
+          parameterType: STRING
+        location:
+          parameterType: STRING
+        project:
           parameterType: STRING
         training_file_path:
           parameterType: STRING
@@ -110,22 +582,183 @@ components:
           parameterType: STRING
     outputDefinitions:
       parameters:
-        best_accuracy:
-          parameterType: NUMBER_DOUBLE
-        best_alpha:
-          parameterType: NUMBER_DOUBLE
-        best_max_iter:
-          parameterType: NUMBER_INTEGER
+        best_metrics:
+          parameterType: STRUCT
+        best_parameters:
+          parameterType: STRUCT
+        best_worker_pool_spec:
+          parameterType: LIST
 defaultPipelineRoot: gs://qwiklabs-asl-01-19968276eb55-kfp-artifact-store/pipeline
 deploymentSpec:
   executors:
-    exec-train-and-deploy:
+    exec-custom-training-job:
+      container:
+        args:
+        - --type
+        - CustomJob
+        - --payload
+        - '{"display_name": "{{$.inputs.parameters[''display_name'']}}", "job_spec":
+          {"worker_pool_specs": {{$.inputs.parameters[''worker_pool_specs'']}}, "scheduling":
+          {"timeout": "{{$.inputs.parameters[''timeout'']}}", "restart_job_on_worker_restart":
+          {{$.inputs.parameters[''restart_job_on_worker_restart'']}}}, "service_account":
+          "{{$.inputs.parameters[''service_account'']}}", "tensorboard": "{{$.inputs.parameters[''tensorboard'']}}",
+          "enable_web_access": {{$.inputs.parameters[''enable_web_access'']}}, "network":
+          "{{$.inputs.parameters[''network'']}}", "reserved_ip_ranges": {{$.inputs.parameters[''reserved_ip_ranges'']}},
+          "base_output_directory": {"output_uri_prefix": "{{$.inputs.parameters[''base_output_directory'']}}"}},
+          "labels": {{$.inputs.parameters[''labels'']}}, "encryption_spec": {"kms_key_name":
+          "{{$.inputs.parameters[''encryption_spec_key_name'']}}"}}'
+        - --project
+        - '{{$.inputs.parameters[''project'']}}'
+        - --location
+        - '{{$.inputs.parameters[''location'']}}'
+        - --gcp_resources
+        - '{{$.outputs.parameters[''gcp_resources''].output_file}}'
+        command:
+        - python3
+        - -u
+        - -m
+        - google_cloud_pipeline_components.container.v1.custom_job.launcher
+        image: gcr.io/ml-pipeline/google-cloud-pipeline-components:2.8.0
+    exec-endpoint-create:
+      container:
+        args:
+        - --type
+        - CreateEndpoint
+        - --payload
+        - '{"Concat": ["{", "\"display_name\": \"", "{{$.inputs.parameters[''display_name'']}}",
+          "\"", ", \"description\": \"", "{{$.inputs.parameters[''description'']}}",
+          "\"", ", \"labels\": ", "{{$.inputs.parameters[''labels'']}}", ", \"encryption_spec\":
+          {\"kms_key_name\":\"", "{{$.inputs.parameters[''encryption_spec_key_name'']}}",
+          "\"}", ", \"network\": \"", "{{$.inputs.parameters[''network'']}}", "\"",
+          "}"]}'
+        - --project
+        - '{{$.inputs.parameters[''project'']}}'
+        - --location
+        - '{{$.inputs.parameters[''location'']}}'
+        - --gcp_resources
+        - '{{$.outputs.parameters[''gcp_resources''].output_file}}'
+        - --executor_input
+        - '{{$}}'
+        command:
+        - python3
+        - -u
+        - -m
+        - google_cloud_pipeline_components.container.v1.endpoint.create_endpoint.launcher
+        image: gcr.io/ml-pipeline/google-cloud-pipeline-components:2.8.0
+    exec-hyperparameter-tuning-job:
+      container:
+        args:
+        - --type
+        - HyperparameterTuningJob
+        - --payload
+        - '{"Concat": ["{", "\"display_name\": \"", "{{$.inputs.parameters[''display_name'']}}",
+          "\"", ", \"study_spec\": {", "\"metrics\": ", "{{$.inputs.parameters[''study_spec_metrics'']}}",
+          ", \"parameters\": ", "{{$.inputs.parameters[''study_spec_parameters'']}}",
+          ", \"algorithm\": \"", "{{$.inputs.parameters[''study_spec_algorithm'']}}",
+          "\"", ", \"measurement_selection_type\": \"", "{{$.inputs.parameters[''study_spec_measurement_selection_type'']}}",
+          "\"", "}", ", \"max_trial_count\": ", "{{$.inputs.parameters[''max_trial_count'']}}",
+          ", \"parallel_trial_count\": ", "{{$.inputs.parameters[''parallel_trial_count'']}}",
+          ", \"max_failed_trial_count\": ", "{{$.inputs.parameters[''max_failed_trial_count'']}}",
+          ", \"trial_job_spec\": {", "\"worker_pool_specs\": ", "{{$.inputs.parameters[''worker_pool_specs'']}}",
+          ", \"service_account\": \"", "{{$.inputs.parameters[''service_account'']}}",
+          "\"", ", \"network\": \"", "{{$.inputs.parameters[''network'']}}", "\"",
+          ", \"base_output_directory\": {", "\"output_uri_prefix\": \"", "{{$.inputs.parameters[''base_output_directory'']}}",
+          "\"}", "}", ", \"encryption_spec\": {\"kms_key_name\":\"", "{{$.inputs.parameters[''encryption_spec_key_name'']}}",
+          "\"}", "}"]}'
+        - --project
+        - '{{$.inputs.parameters[''project'']}}'
+        - --location
+        - '{{$.inputs.parameters[''location'']}}'
+        - --gcp_resources
+        - '{{$.outputs.parameters[''gcp_resources''].output_file}}'
+        command:
+        - python3
+        - -u
+        - -m
+        - google_cloud_pipeline_components.container.v1.hyperparameter_tuning_job.launcher
+        image: gcr.io/ml-pipeline/google-cloud-pipeline-components:2.8.0
+    exec-importer:
+      importer:
+        artifactUri:
+          constant: gs://qwiklabs-asl-01-19968276eb55-kfp-artifact-store/models/20250515051322/model
+        metadata:
+          containerSpec:
+            imageUri: us-docker.pkg.dev/vertex-ai/prediction/sklearn-cpu.1-0:latest
+        typeSchema:
+          schemaTitle: google.UnmanagedContainerModel
+          schemaVersion: 0.0.1
+    exec-model-deploy:
+      container:
+        args:
+        - --type
+        - DeployModel
+        - --payload
+        - '{"Concat": ["{", "\"endpoint\": \"", "{{$.inputs.artifacts[''endpoint''].metadata[''resourceName'']}}",
+          "\"", ", \"traffic_split\": ", "{{$.inputs.parameters[''traffic_split'']}}",
+          ", \"deployed_model\": {", "\"model\": \"", "{{$.inputs.artifacts[''model''].metadata[''resourceName'']}}",
+          "\"", ", \"dedicated_resources\": {", "\"machine_spec\": {", "\"machine_type\":
+          \"", "{{$.inputs.parameters[''dedicated_resources_machine_type'']}}", "\"",
+          ", \"accelerator_type\": \"", "{{$.inputs.parameters[''dedicated_resources_accelerator_type'']}}",
+          "\"", ", \"accelerator_count\": ", "{{$.inputs.parameters[''dedicated_resources_accelerator_count'']}}",
+          "}", ", \"min_replica_count\": ", "{{$.inputs.parameters[''dedicated_resources_min_replica_count'']}}",
+          ", \"max_replica_count\": ", "{{$.inputs.parameters[''dedicated_resources_max_replica_count'']}}",
+          "}", ", \"automatic_resources\": {", "\"min_replica_count\": ", "{{$.inputs.parameters[''automatic_resources_min_replica_count'']}}",
+          ", \"max_replica_count\": ", "{{$.inputs.parameters[''automatic_resources_max_replica_count'']}}",
+          "}", ", \"service_account\": \"", "{{$.inputs.parameters[''service_account'']}}",
+          "\"", ", \"disable_container_logging\": ", "{{$.inputs.parameters[''disable_container_logging'']}}",
+          ", \"enable_access_logging\": ", "{{$.inputs.parameters[''enable_access_logging'']}}",
+          ", \"explanation_spec\": {", "\"parameters\": ", "{{$.inputs.parameters[''explanation_parameters'']}}",
+          ", \"metadata\": ", "{{$.inputs.parameters[''explanation_metadata'']}}",
+          "}", "}", "}"]}'
+        - --project
+        - ''
+        - --location
+        - ''
+        - --gcp_resources
+        - '{{$.outputs.parameters[''gcp_resources''].output_file}}'
+        command:
+        - python3
+        - -u
+        - -m
+        - google_cloud_pipeline_components.container.v1.endpoint.deploy_model.launcher
+        image: gcr.io/ml-pipeline/google-cloud-pipeline-components:2.8.0
+    exec-model-upload:
+      container:
+        args:
+        - --type
+        - UploadModel
+        - --payload
+        - '{"Concat": ["{", "\"display_name\": \"", "{{$.inputs.parameters[''display_name'']}}",
+          "\"", ", \"description\": \"", "{{$.inputs.parameters[''description'']}}",
+          "\"", ", \"explanation_spec\": {", "\"parameters\": ", "{{$.inputs.parameters[''explanation_parameters'']}}",
+          ", \"metadata\": ", "{{$.inputs.parameters[''explanation_metadata'']}}",
+          "}", ", \"encryption_spec\": {\"kms_key_name\":\"", "{{$.inputs.parameters[''encryption_spec_key_name'']}}",
+          "\"}", ", \"labels\": ", "{{$.inputs.parameters[''labels'']}}", ", \"pipeline_job\":
+          \"", "projects/{{$.inputs.parameters[''project'']}}/locations/{{$.inputs.parameters[''location'']}}/pipelineJobs/{{$.pipeline_job_uuid}}",
+          "\"", "}"]}'
+        - --project
+        - '{{$.inputs.parameters[''project'']}}'
+        - --location
+        - '{{$.inputs.parameters[''location'']}}'
+        - --gcp_resources
+        - '{{$.outputs.parameters[''gcp_resources''].output_file}}'
+        - --executor_input
+        - '{{$}}'
+        - '{"IfPresent": {"InputName": "parent_model", "Then": ["--parent_model_name",
+          "{{$.inputs.artifacts[''parent_model''].metadata[''resourceName'']}}"]}}'
+        command:
+        - python3
+        - -u
+        - -m
+        - google_cloud_pipeline_components.container.v1.model.upload_model.launcher
+        image: gcr.io/ml-pipeline/google-cloud-pipeline-components:2.8.0
+    exec-retrieve-best-hptune-result:
       container:
         args:
         - --executor_input
         - '{{$}}'
         - --function_to_execute
-        - train_and_deploy
+        - retrieve_best_hptune_result
         command:
         - sh
         - -c
@@ -146,190 +779,243 @@ deploymentSpec:
 
           '
         - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
-          \ *\n\ndef train_and_deploy(\n    project: str,\n    location: str,\n  \
-          \  container_uri: str,\n    serving_container_uri: str,\n    training_file_path:\
-          \ str,\n    validation_file_path: str,\n    staging_bucket: str,\n    alpha:\
-          \ float,\n    max_iter: int,\n):\n    # pylint: disable-next=import-outside-toplevel\n\
-          \    from google.cloud import aiplatform\n\n    aiplatform.init(\n     \
-          \   project=project, location=location, staging_bucket=staging_bucket\n\
-          \    )\n    job = aiplatform.CustomContainerTrainingJob(\n        display_name=\"\
-          covertype_kfp_training\",\n        container_uri=container_uri,\n      \
-          \  command=[\n            \"python\",\n            \"train.py\",\n     \
-          \       f\"--training_dataset_path={training_file_path}\",\n           \
-          \ f\"--validation_dataset_path={validation_file_path}\",\n            f\"\
-          --alpha={alpha}\",\n            f\"--max_iter={max_iter}\",\n          \
-          \  \"--nohptune\",\n        ],\n        staging_bucket=staging_bucket,\n\
-          \        model_serving_container_image_uri=serving_container_uri,\n    )\n\
-          \    model = job.run(replica_count=1, model_display_name=\"covertype_kfp_model\"\
-          )\n    endpoint = model.deploy(  # pylint: disable=unused-variable\n   \
-          \     traffic_split={\"0\": 100},\n        machine_type=\"n1-standard-2\"\
-          ,\n    )\n\n"
-        image: python:3.8
-    exec-tune-hyperparameters:
-      container:
-        args:
-        - --executor_input
-        - '{{$}}'
-        - --function_to_execute
-        - tune_hyperparameters
-        command:
-        - sh
-        - -c
-        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
-          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
-          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.4.0'\
-          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"'  &&\
-          \  python3 -m pip install --quiet --no-warn-script-location 'google-cloud-aiplatform'\
-          \ && \"$0\" \"$@\"\n"
-        - sh
-        - -ec
-        - 'program_path=$(mktemp -d)
-
-
-          printf "%s" "$0" > "$program_path/ephemeral_component.py"
-
-          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
-
-          '
-        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
-          \ *\n\ndef tune_hyperparameters(\n    project: str,\n    location: str,\n\
-          \    container_uri: str,\n    training_file_path: str,\n    validation_file_path:\
-          \ str,\n    staging_bucket: str,\n    max_trial_count: int,\n    parallel_trial_count:\
-          \ int,\n) -> NamedTuple(\n    \"Outputs\",\n    [(\"best_accuracy\", float),\
-          \ (\"best_alpha\", float), (\"best_max_iter\", int)],\n):\n    # pylint:\
-          \ disable=import-outside-toplevel\n    from google.cloud import aiplatform\n\
-          \    from google.cloud.aiplatform import hyperparameter_tuning as hpt\n\n\
-          \    aiplatform.init(\n        project=project, location=location, staging_bucket=staging_bucket\n\
-          \    )\n\n    worker_pool_specs = [\n        {\n            \"machine_spec\"\
-          : {\n                \"machine_type\": \"n1-standard-4\",\n            \
-          \    # Enable if you want to use GPU.\n                # \"accelerator_type\"\
-          : \"NVIDIA_TESLA_K80\",\n                # \"accelerator_count\": 1,\n \
-          \           },\n            \"replica_count\": 1,\n            \"container_spec\"\
-          : {\n                \"image_uri\": container_uri,\n                \"args\"\
+          \ *\n\ndef retrieve_best_hptune_result(\n    project: str,\n    location:\
+          \ str,\n    gcp_resources: str,\n    container_uri: str,\n    training_file_path:\
+          \ str,\n    validation_file_path: str,\n) -> NamedTuple(\n    \"Outputs\"\
+          ,\n    [\n        (\"best_parameters\", Dict),\n        (\"best_metrics\"\
+          , Dict),\n        (\"best_worker_pool_spec\", List),\n    ],\n):\n\n   \
+          \ # pylint: disable=import-outside-toplevel\n    import json\n\n    from\
+          \ google.cloud import aiplatform\n\n    aiplatform.init(project=project,\
+          \ location=location)\n\n    # Retrieve the hyperparameter tuning job result\n\
+          \    gcp_resources = json.loads(gcp_resources)\n    job_id = gcp_resources[\"\
+          resources\"][0][\"resourceUri\"].split(\"/\")[-1]\n    hp_job = aiplatform.HyperparameterTuningJob.get(job_id)\n\
+          \n    # Retrieve the best trial\n    metrics = [\n        trial.final_measurement.metrics[0].value\
+          \ for trial in hp_job.trials\n    ]\n    goal = hp_job.to_dict()[\"studySpec\"\
+          ][\"metrics\"][0][\"goal\"]\n    goal_f = min if goal == \"MINIMIZE\" else\
+          \ max  # MINIMIZE or MAXIMIZE\n    best_result = goal_f(metrics)\n    best_trial\
+          \ = hp_job.trials[metrics.index(best_result)]\n\n    best_parameters = {\n\
+          \        param.parameter_id: param.value for param in best_trial.parameters\n\
+          \    }\n\n    best_metrics = {\n        m.metric_id: m.value for m in best_trial.final_measurement.metrics\n\
+          \    }\n\n    # Construct worker_pool_spec\n    best_worker_pool_spec =\
+          \ [\n        {\n            \"machine_spec\": {\"machine_type\": \"n1-standard-4\"\
+          },\n            \"replica_count\": 1,\n            \"container_spec\": {\n\
+          \                \"image_uri\": container_uri,\n                \"args\"\
           : [\n                    f\"--training_dataset_path={training_file_path}\"\
           ,\n                    f\"--validation_dataset_path={validation_file_path}\"\
-          ,\n                    \"--hptune\",\n                ],\n            },\n\
-          \        }\n    ]\n\n    custom_job = aiplatform.CustomJob(\n        display_name=\"\
-          covertype_kfp_trial_job\",\n        worker_pool_specs=worker_pool_specs,\n\
-          \    )\n\n    hp_job = aiplatform.HyperparameterTuningJob(\n        display_name=\"\
-          covertype_kfp_tuning_job\",\n        custom_job=custom_job,\n        metric_spec={\n\
-          \            \"accuracy\": \"maximize\",\n        },\n        parameter_spec={\n\
-          \            \"alpha\": hpt.DoubleParameterSpec(\n                min=1.0e-4,\
-          \ max=1.0e-1, scale=\"log\"\n            ),\n            \"max_iter\": hpt.DiscreteParameterSpec(\n\
-          \                values=[1, 2], scale=\"linear\"\n            ),\n     \
-          \   },\n        max_trial_count=max_trial_count,\n        parallel_trial_count=parallel_trial_count,\n\
-          \    )\n\n    hp_job.run()\n\n    metrics = [\n        trial.final_measurement.metrics[0].value\
-          \ for trial in hp_job.trials\n    ]\n    best_trial = hp_job.trials[metrics.index(max(metrics))]\n\
-          \    best_accuracy = float(best_trial.final_measurement.metrics[0].value)\n\
-          \    best_alpha = float(best_trial.parameters[0].value)\n    best_max_iter\
-          \ = int(best_trial.parameters[1].value)\n\n    return best_accuracy, best_alpha,\
-          \ best_max_iter\n\n"
+          ,\n                    \"--nohptune\",\n                ],\n           \
+          \ },\n        }\n    ]\n\n    for k, v in best_parameters.items():\n   \
+          \     best_worker_pool_spec[0][\"container_spec\"][\"args\"].append(f\"\
+          --{k}={v}\")\n\n    return best_parameters, best_metrics, best_worker_pool_spec\n\
+          \n"
         image: python:3.8
 pipelineInfo:
-  description: The pipeline training and deploying the Covertype classifier
+  description: Kubeflow pipeline that tunes, trains, and deploys on Vertex
   name: covertype-kfp-pipeline
 root:
   dag:
     tasks:
-      condition-1:
-        componentRef:
-          name: comp-condition-1
-        dependentTasks:
-        - tune-hyperparameters
-        inputs:
-          parameters:
-            pipelinechannel--accuracy_deployment_threshold:
-              componentInputParameter: accuracy_deployment_threshold
-            pipelinechannel--pipeline_root:
-              componentInputParameter: pipeline_root
-            pipelinechannel--serving_container_uri:
-              componentInputParameter: serving_container_uri
-            pipelinechannel--training_container_uri:
-              componentInputParameter: training_container_uri
-            pipelinechannel--training_file_path:
-              componentInputParameter: training_file_path
-            pipelinechannel--tune-hyperparameters-best_accuracy:
-              taskOutputParameter:
-                outputParameterKey: best_accuracy
-                producerTask: tune-hyperparameters
-            pipelinechannel--tune-hyperparameters-best_alpha:
-              taskOutputParameter:
-                outputParameterKey: best_alpha
-                producerTask: tune-hyperparameters
-            pipelinechannel--tune-hyperparameters-best_max_iter:
-              taskOutputParameter:
-                outputParameterKey: best_max_iter
-                producerTask: tune-hyperparameters
-            pipelinechannel--validation_file_path:
-              componentInputParameter: validation_file_path
-        taskInfo:
-          name: deploy_decision
-        triggerPolicy:
-          condition: inputs.parameter_values['pipelinechannel--tune-hyperparameters-best_accuracy']
-            >= inputs.parameter_values['pipelinechannel--accuracy_deployment_threshold']
-      tune-hyperparameters:
+      custom-training-job:
         cachingOptions:
           enableCache: true
         componentRef:
-          name: comp-tune-hyperparameters
+          name: comp-custom-training-job
+        dependentTasks:
+        - retrieve-best-hptune-result
         inputs:
           parameters:
-            container_uri:
-              componentInputParameter: training_container_uri
+            base_output_directory:
+              runtimeValue:
+                constant: gs://qwiklabs-asl-01-19968276eb55-kfp-artifact-store/models/20250515051322
+            display_name:
+              runtimeValue:
+                constant: covertype-kfp-training-job
+            location:
+              runtimeValue:
+                constant: us-central1
+            project:
+              runtimeValue:
+                constant: qwiklabs-asl-01-19968276eb55
+            worker_pool_specs:
+              taskOutputParameter:
+                outputParameterKey: best_worker_pool_spec
+                producerTask: retrieve-best-hptune-result
+        taskInfo:
+          name: custom-training-job
+      endpoint-create:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-endpoint-create
+        dependentTasks:
+        - model-upload
+        inputs:
+          parameters:
+            display_name:
+              runtimeValue:
+                constant: covertype-kfp-create-endpoint-job
+            project:
+              runtimeValue:
+                constant: qwiklabs-asl-01-19968276eb55
+        taskInfo:
+          name: endpoint-create
+      hyperparameter-tuning-job:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-hyperparameter-tuning-job
+        inputs:
+          parameters:
+            base_output_directory:
+              runtimeValue:
+                constant: gs://qwiklabs-asl-01-19968276eb55-kfp-artifact-store/pipeline
+            display_name:
+              runtimeValue:
+                constant: covertype-kfp-tuning-job
             location:
               runtimeValue:
                 constant: us-central1
             max_trial_count:
-              componentInputParameter: max_trial_count
+              runtimeValue:
+                constant: 5.0
             parallel_trial_count:
-              componentInputParameter: parallel_trial_count
-            pipelinechannel--pipeline_root:
-              componentInputParameter: pipeline_root
+              runtimeValue:
+                constant: 5.0
             project:
               runtimeValue:
                 constant: qwiklabs-asl-01-19968276eb55
-            staging_bucket:
+            study_spec_metrics:
               runtimeValue:
-                constant: '{{$.inputs.parameters[''pipelinechannel--pipeline_root'']}}/staging'
-            training_file_path:
-              componentInputParameter: training_file_path
-            validation_file_path:
-              componentInputParameter: validation_file_path
+                constant:
+                - goal: 1.0
+                  metric_id: accuracy
+            study_spec_parameters:
+              runtimeValue:
+                constant:
+                - conditional_parameter_specs: []
+                  double_value_spec:
+                    max_value: 0.1
+                    min_value: 0.0001
+                  parameter_id: alpha
+                  scale_type: 2.0
+                - conditional_parameter_specs: []
+                  discrete_value_spec:
+                    values:
+                    - 1.0
+                    - 2.0
+                  parameter_id: max_iter
+                  scale_type: 1.0
+            worker_pool_specs:
+              runtimeValue:
+                constant:
+                - container_spec:
+                    args:
+                    - --training_dataset_path=gs://qwiklabs-asl-01-19968276eb55-kfp-artifact-store/data/training/dataset.csv
+                    - --validation_dataset_path=gs://qwiklabs-asl-01-19968276eb55-kfp-artifact-store/data/validation/dataset.csv
+                    - --hptune
+                    image_uri: us-docker.pkg.dev/qwiklabs-asl-01-19968276eb55/asl-artifact-repo/trainer_image_covertype_vertex:latest
+                  machine_spec:
+                    machine_type: n1-standard-4
+                  replica_count: 1.0
         taskInfo:
-          name: tune-hyperparameters
-  inputDefinitions:
-    parameters:
-      accuracy_deployment_threshold:
-        defaultValue: 0.6
-        isOptional: true
-        parameterType: NUMBER_DOUBLE
-      max_trial_count:
-        defaultValue: 5.0
-        isOptional: true
-        parameterType: NUMBER_INTEGER
-      parallel_trial_count:
-        defaultValue: 5.0
-        isOptional: true
-        parameterType: NUMBER_INTEGER
-      pipeline_root:
-        defaultValue: gs://qwiklabs-asl-01-19968276eb55-kfp-artifact-store/pipeline
-        isOptional: true
-        parameterType: STRING
-      serving_container_uri:
-        defaultValue: us-docker.pkg.dev/vertex-ai/prediction/sklearn-cpu.1-0:latest
-        isOptional: true
-        parameterType: STRING
-      training_container_uri:
-        defaultValue: us-docker.pkg.dev/qwiklabs-asl-01-19968276eb55/asl-artifact-repo/trainer_image_covertype_vertex:latest
-        isOptional: true
-        parameterType: STRING
-      training_file_path:
-        defaultValue: gs://qwiklabs-asl-01-19968276eb55-kfp-artifact-store/data/training/dataset.csv
-        isOptional: true
-        parameterType: STRING
-      validation_file_path:
-        defaultValue: gs://qwiklabs-asl-01-19968276eb55-kfp-artifact-store/data/validation/dataset.csv
-        isOptional: true
-        parameterType: STRING
+          name: hyperparameter-tuning-job
+      importer:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-importer
+        dependentTasks:
+        - custom-training-job
+        inputs:
+          parameters:
+            uri:
+              runtimeValue:
+                constant: gs://qwiklabs-asl-01-19968276eb55-kfp-artifact-store/models/20250515051322/model
+        taskInfo:
+          name: importer
+      model-deploy:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-model-deploy
+        dependentTasks:
+        - endpoint-create
+        - model-upload
+        inputs:
+          artifacts:
+            endpoint:
+              taskOutputArtifact:
+                outputArtifactKey: endpoint
+                producerTask: endpoint-create
+            model:
+              taskOutputArtifact:
+                outputArtifactKey: model
+                producerTask: model-upload
+          parameters:
+            dedicated_resources_machine_type:
+              runtimeValue:
+                constant: n1-standard-16
+            dedicated_resources_max_replica_count:
+              runtimeValue:
+                constant: 1.0
+            dedicated_resources_min_replica_count:
+              runtimeValue:
+                constant: 1.0
+            deployed_model_display_name:
+              runtimeValue:
+                constant: covertype
+        taskInfo:
+          name: model-deploy
+      model-upload:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-model-upload
+        dependentTasks:
+        - importer
+        inputs:
+          artifacts:
+            unmanaged_container_model:
+              taskOutputArtifact:
+                outputArtifactKey: artifact
+                producerTask: importer
+          parameters:
+            display_name:
+              runtimeValue:
+                constant: covertype-kfp-model-upload-job
+            project:
+              runtimeValue:
+                constant: qwiklabs-asl-01-19968276eb55
+        taskInfo:
+          name: model-upload
+      retrieve-best-hptune-result:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-retrieve-best-hptune-result
+        dependentTasks:
+        - hyperparameter-tuning-job
+        inputs:
+          parameters:
+            container_uri:
+              runtimeValue:
+                constant: us-docker.pkg.dev/qwiklabs-asl-01-19968276eb55/asl-artifact-repo/trainer_image_covertype_vertex:latest
+            gcp_resources:
+              taskOutputParameter:
+                outputParameterKey: gcp_resources
+                producerTask: hyperparameter-tuning-job
+            location:
+              runtimeValue:
+                constant: us-central1
+            project:
+              runtimeValue:
+                constant: qwiklabs-asl-01-19968276eb55
+            training_file_path:
+              runtimeValue:
+                constant: gs://qwiklabs-asl-01-19968276eb55-kfp-artifact-store/data/training/dataset.csv
+            validation_file_path:
+              runtimeValue:
+                constant: gs://qwiklabs-asl-01-19968276eb55-kfp-artifact-store/data/validation/dataset.csv
+        taskInfo:
+          name: retrieve-best-hptune-result
 schemaVersion: 2.1.0
 sdkVersion: kfp-2.4.0

@@ -60,8 +60,9 @@ def create_pipeline():
         {
             "machine_spec": {
                 "machine_type": "n1-standard-4",
-                "accelerator_type": "NVIDIA_TESLA_T4",
-                "accelerator_count": 1,
+                # Enable if you want to use GPU.
+                # "accelerator_type": "NVIDIA_TESLA_T4",
+                # "accelerator_count": 1,
             },
             "replica_count": 1,
             "container_spec": {
@@ -144,3 +145,4 @@ def create_pipeline():
         dedicated_resources_min_replica_count=1,
         dedicated_resources_max_replica_count=1,
     )
+

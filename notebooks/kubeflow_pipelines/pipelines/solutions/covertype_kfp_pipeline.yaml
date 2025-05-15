@@ -1,0 +1,335 @@
+# PIPELINE DEFINITION
+# Name: covertype-kfp-pipeline
+# Description: The pipeline training and deploying the Covertype classifier
+# Inputs:
+#    accuracy_deployment_threshold: float [Default: 0.6]
+#    max_trial_count: int [Default: 5.0]
+#    parallel_trial_count: int [Default: 5.0]
+#    pipeline_root: str [Default: 'gs://qwiklabs-asl-01-19968276eb55-kfp-artifact-store/pipeline']
+#    serving_container_uri: str [Default: 'us-docker.pkg.dev/vertex-ai/prediction/sklearn-cpu.1-0:latest']
+#    training_container_uri: str [Default: 'us-docker.pkg.dev/qwiklabs-asl-01-19968276eb55/asl-artifact-repo/trainer_image_covertype_vertex:latest']
+#    training_file_path: str [Default: 'gs://qwiklabs-asl-01-19968276eb55-kfp-artifact-store/data/training/dataset.csv']
+#    validation_file_path: str [Default: 'gs://qwiklabs-asl-01-19968276eb55-kfp-artifact-store/data/validation/dataset.csv']
+components:
+  comp-condition-1:
+    dag:
+      tasks:
+        train-and-deploy:
+          cachingOptions:
+            enableCache: true
+          componentRef:
+            name: comp-train-and-deploy
+          inputs:
+            parameters:
+              alpha:
+                componentInputParameter: pipelinechannel--tune-hyperparameters-best_alpha
+              container_uri:
+                componentInputParameter: pipelinechannel--training_container_uri
+              location:
+                runtimeValue:
+                  constant: us-central1
+              max_iter:
+                componentInputParameter: pipelinechannel--tune-hyperparameters-best_max_iter
+              pipelinechannel--pipeline_root:
+                componentInputParameter: pipelinechannel--pipeline_root
+              project:
+                runtimeValue:
+                  constant: qwiklabs-asl-01-19968276eb55
+              serving_container_uri:
+                componentInputParameter: pipelinechannel--serving_container_uri
+              staging_bucket:
+                runtimeValue:
+                  constant: '{{$.inputs.parameters[''pipelinechannel--pipeline_root'']}}/staging'
+              training_file_path:
+                componentInputParameter: pipelinechannel--training_file_path
+              validation_file_path:
+                componentInputParameter: pipelinechannel--validation_file_path
+          taskInfo:
+            name: train-and-deploy
+    inputDefinitions:
+      parameters:
+        pipelinechannel--accuracy_deployment_threshold:
+          parameterType: NUMBER_DOUBLE
+        pipelinechannel--pipeline_root:
+          parameterType: STRING
+        pipelinechannel--serving_container_uri:
+          parameterType: STRING
+        pipelinechannel--training_container_uri:
+          parameterType: STRING
+        pipelinechannel--training_file_path:
+          parameterType: STRING
+        pipelinechannel--tune-hyperparameters-best_accuracy:
+          parameterType: NUMBER_DOUBLE
+        pipelinechannel--tune-hyperparameters-best_alpha:
+          parameterType: NUMBER_DOUBLE
+        pipelinechannel--tune-hyperparameters-best_max_iter:
+          parameterType: NUMBER_INTEGER
+        pipelinechannel--validation_file_path:
+          parameterType: STRING
+  comp-train-and-deploy:
+    executorLabel: exec-train-and-deploy
+    inputDefinitions:
+      parameters:
+        alpha:
+          parameterType: NUMBER_DOUBLE
+        container_uri:
+          parameterType: STRING
+        location:
+          parameterType: STRING
+        max_iter:
+          parameterType: NUMBER_INTEGER
+        project:
+          parameterType: STRING
+        serving_container_uri:
+          parameterType: STRING
+        staging_bucket:
+          parameterType: STRING
+        training_file_path:
+          parameterType: STRING
+        validation_file_path:
+          parameterType: STRING
+  comp-tune-hyperparameters:
+    executorLabel: exec-tune-hyperparameters
+    inputDefinitions:
+      parameters:
+        container_uri:
+          parameterType: STRING
+        location:
+          parameterType: STRING
+        max_trial_count:
+          parameterType: NUMBER_INTEGER
+        parallel_trial_count:
+          parameterType: NUMBER_INTEGER
+        project:
+          parameterType: STRING
+        staging_bucket:
+          parameterType: STRING
+        training_file_path:
+          parameterType: STRING
+        validation_file_path:
+          parameterType: STRING
+    outputDefinitions:
+      parameters:
+        best_accuracy:
+          parameterType: NUMBER_DOUBLE
+        best_alpha:
+          parameterType: NUMBER_DOUBLE
+        best_max_iter:
+          parameterType: NUMBER_INTEGER
+defaultPipelineRoot: gs://qwiklabs-asl-01-19968276eb55-kfp-artifact-store/pipeline
+deploymentSpec:
+  executors:
+    exec-train-and-deploy:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - train_and_deploy
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.4.0'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"'  &&\
+          \  python3 -m pip install --quiet --no-warn-script-location 'google-cloud-aiplatform'\
+          \ && \"$0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef train_and_deploy(\n    project: str,\n    location: str,\n  \
+          \  container_uri: str,\n    serving_container_uri: str,\n    training_file_path:\
+          \ str,\n    validation_file_path: str,\n    staging_bucket: str,\n    alpha:\
+          \ float,\n    max_iter: int,\n):\n    # pylint: disable-next=import-outside-toplevel\n\
+          \    from google.cloud import aiplatform\n\n    aiplatform.init(\n     \
+          \   project=project, location=location, staging_bucket=staging_bucket\n\
+          \    )\n    job = aiplatform.CustomContainerTrainingJob(\n        display_name=\"\
+          covertype_kfp_training\",\n        container_uri=container_uri,\n      \
+          \  command=[\n            \"python\",\n            \"train.py\",\n     \
+          \       f\"--training_dataset_path={training_file_path}\",\n           \
+          \ f\"--validation_dataset_path={validation_file_path}\",\n            f\"\
+          --alpha={alpha}\",\n            f\"--max_iter={max_iter}\",\n          \
+          \  \"--nohptune\",\n        ],\n        staging_bucket=staging_bucket,\n\
+          \        model_serving_container_image_uri=serving_container_uri,\n    )\n\
+          \    model = job.run(replica_count=1, model_display_name=\"covertype_kfp_model\"\
+          )\n    endpoint = model.deploy(  # pylint: disable=unused-variable\n   \
+          \     traffic_split={\"0\": 100},\n        machine_type=\"n1-standard-2\"\
+          ,\n    )\n\n"
+        image: python:3.8
+    exec-tune-hyperparameters:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - tune_hyperparameters
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.4.0'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"'  &&\
+          \  python3 -m pip install --quiet --no-warn-script-location 'google-cloud-aiplatform'\
+          \ && \"$0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef tune_hyperparameters(\n    project: str,\n    location: str,\n\
+          \    container_uri: str,\n    training_file_path: str,\n    validation_file_path:\
+          \ str,\n    staging_bucket: str,\n    max_trial_count: int,\n    parallel_trial_count:\
+          \ int,\n) -> NamedTuple(\n    \"Outputs\",\n    [(\"best_accuracy\", float),\
+          \ (\"best_alpha\", float), (\"best_max_iter\", int)],\n):\n    # pylint:\
+          \ disable=import-outside-toplevel\n    from google.cloud import aiplatform\n\
+          \    from google.cloud.aiplatform import hyperparameter_tuning as hpt\n\n\
+          \    aiplatform.init(\n        project=project, location=location, staging_bucket=staging_bucket\n\
+          \    )\n\n    worker_pool_specs = [\n        {\n            \"machine_spec\"\
+          : {\n                \"machine_type\": \"n1-standard-4\",\n            \
+          \    # Enable if you want to use GPU.\n                # \"accelerator_type\"\
+          : \"NVIDIA_TESLA_K80\",\n                # \"accelerator_count\": 1,\n \
+          \           },\n            \"replica_count\": 1,\n            \"container_spec\"\
+          : {\n                \"image_uri\": container_uri,\n                \"args\"\
+          : [\n                    f\"--training_dataset_path={training_file_path}\"\
+          ,\n                    f\"--validation_dataset_path={validation_file_path}\"\
+          ,\n                    \"--hptune\",\n                ],\n            },\n\
+          \        }\n    ]\n\n    custom_job = aiplatform.CustomJob(\n        display_name=\"\
+          covertype_kfp_trial_job\",\n        worker_pool_specs=worker_pool_specs,\n\
+          \    )\n\n    hp_job = aiplatform.HyperparameterTuningJob(\n        display_name=\"\
+          covertype_kfp_tuning_job\",\n        custom_job=custom_job,\n        metric_spec={\n\
+          \            \"accuracy\": \"maximize\",\n        },\n        parameter_spec={\n\
+          \            \"alpha\": hpt.DoubleParameterSpec(\n                min=1.0e-4,\
+          \ max=1.0e-1, scale=\"log\"\n            ),\n            \"max_iter\": hpt.DiscreteParameterSpec(\n\
+          \                values=[1, 2], scale=\"linear\"\n            ),\n     \
+          \   },\n        max_trial_count=max_trial_count,\n        parallel_trial_count=parallel_trial_count,\n\
+          \    )\n\n    hp_job.run()\n\n    metrics = [\n        trial.final_measurement.metrics[0].value\
+          \ for trial in hp_job.trials\n    ]\n    best_trial = hp_job.trials[metrics.index(max(metrics))]\n\
+          \    best_accuracy = float(best_trial.final_measurement.metrics[0].value)\n\
+          \    best_alpha = float(best_trial.parameters[0].value)\n    best_max_iter\
+          \ = int(best_trial.parameters[1].value)\n\n    return best_accuracy, best_alpha,\
+          \ best_max_iter\n\n"
+        image: python:3.8
+pipelineInfo:
+  description: The pipeline training and deploying the Covertype classifier
+  name: covertype-kfp-pipeline
+root:
+  dag:
+    tasks:
+      condition-1:
+        componentRef:
+          name: comp-condition-1
+        dependentTasks:
+        - tune-hyperparameters
+        inputs:
+          parameters:
+            pipelinechannel--accuracy_deployment_threshold:
+              componentInputParameter: accuracy_deployment_threshold
+            pipelinechannel--pipeline_root:
+              componentInputParameter: pipeline_root
+            pipelinechannel--serving_container_uri:
+              componentInputParameter: serving_container_uri
+            pipelinechannel--training_container_uri:
+              componentInputParameter: training_container_uri
+            pipelinechannel--training_file_path:
+              componentInputParameter: training_file_path
+            pipelinechannel--tune-hyperparameters-best_accuracy:
+              taskOutputParameter:
+                outputParameterKey: best_accuracy
+                producerTask: tune-hyperparameters
+            pipelinechannel--tune-hyperparameters-best_alpha:
+              taskOutputParameter:
+                outputParameterKey: best_alpha
+                producerTask: tune-hyperparameters
+            pipelinechannel--tune-hyperparameters-best_max_iter:
+              taskOutputParameter:
+                outputParameterKey: best_max_iter
+                producerTask: tune-hyperparameters
+            pipelinechannel--validation_file_path:
+              componentInputParameter: validation_file_path
+        taskInfo:
+          name: deploy_decision
+        triggerPolicy:
+          condition: inputs.parameter_values['pipelinechannel--tune-hyperparameters-best_accuracy']
+            >= inputs.parameter_values['pipelinechannel--accuracy_deployment_threshold']
+      tune-hyperparameters:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-tune-hyperparameters
+        inputs:
+          parameters:
+            container_uri:
+              componentInputParameter: training_container_uri
+            location:
+              runtimeValue:
+                constant: us-central1
+            max_trial_count:
+              componentInputParameter: max_trial_count
+            parallel_trial_count:
+              componentInputParameter: parallel_trial_count
+            pipelinechannel--pipeline_root:
+              componentInputParameter: pipeline_root
+            project:
+              runtimeValue:
+                constant: qwiklabs-asl-01-19968276eb55
+            staging_bucket:
+              runtimeValue:
+                constant: '{{$.inputs.parameters[''pipelinechannel--pipeline_root'']}}/staging'
+            training_file_path:
+              componentInputParameter: training_file_path
+            validation_file_path:
+              componentInputParameter: validation_file_path
+        taskInfo:
+          name: tune-hyperparameters
+  inputDefinitions:
+    parameters:
+      accuracy_deployment_threshold:
+        defaultValue: 0.6
+        isOptional: true
+        parameterType: NUMBER_DOUBLE
+      max_trial_count:
+        defaultValue: 5.0
+        isOptional: true
+        parameterType: NUMBER_INTEGER
+      parallel_trial_count:
+        defaultValue: 5.0
+        isOptional: true
+        parameterType: NUMBER_INTEGER
+      pipeline_root:
+        defaultValue: gs://qwiklabs-asl-01-19968276eb55-kfp-artifact-store/pipeline
+        isOptional: true
+        parameterType: STRING
+      serving_container_uri:
+        defaultValue: us-docker.pkg.dev/vertex-ai/prediction/sklearn-cpu.1-0:latest
+        isOptional: true
+        parameterType: STRING
+      training_container_uri:
+        defaultValue: us-docker.pkg.dev/qwiklabs-asl-01-19968276eb55/asl-artifact-repo/trainer_image_covertype_vertex:latest
+        isOptional: true
+        parameterType: STRING
+      training_file_path:
+        defaultValue: gs://qwiklabs-asl-01-19968276eb55-kfp-artifact-store/data/training/dataset.csv
+        isOptional: true
+        parameterType: STRING
+      validation_file_path:
+        defaultValue: gs://qwiklabs-asl-01-19968276eb55-kfp-artifact-store/data/validation/dataset.csv
+        isOptional: true
+        parameterType: STRING
+schemaVersion: 2.1.0
+sdkVersion: kfp-2.4.0

@@ -1,6 +1,6 @@
 """Argument definitions for model training code in `trainer.model`."""
-
 import argparse
+import os
 
 from trainer import model
 
@@ -46,14 +46,16 @@ if __name__ == "__main__":
     parser.add_argument(
         "--output_dir",
         help="GCS location to write checkpoints and export models",
-        required=True,
+        default=os.getenv("AIP_MODEL_DIR"),
     )
     parser.add_argument(
         "--train_data_path",
         help="GCS location pattern of train files containing eval URLs",
         required=True,
     )
-    args = parser.parse_args()
-    hparams = args.__dict__
 
+    args, _ = parser.parse_known_args()
+
+    hparams = args.__dict__
+    print("output_dir", hparams["output_dir"])
     model.train_and_evaluate(hparams)

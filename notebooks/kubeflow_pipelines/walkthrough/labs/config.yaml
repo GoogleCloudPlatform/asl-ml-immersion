@@ -1,0 +1,29 @@
+studySpec:
+  metrics:
+  - metricId: accuracy
+    goal: MAXIMIZE
+  parameters:
+  - parameterId: max_iter
+    discreteValueSpec:
+      values:
+      - 10
+      - 20
+  - parameterId: alpha
+    doubleValueSpec:
+      minValue: 1.0e-4
+      maxValue: 1.0e-1
+    scaleType: UNIT_LINEAR_SCALE
+
+  algorithm: ALGORITHM_UNSPECIFIED # results in Bayesian optimization
+trialJobSpec:
+  workerPoolSpecs:  
+  - machineSpec:
+      machineType: n1-standard-4
+    replicaCount: 1
+    containerSpec:
+      imageUri: us-docker.pkg.dev/qwiklabs-asl-01-19968276eb55/asl-artifact-repo/trainer_image:latest
+      args:
+      - --job_dir=gs://qwiklabs-asl-01-19968276eb55-kfp-artifact-store/jobs/forestcover_tuning_20250515_015256
+      - --training_dataset_path=gs://qwiklabs-asl-01-19968276eb55-kfp-artifact-store/data/training/dataset.csv
+      - --validation_dataset_path=gs://qwiklabs-asl-01-19968276eb55-kfp-artifact-store/data/validation/dataset.csv
+      - --hptune

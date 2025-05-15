@@ -2,6 +2,7 @@
 
 import logging
 import os
+import hypertune
 
 import numpy as np
 import tensorflow as tf
@@ -169,18 +170,32 @@ def build_dnn_model(nbuckets, nnsize, lr):
     output = Dense(1, name="fare")(x)
 
     model = models.Model(inputs, output)
-    model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=lr), loss="mse", )
+
+    lr_optimizer = tf.keras.optimizers.Adam(learning_rate=lr)
+    model.compile(optimizer=lr_optimizer, loss="mse", metrics=[rmse, "mse"])
 
     return model
 
+# TODO 1
+hpt = hypertune.HyperTune()
+
+
+# Reporting callback
+# TODO 1
+class HPTCallback(tf.keras.callbacks.Callback):
+    def on_epoch_end(self, epoch, logs=None):
+        global hpt
+        hpt.report_hyperparameter_tuning_metric(
+            hyperparameter_metric_tag="val_rmse",
+            metric_value=logs["val_rmse"],
+            global_step=epoch,
+        )
+
 
 def train_and_evaluate(hparams):
-    # TODO 1b: Your code here
-    nbuckets = hparams["nbuckets"]
-    nnsize = hparams["nnsize"]
-    lr = hparams["lr"]
     batch_size = hparams["batch_size"]
-
+    nbuckets = hparams["nbuckets"]
+    lr = hparams["lr"]
     nnsize = [int(s) for s in hparams["nnsize"].split()]
     eval_data_path = hparams["eval_data_path"]
     num_evals = hparams["num_evals"]
@@ -214,7 +229,7 @@ def train_and_evaluate(hparams):
         epochs=num_evals,
         steps_per_epoch=max(1, steps_per_epoch),
         verbose=2,  # 0=silent, 1=progress bar, 2=one line per epoch
-        callbacks=[checkpoint_cb, tensorboard_cb],
+        callbacks=[checkpoint_cb, tensorboard_cb, HPTCallback()],
     )
 
     # Exporting the model with default serving function.

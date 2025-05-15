@@ -1,0 +1,45 @@
+displayName: taxifare_20250514_041056
+studySpec:
+  metrics:
+  - metricId: val_rmse
+    goal: MINIMIZE
+  parameters:
+  - parameterId: lr
+    doubleValueSpec:
+      minValue: 0.0001
+      maxValue: 0.1
+    scaleType: UNIT_LOG_SCALE
+  - parameterId: nbuckets
+    integerValueSpec:
+      minValue: 10
+      maxValue: 25
+    scaleType: UNIT_LINEAR_SCALE
+  - parameterId: batch_size
+    discreteValueSpec:
+      values:
+      - 15
+      - 30
+      - 50
+    scaleType: UNIT_LINEAR_SCALE
+  algorithm: ALGORITHM_UNSPECIFIED # results in Bayesian optimization
+trialJobSpec:
+  baseOutputDirectory:
+    outputUriPrefix: gs://qwiklabs-asl-01-19968276eb55/taxifare_20250514_041056
+  workerPoolSpecs:
+  - machineSpec:
+      machineType: n1-standard-4
+    pythonPackageSpec:
+      args:
+      - --train_data_path=gs://qwiklabs-asl-01-19968276eb55/taxifare/data/taxi-train*
+      - --eval_data_path=gs://qwiklabs-asl-01-19968276eb55/taxifare/data/taxi-valid*
+      - --batch_size=15
+      - --num_examples_to_train_on=100_000
+      - --num_evals=10
+      - --nbuckets=10
+      - --lr=0.001
+      - --nnsize=32 8
+      executorImageUri: us-docker.pkg.dev/vertex-ai/training/tf-cpu.2-12.py310:latest
+      packageUris:
+      - gs://qwiklabs-asl-01-19968276eb55/taxifare/taxifare_trainer-0.1.tar.gz
+      pythonModule: trainer.task
+    replicaCount: 1

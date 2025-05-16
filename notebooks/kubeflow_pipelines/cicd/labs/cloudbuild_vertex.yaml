@@ -13,15 +13,17 @@
 
 steps:
 # Build the trainer image
-- name: # TODO
-  args: # TODO
-  dir:  # TODO
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'Build the trainer image'
+  args: ['build', '-t', 'us-docker.pkg.dev/$PROJECT_ID/asl-artifact-repo/trainer_image_covertype_vertex:latest', '.']
+  dir: $_PIPELINE_FOLDER/trainer_image_vertex
 
 
 # Push the trainer image, to make it available in the compile step
-- name: # TODO
-  args: # TODO
-  dir:  # TODO
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'Push the trainer image'
+  args: ['push', 'us-docker.pkg.dev/$PROJECT_ID/asl-artifact-repo/trainer_image_covertype_vertex:latest']
+  dir: $_PIPELINE_FOLDER/trainer_image_vertex
 
 
 # Compile the pipeline
@@ -42,6 +44,7 @@ steps:
 
 # Run the pipeline
 - name: 'us-docker.pkg.dev/$PROJECT_ID/asl-artifact-repo/kfp-cli-vertex'
+  id: 'Run the pipeline'
   args:
   - '-c'
   - |
@@ -50,9 +53,9 @@ steps:
 logsBucket: 'gs://$PROJECT_ID-cicd-log'
 
 # Push the images to Artifact Registry
-# TODO: List the images to be pushed to the project Docker registry
-images: # TODO
+images: ['us-docker.pkg.dev/$PROJECT_ID/asl-artifact-repo/trainer_image_covertype_vertex:latest']
 
 
 # This is required since the pipeline run overflows the default timeout
 timeout: 10800s
+

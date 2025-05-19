@@ -31,7 +31,7 @@ To set up and run this DAG, you'll need the following:
 3.  **Cloud Composer Environment**: You need an active Cloud Composer environment (Airflow 2.x recommended).
 4.  **Google Cloud Storage (GCS) Bucket**:
     * The DAG expects a GCS bucket containing the source dataset `data/covertype/dataset.csv`. You can replace this with your own bucket and data.
-    * You'll also need a pre-compiled Kubeflow Pipeline YAML file stored on GCS. 
+    * You'll also need a pre-compiled Kubeflow Pipeline YAML file stored on GCS.
     * Update the `GCS_PIPELINE_PATH` variable in the DAG with the path to your compiled pipeline (e.g., `gs://your-bucket/path/to/pipeline.yaml`).
 
 ### DAG Configuration
@@ -46,8 +46,8 @@ To set up and run this DAG, you'll need the following:
 
 ### Kubeflow Pipeline (Pre-requisite)
 
-This DAG assumes you have a pre-compiled Kubeflow Pipeline YAML file. 
-This YAML file is typically generated from a Kubeflow Pipelines SDK definition in Python and compiled using `kfp.compiler.Compiler().compile()`. 
+This DAG assumes you have a pre-compiled Kubeflow Pipeline YAML file.
+This YAML file is typically generated from a Kubeflow Pipelines SDK definition in Python and compiled using `kfp.compiler.Compiler().compile()`.
 Ensure this compiled YAML is accessible at the `GCS_PIPELINE_PATH` specified in the DAG.
 
 ## Functionality

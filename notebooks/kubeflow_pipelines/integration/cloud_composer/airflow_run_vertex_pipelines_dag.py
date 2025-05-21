@@ -3,10 +3,13 @@
 import datetime
 
 from airflow import DAG
-from airflow.providers.google.cloud.operators.vertex_ai.pipeline_job import (  # ListPipelineJobOperator,
+from airflow.providers.google.cloud.operators.vertex_ai.pipeline_job import (
     DeletePipelineJobOperator,
     GetPipelineJobOperator,
     RunPipelineJobOperator,
+)
+from airflow.providers.google.cloud.transfers.bigquery_to_gcs import (
+    BigQueryToGCSOperator,
 )
 from airflow.providers.google.cloud.transfers.gcs_to_bigquery import (
     GCSToBigQueryOperator,
@@ -15,14 +18,13 @@ from airflow.utils.trigger_rule import TriggerRule
 
 # Replace with your actual project and region
 # Put your project id here
-PROJECT_ID = "project id"
+PROJECT_ID = "my project id"
 REGION = "us-central1"
-# Put your compiled kubeflow pipeline yaml
-GCS_PIPELINE_PATH = "gs://us-central1...pipeline.yaml"
 
 GCS_SOURCE_DATASET_PATH = "data/covertype/dataset.csv"
 GCS_BUCKET_NAME = "asl-public"
 
+# Put your BigQuery dataset id here:
 BIGQUERY_DATASET_ID = "airflow_demo_dataset"
 TABLE_ID = "covertype"
 
@@ -66,9 +68,15 @@ with DAG(
     schedule=None,
     catchup=False,
     tags=["vertex_ai", "pipeline", "ml"],
-    params={},
+    params={
+        # Put path to a compiled kubeflow pipeline yaml
+        "pipeline_yaml_file_path": "gs://.../covertype_kfp_pipeline.yaml",
+        # Put path to an exported train dataset
+        "gcs_train_dataset_path": "gs://.../train/train_export.csv",
+    },
 ) as dag:
-    # Loading dataset from GCS to BigQuery
+
+    # Loading dataset from GCS to BigQuery (Emulating basic ETL process)
     load_gcs_to_bigquery = GCSToBigQueryOperator(
         task_id="load_csv_to_bigquery",
         bucket=GCS_BUCKET_NAME,
@@ -85,15 +93,25 @@ with DAG(
         skip_leading_rows=1,  # For CSVs with a header row
         field_delimiter=",",  # For CSVs
     )
+
+    # exporting dataset from BigQuery to GCS
+    bigquery_to_gcs = BigQueryToGCSOperator(
+        task_id="bigquery_to_gcs_export",
+        source_project_dataset_table=f"{BIGQUERY_DATASET_ID}.{TABLE_ID}",
+        destination_cloud_storage_uris="{{ params.gcs_train_dataset_path }}",
+        export_format="CSV",
+        print_header=True,
+    )
+
     # Triggering a pipeline from a GCS compiled yaml file
     run_vertex_ai_pipeline = RunPipelineJobOperator(
         task_id="start_vertex_ai_pipeline",
         project_id=PROJECT_ID,
         region=REGION,
-        template_path=GCS_PIPELINE_PATH,
+        template_path="{{ params.pipeline_yaml_file_path }}",
         # example of passing params to kubeflow pipeline
         parameter_values={
-            # "data_path": "{{ params.data_input_path }}",
+            "training_file_path": "{{ params.gcs_train_dataset_path }}",
         },
         # Unique display name
         display_name="triggered-demo-pipeline-{{ ts_nodash }}",
@@ -121,6 +139,12 @@ with DAG(
     )
 
     # Combine all steps into a DAG
-    # fmt: off
-    load_gcs_to_bigquery >> run_vertex_ai_pipeline >> get_vertexai_ai_pipline_status >> delete_pipeline_job # pylint: disable=line-too-long, pointless-statement
     # fmt: on
+    (  # pylint: disable=line-too-long, pointless-statement
+        load_gcs_to_bigquery  # pylint: disable=line-too-long, pointless-statement
+        >> bigquery_to_gcs  # pylint: disable=line-too-long, pointless-statement
+        >> run_vertex_ai_pipeline  # pylint: disable=line-too-long, pointless-statement
+        >> get_vertexai_ai_pipline_status  # pylint: disable=line-too-long, pointless-statement
+        >> delete_pipeline_job  # pylint: disable=line-too-long, pointless-statement
+    )  # pylint: disable=line-too-long, pointless-statement
+    # fmt: off

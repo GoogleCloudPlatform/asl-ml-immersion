@@ -27,7 +27,7 @@ VERTEX_AI_PIPELINE_YAML = "gs://.../covertype_kfp_pipeline.yaml"
 GCS_SOURCE_DATASET_PATH = "data/covertype/dataset.csv"
 GCS_BUCKET_NAME = "asl-public"
 
-GCS_TRAIN_DATASET_PATH = "gs://.../train_export.csv",
+GCS_TRAIN_DATASET_PATH = ("gs://.../train_export.csv",)
 
 # Put your BigQuery dataset id here:
 BIGQUERY_DATASET_ID = "airflow_demo_dataset"

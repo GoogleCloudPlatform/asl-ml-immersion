@@ -18,11 +18,16 @@ from airflow.utils.trigger_rule import TriggerRule
 
 # Replace with your actual project and region
 # Put your project id here
-PROJECT_ID = "my project id"
+PROJECT_ID = "...project id..."
 REGION = "us-central1"
+
+# Put path to a compiled kubeflow pipeline yaml
+VERTEX_AI_PIPELINE_YAML = "gs://.../covertype_kfp_pipeline.yaml"
 
 GCS_SOURCE_DATASET_PATH = "data/covertype/dataset.csv"
 GCS_BUCKET_NAME = "asl-public"
+
+GCS_TRAIN_DATASET_PATH = "gs://.../train_export.csv",
 
 # Put your BigQuery dataset id here:
 BIGQUERY_DATASET_ID = "airflow_demo_dataset"
@@ -63,16 +68,14 @@ BIGQUERY_TABLE_SCHEMA = (
 )
 
 with DAG(
-    dag_id="trigger_vertex_ai_pipeline",
+    dag_id="demo_vertex_ai_pipeline_integration",
     start_date=datetime.datetime(2025, 1, 1),
     schedule=None,
     catchup=False,
     tags=["vertex_ai", "pipeline", "ml"],
     params={
-        # Put path to a compiled kubeflow pipeline yaml
-        "pipeline_yaml_file_path": "gs://.../covertype_kfp_pipeline.yaml",
         # Put path to an exported train dataset
-        "gcs_train_dataset_path": "gs://.../train/train_export.csv",
+        "gcs_train_dataset_path": GCS_TRAIN_DATASET_PATH,
     },
 ) as dag:
 
@@ -108,7 +111,7 @@ with DAG(
         task_id="start_vertex_ai_pipeline",
         project_id=PROJECT_ID,
         region=REGION,
-        template_path="{{ params.pipeline_yaml_file_path }}",
+        template_path=VERTEX_AI_PIPELINE_YAML,
         # example of passing params to kubeflow pipeline
         parameter_values={
             "training_file_path": "{{ params.gcs_train_dataset_path }}",

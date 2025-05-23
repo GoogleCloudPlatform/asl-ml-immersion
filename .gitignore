@@ -9,8 +9,7 @@ __pycache__/
 # IntelliJ IDEA
 .idea/
 
-# OS generated files #
-######################
+# OS generated files
 .DS_Store
 .DS_Store?
 .Spotlight-V100

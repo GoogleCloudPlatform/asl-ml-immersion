@@ -53,6 +53,7 @@ unstructured==0.14.4
 unstructured-client==0.22.0
 wikipedia==1.4.0
 fire==0.6.0
+tavily-python==0.7.3
 
 # For development work
 pre-commit

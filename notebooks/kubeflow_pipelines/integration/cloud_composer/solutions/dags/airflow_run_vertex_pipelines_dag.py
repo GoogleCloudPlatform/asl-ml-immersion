@@ -1,4 +1,4 @@
-"""Ae example of using Cloud Composer DAG for VertexAI Pipelines integration"""
+"""Integrating Vertex AI Pipelines: An Example with Cloud Composer DAGs"""
 
 import datetime
 
@@ -17,22 +17,25 @@ from airflow.providers.google.cloud.transfers.gcs_to_bigquery import (
 from airflow.utils.trigger_rule import TriggerRule
 
 # Replace with your actual project and region
-# Put your project id here
-PROJECT_ID = "...project id..."
+PROJECT_ID = "...project-id..."
 REGION = "us-central1"
 
 # Put path to a compiled kubeflow pipeline yaml
 VERTEX_AI_PIPELINE_YAML = "gs://.../covertype_kfp_pipeline.yaml"
 
+# Put path to a source dataset
 GCS_SOURCE_DATASET_PATH = "data/covertype/dataset.csv"
 GCS_BUCKET_NAME = "asl-public"
 
+# Put path to a source dataset
 GCS_TRAIN_DATASET_PATH = "gs://.../train_export.csv"
 
 # Put your BigQuery dataset id here:
 BIGQUERY_DATASET_ID = "airflow_demo_dataset"
+# Put your BigQuery table name here:
 TABLE_ID = "covertype"
 
+# Put your BigQuery table schema here:
 BIGQUERY_TABLE_SCHEMA = (
     [
         {"name": "Elevation", "type": "INTEGER", "mode": "NULLABLE"},
@@ -94,7 +97,7 @@ with DAG(
         # Overwrites the table if it exists. Use "WRITE_APPEND" to append.
         write_disposition="WRITE_TRUNCATE",
         skip_leading_rows=1,  # For CSVs with a header row
-        field_delimiter=",",  # For CSVs
+        field_delimiter=",",  # For CSVs delimiter char
     )
 
     # exporting dataset from BigQuery to GCS

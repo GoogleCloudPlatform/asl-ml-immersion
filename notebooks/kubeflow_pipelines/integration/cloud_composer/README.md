@@ -30,7 +30,7 @@ To set up and run this DAG, you'll need the following:
     * Read from BigQuery (`bigquery.tables.getData`, `bigquery.tables.list`).
     * Write to GCS (`storage.objects.create`, `storage.objects.delete`).
     * Run and manage Vertex AI Pipeline jobs (`aiplatform.pipelineJobs.create`, `aiplatform.pipelineJobs.get`, `aiplatform.pipelineJobs.delete`).
-3.  **Cloud Composer Environment**: You need an active Cloud Composer environment (Airflow 2.x recommended).
+3.  **Cloud Composer Environment**: You need an active Cloud Composer environment.
 4.  **Google Cloud Storage (GCS) Bucket**:
     * The DAG expects a GCS bucket named `asl-public` containing the source dataset `data/covertype/dataset.csv`. You can replace this with your own bucket and data.
     * You'll also need a pre-compiled Kubeflow Pipeline YAML file stored on GCS. Update the `VERTEX_AI_PIPELINE_YAML` variable in the DAG with the path to your compiled pipeline (e.g., `gs://your-bucket/path/to/covertype_kfp_pipeline.yaml`).

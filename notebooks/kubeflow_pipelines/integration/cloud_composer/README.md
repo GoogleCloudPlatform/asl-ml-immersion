@@ -1,4 +1,4 @@
-# An Example of Using Cloud Composer DAG for Vertex AI Pipelines Integration
+# Orchestrating Vertex AI Pipelines with Cloud Composer
 
 ---
 
@@ -41,11 +41,11 @@ To set up and run this DAG, you'll need the following:
 1.  **Update Placeholders**:
     * `PROJECT_ID`: Replace `"...project id..."` with your actual Google Cloud **Project ID**.
     * `REGION`: The region for your Vertex AI operations (e.g., `"us-central1"`).
-    * `VERTEX_AI_PIPELINE_YAML`: Replace `"gs://.../covertype_kfp_pipeline.yaml"` with the actual GCS path to your compiled Kubeflow pipeline YAML file.
+    * `GCS_VERTEX_AI_PIPELINE_YAML`: Replace `"gs://.../covertype_kfp_pipeline.yaml"` with the actual GCS path to your compiled Kubeflow pipeline YAML file.
     * `GCS_SOURCE_DATASET_PATH` and `GCS_BUCKET_NAME`: Adjust if your source data is in a different location.
     * `GCS_TRAIN_DATASET_PATH`: Update this to your desired GCS path for the exported training data.
     * `BIGQUERY_DATASET_ID` and `TABLE_ID`: Customize these if you prefer different BigQuery dataset and table names.
-2.  **Upload DAG**: Upload the DAG file (`demo_vertex_ai_pipeline_integration.py`) to the `dags` folder of your Cloud Composer environment.
+2.  **Upload DAG**: Upload the DAG file (`composer_vertex_ai_pipelines.py`) to the `dags` folder of your Cloud Composer environment.
 
 ### Kubeflow Pipeline (Pre-requisite)
 
@@ -69,7 +69,7 @@ The `demo_vertex_ai_pipeline_integration` DAG consists of the following tasks:
 3.  **`start_vertex_ai_pipeline`**:
     * **Operator**: `RunPipelineJobOperator`
     * **Purpose**: After the data is exported to GCS, this task triggers a new **Vertex AI Pipeline** job using the specified compiled pipeline YAML file from GCS.
-    * **Parameter Passing**: It passes the GCS path of the exported training data (`params.gcs_train_dataset_path`) as the `training_file_path` parameter to the Kubeflow pipeline.
+    * **Parameter Passing**: It passes the GCS path of the exported training data as the `training_file_path` parameter to the Kubeflow pipeline.
     * **Dynamic Naming**: The `display_name` is dynamically generated with a timestamp to ensure uniqueness for each pipeline run.
     * **XCom**: The `pipeline_job_id` of the triggered pipeline is pushed to XCom, allowing subsequent tasks to reference this specific job.
     * **Trigger**: Executes once `bigquery_to_gcs_export` successfully completes.

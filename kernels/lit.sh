@@ -27,6 +27,7 @@ pip install -q ipykernel
 # Adds the conda kernel.
 DL_ANACONDA_ENV_HOME="${DL_ANACONDA_HOME}/envs/$ENVNAME"
 python -m ipykernel install --prefix "${DL_ANACONDA_ENV_HOME}" --name $ENVNAME --display-name "$KERNEL_DISPLAY_NAME"
+rm -rf "${DL_ANACONDA_ENV_HOME}/share/jupyter/kernels/python3"
 
 pip install -q tensorflow==2.14.1 lit-nlp keras_nlp
 

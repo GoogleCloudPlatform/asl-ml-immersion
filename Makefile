@@ -41,10 +41,6 @@ install:
 precommit:
 	@pre-commit run --all-files
 
-.PHONY: asl_kernel
-asl_kernel:
-	./kernels/asl_kernel.sh
-
 .PHONY: object_detection_kernel
 object_detection_kernel:
 	./kernels/object_detection.sh

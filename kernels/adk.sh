@@ -31,7 +31,6 @@ python -m ipykernel install --prefix "${DL_ANACONDA_ENV_HOME}" --name $ENVNAME -
 rm -rf "${DL_ANACONDA_ENV_HOME}/share/jupyter/kernels/python3"
 
 # Install packages
-pip install google-adk -q
-pip install litellm -q
+pip install google-adk==1.5.0 litellm==1.72.6
 
 conda deactivate

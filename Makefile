@@ -15,6 +15,7 @@
 all: clean install
 
 kernels: \
+ adk_kernel \
  object_detection_kernel \
  pytorch_kfp_kernel \
  lit_kernel
@@ -41,9 +42,9 @@ install:
 precommit:
 	@pre-commit run --all-files
 
-.PHONY: asl_kernel
-asl_kernel:
-	./kernels/asl_kernel.sh
+.PHONY: adk_kernel
+adk_kernel:
+	./kernels/adk.sh
 
 .PHONY: object_detection_kernel
 object_detection_kernel:

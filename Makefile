@@ -30,8 +30,10 @@ clean:
 install:
 	@pip install --user -U pip
 	@pip install --user "Cython<3"
-	@pip install --user -e .
-	@pip install --user --no-deps -r requirements-without-deps.txt
+	@pip install --user uv
+	@uv pip install --target=${HOME}/.local/lib/python${ANACONDA_PYTHON_VERSION}/site-packages -e .
+	@uv pip install --target=${HOME}/.local/lib/python${ANACONDA_PYTHON_VERSION}/site-packages --no-deps -r requirements-without-deps.txt
+	@uv pip install -r requirements-dev.txt
 	@./scripts/setup_on_jupyterlab.sh
 	@pre-commit install
 	@sudo apt-get update

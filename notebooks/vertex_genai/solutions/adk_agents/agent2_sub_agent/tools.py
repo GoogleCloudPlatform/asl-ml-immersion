@@ -50,7 +50,7 @@ def say_hello(name: str = "there") -> str:
     Returns:
         str: A friendly greeting message.
     """
-    if name is None:
+    if name is None or name.strip() == "":
         name = "there"
     print(f"--- Tool: say_hello called with name: {name} ---")
     return f"Hello, {name}!"

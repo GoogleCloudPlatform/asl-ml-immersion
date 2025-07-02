@@ -2,8 +2,13 @@
 from google.adk.tools.tool_context import ToolContext
 
 
-def get_weather_stateful(city: str, tool_context: ToolContext) -> dict:
+def get_weather_stateful(
+    city: str, tool_context: ToolContext
+) -> dict[str, str]:
     """Retrieves weather, converts temp unit based on session state."""
+    if city is None or city.strip() == "":
+        return {"status": "error", "error_message": "city cannot be empty."}
+
     print(f"--- Tool: get_weather_stateful called for {city} ---")
 
     # --- Read preference from state ---

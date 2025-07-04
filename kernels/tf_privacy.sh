@@ -31,8 +31,14 @@ python -m ipykernel install --prefix "${DL_ANACONDA_ENV_HOME}" --name $ENVNAME -
 rm -rf "${DL_ANACONDA_ENV_HOME}/share/jupyter/kernels/python3"
 
 # Install packages
+<<<<<<< HEAD:kernels/tf_privacy.sh
 pip install tensorflow==2.14.0
 pip install --no-deps tensorflow-privacy==0.8.12 dp_accounting==0.4.3 tensorflow_probability==0.22.0
 pip install numpy==1.23.5 scipy~=1.9 dm-tree==0.1.8 attrs==25.3.0 cloudpickle==3.1.1 scikit-learn==1.*
+=======
+pip install google-adk==1.5.0 litellm==1.72.6
+pip install google-cloud-aiplatform[evaluation]==1.101.0
+pip install plotly==6.2.0 nbformat==5.10.4
+>>>>>>> 59e93d3b (added vertex eval package to kernel):kernels/adk.sh
 
 conda deactivate

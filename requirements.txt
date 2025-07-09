@@ -13,8 +13,8 @@ apache-beam==2.65.0
 # Machine Learning Frameworks
 keras==3.10.0
 keras_hub==0.21.1
-tensorflow==2.19.0
-jax==0.6.2
+tensorflow[and-cuda]==2.18.1
+jax==0.5.0
 
 # MLOps
 kubernetes==17.17.0

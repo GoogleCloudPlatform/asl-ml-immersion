@@ -1,15 +1,8 @@
 # pylint: skip-file
 def get_weather(city: str) -> dict:
-    """Retrieves the current weather report for a specified city.
-
-    Args:
-        city (str): The name of the city (e.g., "New York", "London", "Tokyo").
-
-    Returns:
-        dict: A dictionary containing the weather information.
-              Includes a 'status' key ('success' or 'error').
-              If 'success', includes a 'report' key with weather details.
-              If 'error', includes an 'error_message' key.
+    """TODO:Write a docstring for the
+    get_weather agent with a description of what the tool is
+    supposed to do and also the arguments that are needed.
     """
     print(
         f"--- Tool: get_weather called for city: {city} ---"

@@ -9,6 +9,9 @@ __pycache__/
 # IntelliJ IDEA
 .idea/
 
+#Added to avoid exposeing Env configuration files
+.env
+
 # OS generated files
 .DS_Store
 .DS_Store?

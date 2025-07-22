@@ -9,7 +9,7 @@ __pycache__/
 # IntelliJ IDEA
 .idea/
 
-# Env configuration files
+#Added to avoid exposeing Env configuration files
 .env
 
 # OS generated files

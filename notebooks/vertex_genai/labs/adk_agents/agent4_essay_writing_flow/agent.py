@@ -82,18 +82,13 @@ writer_agent = LlmAgent(
 # The loop for refining the essay: Reflect -> Research Critique -> Rewrite
 refinement_loop = LoopAgent(
     name="refinement_loop",
-    sub_agents=[reflection_agent, writer_agent],
+    sub_agents=[],  # TODO: Define the loop.
     max_iterations=2,
 )
 
 # The main sequential agent that orchestrates the entire process
 essay_writing_agent = SequentialAgent(
-    name="essay_writing_agent",
-    sub_agents=[
-        planner_agent,
-        initial_writer_agent,
-        refinement_loop,
-    ],
+    name="essay_writing_agent", sub_agents=[]  # TODO: Define a sequential flow.
 )
 
 root_agent = essay_writing_agent

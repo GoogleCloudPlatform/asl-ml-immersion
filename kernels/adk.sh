@@ -32,5 +32,7 @@ rm -rf "${DL_ANACONDA_ENV_HOME}/share/jupyter/kernels/python3"
 
 # Install packages
 pip install google-adk==1.5.0 litellm==1.72.6
+pip install google-cloud-aiplatform[evaluation]==1.101.0
+pip install plotly==6.2.0 nbformat==5.10.4
 
 conda deactivate

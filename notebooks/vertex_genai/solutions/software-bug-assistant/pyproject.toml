@@ -1,0 +1,15 @@
+[project]
+name = "software-bug-assistant"
+version = "0.1.0"
+description = "Software bug assistant using ADK"
+authors = [{ name = "Jack Wotherspoon", email = "jackwoth@google.com" }]
+license = "Apache-2.0"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "google-adk==1.13.0",
+    "langchain-community>=0.3.25",
+    "python-dotenv==1.1.0",
+    "stackapi>=0.3.1",
+    "toolbox-core==0.1.0",
+]

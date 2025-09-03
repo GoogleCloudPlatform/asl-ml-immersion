@@ -31,7 +31,7 @@ def create_dataset(pattern, batch_size, num_repeat, mode="eval"):
     ds = ds.flat_map(tf.data.TextLineDataset)
     ds = ds.map(parse_csv)
     if mode == "train":
-        ds.shuffle(buffer_size=1000)
+        ds = ds.shuffle(buffer_size=1000)
     ds = ds.repeat(num_repeat).batch(batch_size, drop_remainder=True)
     return ds
 

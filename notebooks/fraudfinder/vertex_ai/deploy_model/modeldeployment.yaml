@@ -1,0 +1,38 @@
+########################
+# It is the CI/CD for model deployment
+# Load and test the the trained model interface.
+# Create and endpoint in Vertex AI if it doesn't exists.
+# Deploy the model to the endpoint.
+# Test the endpoint.
+########################
+
+steps:
+# Create an endpoint.
+- name: python
+  id: 'Build Container for model deployment'
+  entrypoint: pip
+  args: ["install", "pytz", "google-cloud-aiplatform==1.21.0", "--upgrade", "--user", "protobuf==3.20.3"]
+  
+- name: python
+  entrypoint: 'python'
+  args: ['deploy_model/deploy_model.py',
+          '--mode', 'create-endpoint',
+          '--project', '$PROJECT_ID',
+          '--region', '$_REGION',
+          '--endpoint-display-name', '$_ENDPOINT_DISPLAY_NAME']
+  dir: '${_WORKSPACE_DIR}'
+  id: 'Create Endpoint'
+  
+# Deploy the model.
+- name: 'python'
+  entrypoint: 'python'
+  args: ['deploy_model/deploy_model.py',
+          '--mode', 'deploy-model',
+          '--project', '$PROJECT_ID',
+          '--region', '$_REGION',
+          '--endpoint-display-name', '$_ENDPOINT_DISPLAY_NAME',
+          '--model-display-name', '$_MODEL_DISPLAY_NAME'
+          ]
+  dir: '${_WORKSPACE_DIR}'
+  id: 'Deploy Model'
+  waitFor: ['Create Endpoint']

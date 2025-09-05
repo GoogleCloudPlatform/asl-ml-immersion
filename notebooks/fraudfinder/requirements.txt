@@ -1,0 +1,10 @@
+google-cloud-pubsub<=2.18.4
+google-cloud-bigquery<=3.13.0
+google-cloud-bigquery-storage<=2.22.0
+
+google-cloud-aiplatform<=1.36.1
+google-cloud-pipeline-components<=0.3.0
+plotly<=5.18.0
+xgboost<=2.0.1
+kfp<=2.3.0
+apache_beam[gcp]==2.53.0

@@ -36,21 +36,26 @@ def create_dataset(pattern, batch_size, num_repeat, mode="eval"):
     return ds
 
 
-def lat_lon_parser(row, pick_lat):
-    ds = tf.strings.split(row, ",")
+def parse_lat_lon(row):
+    columns = tf.strings.split(row, ",")
     # latitude idx: 3 and 5, longitude idx: 2 and 4
-    idx = [3, 5] if pick_lat else [2, 4]
-    return tf.strings.to_number(tf.gather(ds, idx))
+    lat_strings = tf.gather(columns, [3, 5])
+    lon_strings = tf.gather(columns, [2, 4])
+    lat_features = tf.strings.to_number(lat_strings)
+    lon_features = tf.strings.to_number(lon_strings)
+    return lat_features, lon_features
 
 
 def adapt_normalize(train_data_path):
     ds = tf.data.Dataset.list_files(train_data_path)
     ds = ds.flat_map(tf.data.TextLineDataset)
-    lat_values = ds.map(lambda x: lat_lon_parser(x, True)).batch(10000)
-    lon_values = ds.map(lambda x: lat_lon_parser(x, False)).batch(10000)
+    lat_lon_ds = ds.map(parse_lat_lon).batch(10000)
 
     lat_scaler = keras.layers.Normalization(axis=None)
     lon_scaler = keras.layers.Normalization(axis=None)
+
+    lat_values, lon_values = next(iter(lat_lon_ds))
+
     lat_scaler.adapt(lat_values)
     lon_scaler.adapt(lon_values)
 

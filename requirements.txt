@@ -15,6 +15,8 @@ keras==3.10.0
 keras_hub==0.21.1
 tensorflow[and-cuda]==2.18.1
 tensorflow-datasets==4.9.9
+tensorflow-hub==0.16.1
+tf_keras==2.18.0
 jax==0.5.0
 
 # MLOps

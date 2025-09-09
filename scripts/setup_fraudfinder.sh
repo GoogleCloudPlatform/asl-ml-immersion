@@ -69,8 +69,17 @@ PROJECT_ID=$(gcloud config get-value project)
 PROJECT_NUM=$(gcloud projects list --filter="$PROJECT_ID" --format="value(PROJECT_NUMBER)")
 
 gcloud projects add-iam-policy-binding $PROJECT_ID \
-    --member serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com \
+    --member serviceAccount:$PROJECT_NUM-compute@developer.gserviceaccount.com \
     --role roles/storage.objectAdmin
+
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member serviceAccount:$PROJECT_NUM-compute@developer.gserviceaccount.com \
+    --role roles/storage.objectAdmin
+
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member serviceAccount:$PROJECT_NUM-compute@developer.gserviceaccount.com \
+    --role='roles/dataflow.serviceAgent' \
+    --condition=None
 
 gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member="serviceAccount:${PROJECT_NUM}-compute@developer.gserviceaccount.com"\
@@ -84,18 +93,10 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member="serviceAccount:$PROJECT_NUM-compute@developer.gserviceaccount.com"\
     --role='roles/resourcemanager.projectIamAdmin'
+
 gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member="serviceAccount:service-${PROJECT_NUM}@gcp-sa-aiplatform.iam.gserviceaccount.com"\
     --role='roles/artifactregistry.writer'
 gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member="serviceAccount:service-${PROJECT_NUM}@gcp-sa-aiplatform.iam.gserviceaccount.com"\
     --role='roles/storage.objectAdmin'
-
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-    --member serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com \
-    --role roles/storage.objectAdmin
-
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-    --member serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com \
-    --role='roles/dataflow.serviceAgent' \
-    --condition=None

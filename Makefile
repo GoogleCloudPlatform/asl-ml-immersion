@@ -17,7 +17,8 @@ all: clean install
 kernels: \
  adk_kernel \
  object_detection_kernel \
- pytorch_kfp_kernel
+ pytorch_kfp_kernel \
+ tf_privacy_kernel
 
 .PHONY: clean
 clean:
@@ -52,6 +53,10 @@ object_detection_kernel:
 .PHONY: pytorch_kfp_kernel
 pytorch_kfp_kernel:
 	./kernels/pytorch_kfp.sh
+
+.PHONY: tf_privacy_kernel
+tf_privacy_kernel:
+	./kernels/tf_privacy.sh
 
 .PHONY: tests
 tests:

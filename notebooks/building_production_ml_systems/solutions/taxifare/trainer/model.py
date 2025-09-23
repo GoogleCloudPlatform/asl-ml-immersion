@@ -17,6 +17,7 @@ from keras.layers import (
     Input,
     Lambda,
 )
+from keras.metrics import RootMeanSquaredError
 
 
 def parse_csv(row):
@@ -132,11 +133,6 @@ def transform(inputs, nbuckets, normalizers):
     return transformed
 
 
-def rmse(y_true, y_pred):
-    squared_error = tf.keras.ops.square(y_pred[:, 0] - y_true)
-    return tf.keras.ops.sqrt(tf.keras.ops.mean(squared_error))
-
-
 def build_dnn_model(nbuckets, nnsize, lr, normalizers):
     INPUT_COLS = [
         "pickup_longitude",
@@ -160,7 +156,9 @@ def build_dnn_model(nbuckets, nnsize, lr, normalizers):
     model = keras.Model(inputs=list(inputs.values()), outputs=output)
     # TODO 1a
     lr_optimizer = keras.optimizers.Adam(learning_rate=lr)
-    model.compile(optimizer=lr_optimizer, loss="mse", metrics=[rmse, "mse"])
+    model.compile(
+        optimizer=lr_optimizer, loss="mse", metrics=[RootMeanSquaredError()]
+    )
 
     return model
 

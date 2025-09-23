@@ -17,6 +17,7 @@ from keras.layers import (
     Input,
     Lambda,
 )
+from keras.metrics import RootMeanSquaredError
 
 
 def parse_csv(row):
@@ -130,11 +131,6 @@ def transform(inputs, nbuckets, normalizers):
     )
 
     return transformed
-
-
-def rmse(y_true, y_pred):
-    squared_error = tf.keras.ops.square(y_pred[:, 0] - y_true)
-    return tf.keras.ops.sqrt(tf.keras.ops.mean(squared_error))
 
 
 def build_dnn_model(nbuckets, nnsize, lr, normalizers):

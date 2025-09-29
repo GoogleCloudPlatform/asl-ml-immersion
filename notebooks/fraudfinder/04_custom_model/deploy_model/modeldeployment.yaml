@@ -12,7 +12,7 @@ steps:
   id: 'Build Container for model deployment'
   entrypoint: pip
   args: ["install", "pytz", "google-cloud-aiplatform==1.21.0", "--upgrade", "--user", "protobuf==3.20.3"]
-  
+
 - name: python
   entrypoint: 'python'
   args: ['deploy_model/deploy_model.py',
@@ -22,7 +22,7 @@ steps:
           '--endpoint-display-name', '$_ENDPOINT_DISPLAY_NAME']
   dir: '${_WORKSPACE_DIR}'
   id: 'Create Endpoint'
-  
+
 # Deploy the model.
 - name: 'python'
   entrypoint: 'python'

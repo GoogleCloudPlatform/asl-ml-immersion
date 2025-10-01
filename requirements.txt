@@ -19,6 +19,7 @@ tensorflow-datasets==4.9.9
 tensorflow-hub==0.16.1
 tf_keras==2.18.0
 jax==0.5.0
+xgboost==2.0.1
 
 # MLOps
 kubernetes==17.17.0

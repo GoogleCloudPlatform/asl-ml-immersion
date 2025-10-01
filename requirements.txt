@@ -2,7 +2,7 @@
 
 # Google & Google Cloud
 google-genai==1.23.0
-google-adk==1.5.0
+google-adk==1.14.1
 google-api-core==2.25.1
 google-cloud-storage==2.19.0
 google-cloud-aiplatform==1.100.0

@@ -18,7 +18,7 @@ kernels: \
  adk_kernel \
  object_detection_kernel \
  pytorch_kfp_kernel \
- lit_kernel
+ tf_privacy_kernel
 
 .PHONY: clean
 clean:
@@ -54,10 +54,9 @@ object_detection_kernel:
 pytorch_kfp_kernel:
 	./kernels/pytorch_kfp.sh
 
-.PHONY: lit_kernel
-lit_kernel:
-	./kernels/lit.sh
-
+.PHONY: tf_privacy_kernel
+tf_privacy_kernel:
+	./kernels/tf_privacy.sh
 
 .PHONY: tests
 tests:

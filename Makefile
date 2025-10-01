@@ -15,7 +15,6 @@
 all: clean install
 
 kernels: \
- adk_kernel \
  object_detection_kernel \
  pytorch_kfp_kernel \
  tf_privacy_kernel
@@ -41,10 +40,6 @@ install:
 .PHONY: precommit
 precommit:
 	@pre-commit run --all-files
-
-.PHONY: adk_kernel
-adk_kernel:
-	./kernels/adk.sh
 
 .PHONY: object_detection_kernel
 object_detection_kernel:

@@ -14,6 +14,9 @@
 # limitations under the License.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 4d58f25f (move API enablement to setup_on_cloudshell.sh)
 # Enable Google Cloud services
 gcloud services enable \
   compute.googleapis.com \
@@ -30,10 +33,14 @@ gcloud services enable \
   dataflow.googleapis.com \
   run.googleapis.com \
   cloudresourcemanager.googleapis.com \
+<<<<<<< HEAD
   pubsub.googleapis.com \
   bigquerydatatransfer.googleapis.com
 =======
 >>>>>>> 051b4d94 (fix conflicts)
+=======
+  pubsub.googleapis.com
+>>>>>>> 4d58f25f (move API enablement to setup_on_cloudshell.sh)
 
 PROJECT_ID=$(gcloud config list project --format "value(core.project)")
 PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format="value(projectNumber)")

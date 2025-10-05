@@ -64,6 +64,7 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
     --role roles/storage.objectAdmin
 
 
+<<<<<<< HEAD:scripts/setup_env.sh
 # Enable Google Cloud services
 gcloud services enable \
   compute.googleapis.com \
@@ -89,6 +90,8 @@ gcloud services enable \
   pubsub.googleapis.com
 >>>>>>> 051b4d94 (fix conflicts)
 
+=======
+>>>>>>> f393a3e7 (move API enablement to setup_on_cloudshell.sh):scripts/setup_on_jupyterlab.sh
 # Setup Artifact Registry
 if ! gcloud artifacts repositories describe $ARTIFACT_REG_REPO \
        --location=$MULTIREGION > /dev/null 2>&1; then

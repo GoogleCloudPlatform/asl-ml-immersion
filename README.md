@@ -29,7 +29,9 @@ We have three main folders described below:
 For a more detailed breakdown of the notebooks in this repo, please refer to this [readme](https://github.com/GoogleCloudPlatform/asl-ml-immersion/blob/master/notebooks/README.md).
 
 
-## Environment Setup (Vertex AI)
+## Environment Setup
+
+### Vertex AI
 
 First, open [CloudShell](https://cloud.google.com/shell) and run the following instructions:
 
@@ -55,6 +57,16 @@ make install
 **Note**: Some notebooks might require additional setup, please refer to the instructions in specific notebooks.
 
 After running these commands, you can open and execute a notebook on the base "Python 3" kernel.
+
+### Locally
+
+Run the JupyterLab instance (the first time the instance is created):
+
+```bash
+docker compose up -d
+```
+
+Connect to: http://localhost:8888
 
 ## Contributions
 Currently, only Googlers can contribute to this repo. See [CONTRIBUTING.md](https://github.com/GoogleCloudPlatform/asl-ml-immersion/blob/master/CONTRIBUTING.md) for more details on the contribution workflow.

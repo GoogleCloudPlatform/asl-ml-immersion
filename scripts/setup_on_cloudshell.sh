@@ -64,3 +64,8 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member=serviceAccount:service-$PROJECT_NUMBER@gcp-sa-aiplatform.iam.gserviceaccount.com\
     --role=roles/storage.objectAdmin
+
+# Grant permissions for BigQuery DTS service account
+gcloud iam service-accounts add-iam-policy-binding "$PROJECT_NUM-compute@developer.gserviceaccount.com" \
+    --member="serviceAccount:service-${PROJECT_NUM}@gcp-sa-bigquerydatatransfer.iam.gserviceaccount.com" \
+    --role='roles/iam.serviceAccountTokenCreator'

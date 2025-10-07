@@ -69,3 +69,8 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 gcloud iam service-accounts add-iam-policy-binding "$PROJECT_NUM-compute@developer.gserviceaccount.com" \
     --member="serviceAccount:service-${PROJECT_NUM}@gcp-sa-bigquerydatatransfer.iam.gserviceaccount.com" \
     --role='roles/iam.serviceAccountTokenCreator'
+
+# Grant permissions for Cloud Run service account
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:${PROJECT_NUM}-compute@developer.gserviceaccount.com" \
+    --role="roles/run.admin"

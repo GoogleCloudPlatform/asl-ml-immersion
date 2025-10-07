@@ -74,3 +74,8 @@ gcloud iam service-accounts add-iam-policy-binding "$PROJECT_NUM-compute@develop
 gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member="serviceAccount:${PROJECT_NUM}-compute@developer.gserviceaccount.com" \
     --role="roles/run.admin"
+
+# Add IAM policy to the service account to provide authentication needed to invoke Cloud Run
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+     --member="serviceAccount:service-${PROJECT_NUM}@gcp-sa-pubsub.iam.gserviceaccount.com" \
+     --role="roles/iam.serviceAccountTokenCreator"

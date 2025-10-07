@@ -15,12 +15,6 @@
 
 import base64
 import json
-import os
-
-from flask import Flask, request
-from google.cloud import aiplatform as aiplatform
-from google.cloud import pubsub_v1
-
 
 # General imports
 import os
@@ -28,9 +22,12 @@ import random
 import sys
 from datetime import datetime, timedelta
 
+from flask import Flask, request
+
 # from google.cloud import aiplatform
+from google.cloud import aiplatform as aiplatform
 from google.cloud import aiplatform as vertex_ai
-from google.cloud import bigquery
+from google.cloud import bigquery, pubsub_v1
 from google.cloud.aiplatform_v1 import (
     FeatureOnlineStoreAdminServiceClient,
     FeatureOnlineStoreServiceClient,

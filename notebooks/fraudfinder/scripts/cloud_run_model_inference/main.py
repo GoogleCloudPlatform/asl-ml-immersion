@@ -1,5 +1,5 @@
 # pylint: skip-file
-# Copyright 2022 Google, LLC.
+# Copyright 2025 Google, LLC.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,7 +20,41 @@ import os
 from flask import Flask, request
 from google.cloud import aiplatform as aiplatform
 from google.cloud import pubsub_v1
-from google.cloud.aiplatform import EntityType, Feature, Featurestore
+
+
+# General imports
+import os
+import random
+import sys
+from datetime import datetime, timedelta
+
+# from google.cloud import aiplatform
+from google.cloud import aiplatform as vertex_ai
+from google.cloud import bigquery
+from google.cloud.aiplatform_v1 import (
+    FeatureOnlineStoreAdminServiceClient,
+    FeatureOnlineStoreServiceClient,
+    FeatureRegistryServiceClient,
+)
+from google.cloud.aiplatform_v1.types import feature as feature_pb2
+from google.cloud.aiplatform_v1.types import feature_group as feature_group_pb2
+from google.cloud.aiplatform_v1.types import (
+    feature_online_store as feature_online_store_pb2,
+)
+from google.cloud.aiplatform_v1.types import (
+    feature_online_store_admin_service as feature_online_store_admin_service_pb2,
+)
+from google.cloud.aiplatform_v1.types import (
+    feature_online_store_service as feature_online_store_service_pb2,
+)
+from google.cloud.aiplatform_v1.types import (
+    feature_registry_service as feature_registry_service_pb2,
+)
+from google.cloud.aiplatform_v1.types import feature_view as feature_view_pb2
+from google.cloud.aiplatform_v1.types import (
+    featurestore_service as featurestore_service_pb2,
+)
+from google.cloud.aiplatform_v1.types import io as io_pb2
 
 # Retrieve environment variables
 PROJECT_ID = os.environ.get("PROJECT_ID", "PROJECT_ID variable is not set.")
@@ -33,38 +67,16 @@ REGION = os.environ.get("REGION", "REGION variable is not set.")
 
 app = Flask(__name__)
 
-PAYLOAD_SCHEMA = {
-    "tx_amount": "float64",
-    "customer_id_nb_tx_1day_window": "int64",
-    "customer_id_nb_tx_7day_window": "int64",
-    "customer_id_nb_tx_14day_window": "int64",
-    "customer_id_avg_amount_1day_window": "float64",
-    "customer_id_avg_amount_7day_window": "float64",
-    "customer_id_avg_amount_14day_window": "float64",
-    "customer_id_nb_tx_15min_window": "int64",
-    "customer_id_avg_amount_15min_window": "float64",
-    "customer_id_nb_tx_30min_window": "int64",
-    "customer_id_avg_amount_30min_window": "float64",
-    "customer_id_nb_tx_60min_window": "int64",
-    "customer_id_avg_amount_60min_window": "float64",
-    "terminal_id_nb_tx_1day_window": "int64",
-    "terminal_id_nb_tx_7day_window": "int64",
-    "terminal_id_nb_tx_14day_window": "int64",
-    "terminal_id_risk_1day_window": "float64",
-    "terminal_id_risk_7day_window": "float64",
-    "terminal_id_risk_14day_window": "float64",
-    "terminal_id_nb_tx_15min_window": "int64",
-    "terminal_id_avg_amount_15min_window": "float64",
-    "terminal_id_nb_tx_30min_window": "int64",
-    "terminal_id_avg_amount_30min_window": "float64",
-    "terminal_id_nb_tx_60min_window": "int64",
-    "terminal_id_avg_amount_60min_window": "float64",
-}
-
-
 # Instantiate Vertex AI Feature Store object
 try:
-    ff_feature_store = Featurestore(FEATURESTORE_ID)
+    API_ENDPOINT = f"{REGION}-aiplatform.googleapis.com"
+
+    # Instantiate Vertex AI Feature Store object
+
+    data_client = FeatureOnlineStoreServiceClient(
+        client_options={"api_endpoint": API_ENDPOINT}
+    )
+
 except NameError:
     print(f"""The feature store {FEATURESTORE_ID} does not exist!""")
 
@@ -73,28 +85,31 @@ aiplatform.init(project=PROJECT_ID, location=REGION)
 endpoint_obj = aiplatform.Endpoint(ENDPOINT_ID)
 
 
-def features_lookup(ff_feature_store, entity, entity_ids):
-    """
-    Function that retrieves feature values from Vertex AI Feature Store
-    """
-    entity_type = ff_feature_store.get_entity_type(entity)
-    aggregated_features = entity_type.read(
-        entity_ids=entity_ids, feature_ids="*"
-    )
-    aggregated_features_preprocessed = preprocess(aggregated_features)
-    features = aggregated_features_preprocessed.iloc[0].to_dict()
-    return features
+def fs_features_lookup(ff_feature_store, features_type, features_key):
 
+    FEATURE_VIEW_ID = f"fv_fraudfinder_{features_type}"
+    FEATURE_VIEW_FULL_ID = f"projects/{PROJECT_ID}/locations/{REGION}/featureOnlineStores/{ff_feature_store}/featureViews/{FEATURE_VIEW_ID}"
 
-def preprocess(payload):
-    """
-    Function that pre-processes the payload values
-    """
-    # replace NaN's
-    for key, value in payload.items():
-        if value is None:
-            payload[key] = 0.0
-    return payload
+    features_map = {}
+
+    print(FEATURE_VIEW_FULL_ID)
+
+    try:
+        fe_continuous_data = data_client.fetch_feature_values(
+            request=feature_online_store_service_pb2.FetchFeatureValuesRequest(
+                feature_view=FEATURE_VIEW_FULL_ID,
+                data_key=feature_online_store_service_pb2.FeatureViewDataKey(
+                    key=features_key
+                ),
+                data_format=feature_online_store_service_pb2.FeatureViewDataFormat.PROTO_STRUCT,
+            )
+        )
+        features_map.update(
+            {k: v for k, v in fe_continuous_data.proto_struct.items()}
+        )
+    except Exception as exp:
+        print(f"Requested entity {features_key} was not found")
+    return features_map
 
 
 @app.route("/", methods=["POST"])
@@ -120,101 +135,71 @@ def index():
         # parse payload string into JSON object
         payload_json = json.loads(payload_input)
 
-        payload = {}
+        default_features = {
+            "customer_id_avg_amount_14day_window": 0,
+            "customer_id_avg_amount_15min_window": 0,
+            "customer_id_avg_amount_1day_window": 0,
+            "customer_id_avg_amount_30min_window": 0,
+            "customer_id_avg_amount_60min_window": 0,
+            "customer_id_avg_amount_7day_window": 0,
+            "customer_id_nb_tx_14day_window": 0,
+            "customer_id_nb_tx_7day_window": 0,
+            "customer_id_nb_tx_15min_window": 0,
+            "customer_id_nb_tx_1day_window": 0,
+            "customer_id_nb_tx_30min_window": 0,
+            "customer_id_nb_tx_60min_window": 0,
+            "terminal_id_avg_amount_15min_window": 0,
+            "terminal_id_avg_amount_30min_window": 0,
+            "terminal_id_avg_amount_60min_window": 0,
+            "terminal_id_nb_tx_14day_window": 0,
+            "terminal_id_nb_tx_15min_window": 0,
+            "terminal_id_nb_tx_1day_window": 0,
+            "terminal_id_nb_tx_30min_window": 0,
+            "terminal_id_nb_tx_60min_window": 0,
+            "terminal_id_nb_tx_7day_window": 0,
+            "terminal_id_risk_14day_window": 0,
+            "terminal_id_risk_1day_window": 0,
+            "terminal_id_risk_7day_window": 0,
+        }
+
+        payload = default_features
         payload["tx_amount"] = payload_json["TX_AMOUNT"]
 
-        # look up the customer features from Vertex AI Feature Store
-        customer_features = features_lookup(
-            ff_feature_store, "customer", [payload_json["CUSTOMER_ID"]]
+        # look up the customer features from New Vertex AI Feature Store
+        customer_features = fs_features_lookup(
+            FEATURESTORE_ID, "customers", payload_json["CUSTOMER_ID"]
         )
-        payload["customer_id_nb_tx_1day_window"] = customer_features[
-            "customer_id_nb_tx_1day_window"
-        ]
-        payload["customer_id_nb_tx_7day_window"] = customer_features[
-            "customer_id_nb_tx_7day_window"
-        ]
-        payload["customer_id_nb_tx_14day_window"] = customer_features[
-            "customer_id_nb_tx_14day_window"
-        ]
-        payload["customer_id_avg_amount_1day_window"] = customer_features[
-            "customer_id_avg_amount_1day_window"
-        ]
-        payload["customer_id_avg_amount_7day_window"] = customer_features[
-            "customer_id_avg_amount_7day_window"
-        ]
-        payload["customer_id_avg_amount_14day_window"] = customer_features[
-            "customer_id_avg_amount_14day_window"
-        ]
-        payload["customer_id_nb_tx_15min_window"] = customer_features[
-            "customer_id_nb_tx_15min_window"
-        ]
-        payload["customer_id_avg_amount_15min_window"] = customer_features[
-            "customer_id_avg_amount_15min_window"
-        ]
-        payload["customer_id_nb_tx_30min_window"] = customer_features[
-            "customer_id_nb_tx_30min_window"
-        ]
-        payload["customer_id_avg_amount_30min_window"] = customer_features[
-            "customer_id_avg_amount_30min_window"
-        ]
-        payload["customer_id_nb_tx_60min_window"] = customer_features[
-            "customer_id_nb_tx_60min_window"
-        ]
-        payload["customer_id_avg_amount_60min_window"] = customer_features[
-            "customer_id_avg_amount_60min_window"
-        ]
+        # print the customer features from Vertex AI Feature Store
+        print("-------------------------------------------------------")
+        print("customer_features:")
+        print(customer_features)
 
-        # look up the terminal features from Vertex AI Feature Store
-        terminal_features = features_lookup(
-            ff_feature_store, "terminal", [payload_json["TERMINAL_ID"]]
+        # look up the treminal features from New Vertex AI Feature Store
+        terminal_features = fs_features_lookup(
+            FEATURESTORE_ID, "terminals", payload_json["TERMINAL_ID"]
         )
-        payload["terminal_id_nb_tx_1day_window"] = terminal_features[
-            "terminal_id_nb_tx_1day_window"
-        ]
-        payload["terminal_id_nb_tx_7day_window"] = terminal_features[
-            "terminal_id_nb_tx_7day_window"
-        ]
-        payload["terminal_id_nb_tx_14day_window"] = terminal_features[
-            "terminal_id_nb_tx_14day_window"
-        ]
-        payload["terminal_id_risk_1day_window"] = terminal_features[
-            "terminal_id_risk_1day_window"
-        ]
-        payload["terminal_id_risk_7day_window"] = terminal_features[
-            "terminal_id_risk_7day_window"
-        ]
-        payload["terminal_id_risk_14day_window"] = terminal_features[
-            "terminal_id_risk_14day_window"
-        ]
-        payload["terminal_id_nb_tx_15min_window"] = terminal_features[
-            "terminal_id_nb_tx_15min_window"
-        ]
-        payload["terminal_id_avg_amount_15min_window"] = terminal_features[
-            "terminal_id_avg_amount_15min_window"
-        ]
-        payload["terminal_id_nb_tx_30min_window"] = terminal_features[
-            "terminal_id_nb_tx_30min_window"
-        ]
-        payload["terminal_id_avg_amount_30min_window"] = terminal_features[
-            "terminal_id_avg_amount_30min_window"
-        ]
-        payload["terminal_id_nb_tx_60min_window"] = terminal_features[
-            "terminal_id_nb_tx_60min_window"
-        ]
-        payload["terminal_id_avg_amount_60min_window"] = terminal_features[
-            "terminal_id_avg_amount_60min_window"
-        ]
+        print("-------------------------------------------------------")
+        print("terminal features:")
+        print(terminal_features)
 
-        payload = preprocess(payload)
+        # Add customer features to payload
+        payload.update(customer_features)
+
+        # Add terminal features to payload
+        payload.update(terminal_features)
+
+        #del payload["feature_timestamp"]
 
         print("-------------------------------------------------------")
-        print(
-            f"[Pre-processed payload to be sent to Vertex AI endpoint]: {payload}"
-        )
+        print("[Payload to be sent to Vertex AI endpoint]")
+        print(payload)
+        print("-------------------------------------------------------")
 
         result = endpoint_obj.predict(instances=[payload])
 
+        print("-------------------------------------------------------")
         print(f"[Prediction result]: {result}")
+        print("-------------------------------------------------------")
 
     return ("", 204)
 

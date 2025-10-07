@@ -42,7 +42,7 @@ chromadb==0.4.14
 langchain-community==0.3.14
 langchain-core==0.3.47
 langchain-google-vertexai==2.0.15
-langchain-text-splitters==0.3.5
+langchain-text-splitters==1.0.0a1
 
 # Utilities
 pyyaml==5.3.1

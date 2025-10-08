@@ -15,18 +15,14 @@
 
 import base64
 import json
-
 # General imports
 import os
+
 from flask import Flask, request
 from google.cloud import aiplatform as aiplatform
-from google.cloud.aiplatform_v1 import (
-    FeatureOnlineStoreServiceClient,
-)
-
-from google.cloud.aiplatform_v1.types import (
-    feature_online_store_service as feature_online_store_service_pb2,
-)
+from google.cloud.aiplatform_v1 import FeatureOnlineStoreServiceClient
+from google.cloud.aiplatform_v1.types import \
+    feature_online_store_service as feature_online_store_service_pb2
 
 # Retrieve environment variables
 PROJECT_ID = os.environ.get("PROJECT_ID", "PROJECT_ID variable is not set.")

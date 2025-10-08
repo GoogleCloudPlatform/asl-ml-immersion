@@ -72,9 +72,7 @@ def fs_features_lookup(ff_feature_store, features_type, features_key):
                 data_format=feature_online_store_service_pb2.FeatureViewDataFormat.PROTO_STRUCT,
             )
         )
-        features_map.update(
-            {k: v for k, v in fe_continuous_data.proto_struct.items()}
-        )
+        features_map.update({k: v for k, v in fe_continuous_data.proto_struct.items()})
     except Exception as exp:
         print(f"Requested entity {features_key} was not found")
     return features_map
@@ -96,9 +94,7 @@ def index():
     pubsub_message = envelope["message"]
 
     if isinstance(pubsub_message, dict) and "data" in pubsub_message:
-        payload_input = (
-            base64.b64decode(pubsub_message["data"]).decode("utf-8").strip()
-        )
+        payload_input = base64.b64decode(pubsub_message["data"]).decode("utf-8").strip()
         print(f" >> payload input {payload_input}!")
         # parse payload string into JSON object
         payload_json = json.loads(payload_input)

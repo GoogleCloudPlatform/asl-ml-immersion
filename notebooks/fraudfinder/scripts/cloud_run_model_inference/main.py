@@ -18,40 +18,15 @@ import json
 
 # General imports
 import os
-import random
-import sys
-from datetime import datetime, timedelta
-
 from flask import Flask, request
-
-# from google.cloud import aiplatform
 from google.cloud import aiplatform as aiplatform
-from google.cloud import aiplatform as vertex_ai
-from google.cloud import bigquery, pubsub_v1
 from google.cloud.aiplatform_v1 import (
-    FeatureOnlineStoreAdminServiceClient,
     FeatureOnlineStoreServiceClient,
-    FeatureRegistryServiceClient,
 )
-from google.cloud.aiplatform_v1.types import feature as feature_pb2
-from google.cloud.aiplatform_v1.types import feature_group as feature_group_pb2
-from google.cloud.aiplatform_v1.types import (
-    feature_online_store as feature_online_store_pb2,
-)
-from google.cloud.aiplatform_v1.types import (
-    feature_online_store_admin_service as feature_online_store_admin_service_pb2,
-)
+
 from google.cloud.aiplatform_v1.types import (
     feature_online_store_service as feature_online_store_service_pb2,
 )
-from google.cloud.aiplatform_v1.types import (
-    feature_registry_service as feature_registry_service_pb2,
-)
-from google.cloud.aiplatform_v1.types import feature_view as feature_view_pb2
-from google.cloud.aiplatform_v1.types import (
-    featurestore_service as featurestore_service_pb2,
-)
-from google.cloud.aiplatform_v1.types import io as io_pb2
 
 # Retrieve environment variables
 PROJECT_ID = os.environ.get("PROJECT_ID", "PROJECT_ID variable is not set.")

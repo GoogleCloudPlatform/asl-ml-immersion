@@ -60,16 +60,12 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 
 # Grant several permissions to AI Platform service account
 gcloud projects add-iam-policy-binding $PROJECT_ID \
-    --member=serviceAccount:service-$PROJECT_NUMBER@gcp-sa-aiplatform.iam.gserviceaccount.com\
+    --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-aiplatform.iam.gserviceaccount.com" \
     --role=roles/artifactregistry.writer
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-    --member=serviceAccount:service-$PROJECT_NUMBER@gcp-sa-aiplatform.iam.gserviceaccount.com\
-    --role=roles/storage.objectAdmin
 
-# Grant permissions for BigQuery DTS service account
-gcloud iam service-accounts add-iam-policy-binding "$PROJECT_NUMBER-compute@developer.gserviceaccount.com" \
-    --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-bigquerydatatransfer.iam.gserviceaccount.com" \
-    --role='roles/iam.serviceAccountTokenCreator'
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-aiplatform.iam.gserviceaccount.com" \
+    --role=roles/storage.objectAdmin
 
 # Grant permissions for Cloud Run service account
 gcloud projects add-iam-policy-binding $PROJECT_ID \
@@ -80,3 +76,8 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 gcloud projects add-iam-policy-binding $PROJECT_ID \
      --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-pubsub.iam.gserviceaccount.com" \
      --role="roles/iam.serviceAccountTokenCreator"
+
+# Grant permissions for BigQuery DTS service account
+gcloud iam service-accounts add-iam-policy-binding "${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+    --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-bigquerydatatransfer.iam.gserviceaccount.com" \
+    --role='roles/iam.serviceAccountTokenCreator'

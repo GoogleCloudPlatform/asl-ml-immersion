@@ -5,10 +5,11 @@ google-genai==1.23.0
 google-adk==1.5.0
 google-api-core==2.25.1
 google-cloud-storage==2.19.0
-google-cloud-aiplatform==1.100.0
+google-cloud-aiplatform==1.115.0
 google-cloud-bigquery==3.34.0
+google-cloud-pubsub==2.18.4
 cloudml-hypertune
-apache-beam==2.65.0
+apache-beam[gcp]==2.65.0
 
 # Machine Learning Frameworks
 keras==3.10.0
@@ -18,6 +19,7 @@ tensorflow-datasets==4.9.9
 tensorflow-hub==0.16.1
 tf_keras==2.18.0
 jax==0.5.0
+xgboost==2.0.1
 
 # MLOps
 kubernetes==17.17.0

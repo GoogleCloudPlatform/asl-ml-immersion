@@ -58,15 +58,6 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member=serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com\
     --role=roles/aiplatform.admin
 
-# Grant several permissions to AI Platform service account
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-    --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-aiplatform.iam.gserviceaccount.com" \
-    --role=roles/artifactregistry.writer
-
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-    --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-aiplatform.iam.gserviceaccount.com" \
-    --role=roles/storage.objectAdmin
-
 # Grant permissions for Cloud Run service account
 gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
@@ -81,3 +72,12 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 gcloud iam service-accounts add-iam-policy-binding "${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
     --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-bigquerydatatransfer.iam.gserviceaccount.com" \
     --role='roles/iam.serviceAccountTokenCreator'
+
+# Grant several permissions to AI Platform service account
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-aiplatform.iam.gserviceaccount.com" \
+    --role=roles/artifactregistry.writer
+
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-aiplatform.iam.gserviceaccount.com" \
+    --role=roles/storage.objectAdmin

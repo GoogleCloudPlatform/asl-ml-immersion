@@ -6,7 +6,7 @@
 # This scripts will create a ipython kernel named $ENVNAME
 
 ENVNAME=adk_kernel
-KERNEL_DISPLAY_NAME="ADK kernel"
+KERNEL_DISPLAY_NAME="ADK A2A kernel"
 
 source ~/.bashrc
 

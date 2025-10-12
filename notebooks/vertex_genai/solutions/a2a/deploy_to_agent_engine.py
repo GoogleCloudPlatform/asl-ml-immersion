@@ -19,7 +19,7 @@ from vertexai.preview import reasoning_engines
 from vertexai import agent_engines
 from dotenv import load_dotenv
 import os
-from purchasing_concierge.agent import root_agent
+from notebooks.vertex_genai.solutions.adk_agents.purchasing_concierge.agent import root_agent
 
 load_dotenv()
 

@@ -6,7 +6,7 @@
 # This scripts will create a ipython kernel named $ENVNAME
 
 ENVNAME=adk_kernel
-KERNEL_DISPLAY_NAME="ADK A2A kernel"
+KERNEL_DISPLAY_NAME="ADK A2A Kernel"
 
 source ~/.bashrc
 
@@ -31,9 +31,11 @@ python -m ipykernel install --prefix "${DL_ANACONDA_ENV_HOME}" --name $ENVNAME -
 rm -rf "${DL_ANACONDA_ENV_HOME}/share/jupyter/kernels/python3"
 
 # Install packages
-pip install google-adk==1.14.1 litellm==1.77.7
+# pip install google-adk==1.14.1 litellm==1.77.7
 
 # Install uv (used to manage dependencies):
 curl -LsSf https://astral.sh/uv/install.sh | sh
+
+uv sync --frozen
 
 conda deactivate

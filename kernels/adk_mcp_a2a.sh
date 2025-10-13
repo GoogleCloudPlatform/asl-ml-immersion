@@ -1,12 +1,12 @@
 #!/bin/bash
 #
-# To build the kernel:  ./kernels/adk.sh
-# To remove the kernel: ./kernels/adk.sh remove
+# To build the kernel:  ./kernels/adk_mcp_a2a.sh
+# To remove the kernel: ./kernels/adk_mcp_a2a.sh remove
 #
 # This scripts will create a ipython kernel named $ENVNAME
 
-ENVNAME=adk_kernel
-KERNEL_DISPLAY_NAME="ADK A2A Kernel"
+ENVNAME=adk_mcp_a2a_kernel
+KERNEL_DISPLAY_NAME="ADK MCP A2A Kernel"
 
 source ~/.bashrc
 
@@ -18,7 +18,7 @@ if [ "$1" == "remove" ]; then
   exit 0
 fi
 
-conda create -q -n $ENVNAME python=3.10.14 -y
+conda create -q -n $ENVNAME python=3.12.14 -y
 conda activate $ENVNAME
 
 # Install packages using a pip local to the conda environment.
@@ -31,11 +31,7 @@ python -m ipykernel install --prefix "${DL_ANACONDA_ENV_HOME}" --name $ENVNAME -
 rm -rf "${DL_ANACONDA_ENV_HOME}/share/jupyter/kernels/python3"
 
 # Install packages
-# pip install google-adk==1.14.1 litellm==1.77.7
-
-# Install uv (used to manage dependencies):
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-uv sync --frozen
+pip install a2a-sdk==0.2.16 google-cloud-aiplatform[agent_engines]==1.115.0 google-adk==1.15.1
+pip install langchain-community>=0.3.25 python-dotenv==1.1.0 stackapi>=0.3.1 toolbox-core==0.1.0
 
 conda deactivate

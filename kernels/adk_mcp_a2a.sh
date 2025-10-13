@@ -18,7 +18,7 @@ if [ "$1" == "remove" ]; then
   exit 0
 fi
 
-conda create -q -n $ENVNAME python=3.12.14 -y
+conda create -q -n $ENVNAME python=3.10.14 -y
 conda activate $ENVNAME
 
 # Install packages using a pip local to the conda environment.
@@ -36,4 +36,3 @@ pip install -q langchain-community==0.3.25 python-dotenv==1.1.0 stackapi==0.3.1 
 pip install -q gradio==5.49.1
 
 conda deactivate
-

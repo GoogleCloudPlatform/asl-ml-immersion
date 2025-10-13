@@ -16,6 +16,7 @@ all: clean install
 
 kernels: \
  adk_kernel \
+ adk_mcp_a2a_kernel \
  object_detection_kernel \
  pytorch_kfp_kernel \
  lit_kernel
@@ -45,6 +46,10 @@ precommit:
 .PHONY: adk_kernel
 adk_kernel:
 	./kernels/adk.sh
+
+.PHONY: adk_mcp_a2a_kernel
+adk_mcp_a2a_kernel:
+	./kernels/adk_mcp_a2a.sh
 
 .PHONY: object_detection_kernel
 object_detection_kernel:

@@ -31,7 +31,9 @@ python -m ipykernel install --prefix "${DL_ANACONDA_ENV_HOME}" --name $ENVNAME -
 rm -rf "${DL_ANACONDA_ENV_HOME}/share/jupyter/kernels/python3"
 
 # Install packages
-pip install a2a-sdk==0.2.16 google-cloud-aiplatform[agent_engines]==1.115.0 google-adk==1.15.1
-pip install langchain-community>=0.3.25 python-dotenv==1.1.0 stackapi>=0.3.1 toolbox-core==0.1.0
+pip install -q a2a-sdk==0.2.16 google-cloud-aiplatform[agent_engines]==1.115.0 google-adk==1.15.1
+pip install -q langchain-community==0.3.25 python-dotenv==1.1.0 stackapi==0.3.1 toolbox-core==0.1.0
+pip install -q gradio==5.49.1
 
 conda deactivate
+

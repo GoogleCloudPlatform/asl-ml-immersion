@@ -57,7 +57,9 @@ class PizzaSellerAgentExecutor(AgentExecutor):
             )
         except Exception as e:
             print("Error invoking agent: %s", e)
-            raise ServerError(error=ValueError(f"Error invoking agent: {e}")) from e
+            raise ServerError(
+                error=ValueError(f"Error invoking agent: {e}")
+            ) from e
 
     async def cancel(
         self, request: RequestContext, event_queue: EventQueue

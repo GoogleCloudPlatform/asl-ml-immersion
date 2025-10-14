@@ -14,17 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from a2a.types import AgentCapabilities, AgentSkill, AgentCard
-from a2a.server.request_handlers import DefaultRequestHandler
-from a2a.server.apps import A2AStarletteApplication
-from a2a.server.tasks import InMemoryTaskStore
-from agent import BurgerSellerAgent
-from agent_executor import BurgerSellerAgentExecutor
-import uvicorn
-from dotenv import load_dotenv
 import logging
 import os
+
 import click
+import uvicorn
+from a2a.server.apps import A2AStarletteApplication
+from a2a.server.request_handlers import DefaultRequestHandler
+from a2a.server.tasks import InMemoryTaskStore
+from a2a.types import AgentCapabilities, AgentCard, AgentSkill
+from agent import BurgerSellerAgent
+from agent_executor import BurgerSellerAgentExecutor
+from dotenv import load_dotenv
 
 load_dotenv()
 

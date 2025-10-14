@@ -14,14 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from langchain_google_vertexai import ChatVertexAI
-from langchain_core.tools import tool
-from langgraph.prebuilt import create_react_agent
-from langgraph.checkpoint.memory import MemorySaver
-from pydantic import BaseModel
-import uuid
-from dotenv import load_dotenv
 import os
+import uuid
+
+from dotenv import load_dotenv
+from langchain_core.tools import tool
+from langchain_google_vertexai import ChatVertexAI
+from langgraph.checkpoint.memory import MemorySaver
+from langgraph.prebuilt import create_react_agent
+from pydantic import BaseModel
 
 load_dotenv()
 
@@ -53,7 +54,9 @@ def create_pizza_order(order_items: list[OrderItem]) -> str:
     """
     try:
         order_id = str(uuid.uuid4())
-        order = Order(order_id=order_id, status="created", order_items=order_items)
+        order = Order(
+            order_id=order_id, status="created", order_items=order_items
+        )
         print("===")
         print(f"order created: {order}")
         print("===")

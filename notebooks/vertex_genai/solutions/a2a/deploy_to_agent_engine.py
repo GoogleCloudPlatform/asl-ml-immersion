@@ -21,7 +21,8 @@ from dotenv import load_dotenv
 from vertexai import agent_engines
 from vertexai.preview import reasoning_engines
 
-from notebooks.vertex_genai.solutions.a2a.purchasing_concierge import root_agent
+from notebooks.vertex_genai.solutions.a2a.purchasing_concierge import \
+    root_agent
 
 load_dotenv()
 

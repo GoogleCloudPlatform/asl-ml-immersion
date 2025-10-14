@@ -14,13 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from pydantic import BaseModel
+import os
 import uuid
-from crewai import Agent, Crew, LLM, Task, Process
+
+import litellm
+from crewai import LLM, Agent, Crew, Process, Task
 from crewai.tools import tool
 from dotenv import load_dotenv
-import litellm
-import os
+from pydantic import BaseModel
 
 load_dotenv()
 
@@ -53,7 +54,9 @@ def create_burger_order(order_items: list[OrderItem]) -> str:
     """
     try:
         order_id = str(uuid.uuid4())
-        order = Order(order_id=order_id, status="created", order_items=order_items)
+        order = Order(
+            order_id=order_id, status="created", order_items=order_items
+        )
         print("===")
         print(f"order created: {order}")
         print("===")
@@ -89,7 +92,7 @@ Provided below is the available burger menu and it's related price:
     1. Always ensure the user already confirmed the order and total price. This confirmation may already given in the user query.
     2. Use `create_burger_order` tool to create the order
     3. Finally, always provide response to the user about the detailed ordered items, price breakdown and total, and order ID
-    
+
 - Set response status to input_required if asking for user order confirmation.
 - Set response status to error if there is an error while processing the request.
 - Set response status to completed if the request is complete.

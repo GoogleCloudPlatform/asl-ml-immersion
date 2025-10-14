@@ -13,11 +13,71 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Enable Google Cloud services
+gcloud services enable \
+  compute.googleapis.com \
+  iam.googleapis.com \
+  iamcredentials.googleapis.com \
+  monitoring.googleapis.com \
+  logging.googleapis.com \
+  notebooks.googleapis.com \
+  aiplatform.googleapis.com \
+  bigquery.googleapis.com \
+  artifactregistry.googleapis.com \
+  cloudbuild.googleapis.com \
+  container.googleapis.com \
+  dataflow.googleapis.com \
+  run.googleapis.com \
+  cloudresourcemanager.googleapis.com \
+  pubsub.googleapis.com \
+  bigquerydatatransfer.googleapis.com
 
 PROJECT_ID=$(gcloud config list project --format "value(core.project)")
 PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format="value(projectNumber)")
 
-# Grant Storage Object Admin to Compute Engine service account
+# Grant permissions to Compute Engine service account
 gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com \
     --role roles/storage.objectAdmin
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com \
+    --role=roles/dataflow.serviceAgent \
+    --condition=None
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member=serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com\
+    --role=roles/storage.admin
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member=serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com\
+    --role=roles/run.admin
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member=serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com\
+    --role=roles/resourcemanager.projectIamAdmin
+
+# Grant aiplatform permission to Cloud Build service account
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member=serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com\
+    --role=roles/aiplatform.admin
+
+# Grant permissions for Cloud Run service account
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+    --role="roles/run.admin"
+
+# Add IAM policy to the service account to provide authentication needed to invoke Cloud Run
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+     --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-pubsub.iam.gserviceaccount.com" \
+     --role="roles/iam.serviceAccountTokenCreator"
+
+# Grant permissions for BigQuery DTS service account
+gcloud iam service-accounts add-iam-policy-binding "${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+    --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-bigquerydatatransfer.iam.gserviceaccount.com" \
+    --role='roles/iam.serviceAccountTokenCreator'
+
+# Grant several permissions to AI Platform service account
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-aiplatform.iam.gserviceaccount.com" \
+    --role=roles/artifactregistry.writer
+
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-aiplatform.iam.gserviceaccount.com" \
+    --role=roles/storage.objectAdmin

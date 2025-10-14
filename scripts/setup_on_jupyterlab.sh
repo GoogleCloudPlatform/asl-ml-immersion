@@ -17,22 +17,6 @@
 echo 'export PATH=$PATH:~/.local/bin:' >> ~/.bash_profile
 echo 'export PATH=$PATH:~/.local/bin:' >> ~/.bashrc
 
-# Enable Google Cloud services
-gcloud services enable \
-  compute.googleapis.com \
-  iam.googleapis.com \
-  iamcredentials.googleapis.com \
-  monitoring.googleapis.com \
-  logging.googleapis.com \
-  notebooks.googleapis.com \
-  aiplatform.googleapis.com \
-  bigquery.googleapis.com \
-  artifactregistry.googleapis.com \
-  cloudbuild.googleapis.com \
-  container.googleapis.com \
-  dataflow.googleapis.com \
-  run.googleapis.com
-
 # Setup Artifact Registry
 export PROJECT_ID=$(gcloud config get-value project)
 export BUCKET=$PROJECT_ID

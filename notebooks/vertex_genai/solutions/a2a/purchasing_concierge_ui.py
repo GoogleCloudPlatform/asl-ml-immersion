@@ -44,7 +44,7 @@ async def get_response_from_agent(
         Text response from the backend service.
     """
     # try:
-
+    _ = history
     default_response = "No response from agent"
 
     responses = []
@@ -58,16 +58,23 @@ async def get_response_from_agent(
         if parts:
             for part in parts:
                 if part.get("function_call"):
-                    formatted_call = f"```python\n{pformat(part.get('function_call'), indent=2, width=80)}\n```"
+                    pformat_result = pformat(
+                        part.get("function_call"), indent=2, width=80
+                    )
+                    formatted_call = f"```python\n{pformat_result}\n```"
+                    function_name = part.get("function_call").get("name")
                     responses.append(
                         gr.ChatMessage(
                             role="assistant",
-                            content=f"{part.get('function_call').get('name')}:\n{formatted_call}",
+                            content=f"{function_name}:\n{formatted_call}",
                             metadata={"title": "🛠️ Tool Call"},
                         )
                     )
                 elif part.get("function_response"):
-                    formatted_response = f"```python\n{pformat(part.get('function_response'), indent=2, width=80)}\n```"
+                    pformat_result = pformat(
+                        part.get("function_response"), indent=2, width=80
+                    )
+                    formatted_response = f"```python\n{pformat_result}\n```"
 
                     responses.append(
                         gr.ChatMessage(
@@ -84,7 +91,12 @@ async def get_response_from_agent(
                         )
                     )
                 else:
-                    formatted_unknown_parts = f"Unknown agent response part:\n\n```python\n{pformat(part, indent=2, width=80)}\n```"
+                    response_part = (
+                        f"```python\n{pformat(part, indent=2, width=80)}\n```"
+                    )
+                    formatted_unknown_parts = (
+                        f"Unknown agent response part:\n\n{response_part}"
+                    )
 
                     responses.append(
                         gr.ChatMessage(
@@ -103,7 +115,7 @@ if __name__ == "__main__":
     demo = gr.ChatInterface(
         get_response_from_agent,
         title="Purchasing Concierge",
-        description="This assistant can help you to purchase food from remote sellers.",
+        description="This assistant to purchase food from remote sellers.",
         type="messages",
     )
 

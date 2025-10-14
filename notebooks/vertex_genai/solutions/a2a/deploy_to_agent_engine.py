@@ -14,11 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-import vertexai
-from vertexai.preview import reasoning_engines
-from vertexai import agent_engines
-from dotenv import load_dotenv
 import os
+
+import vertexai
+from dotenv import load_dotenv
+from vertexai import agent_engines
+from vertexai.preview import reasoning_engines
+
 from notebooks.vertex_genai.solutions.a2a.purchasing_concierge import root_agent
 
 load_dotenv()

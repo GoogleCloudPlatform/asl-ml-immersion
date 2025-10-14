@@ -14,13 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-import gradio as gr
-
-from typing import List, Dict, Any
-from pprint import pformat
-from vertexai import agent_engines
 import os
+from pprint import pformat
+from typing import Any, Dict, List
+
+import gradio as gr
 from dotenv import load_dotenv
+from vertexai import agent_engines
 
 load_dotenv()
 

@@ -1,4 +1,5 @@
 from testing_stages.get_keyiq_answers import get_keyiq_answers
+from testing_stages.get_testing_results import get_testing_results
 
 def run_testing_stages(golden_qa_bucket_uri):
     # Placeholder implementation of the testing stages

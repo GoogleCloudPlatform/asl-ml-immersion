@@ -93,6 +93,12 @@ root_agent = LlmAgent(
     description=f"Agent to answer user questions using indexed documents in the <{VERTEXAI_SEARCH_APP_NAME}> VertexAISearch app.",
     # Needs to be a gemini model, instruction is the system instruction for agent
     model=GENERATIVE_MODEL,
+    # TODO: Decide how you are setting these values
+    generate_content_config=types.GenerateContentConfig(
+                                temperature=0.9,
+                                top_p=0.9,
+                                top_k=40,
+                            ),
     instruction=f"""
         <PERSONA>
             You are an english literature academic with expertise on old english books.

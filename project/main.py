@@ -2,13 +2,8 @@ from google.cloud import storage
 import pandas as pd
 from simulations.auto_tester.app import run_test
 import asyncio
-from unittest import result
 from google.adk.agents import LlmAgent
-from google.adk.runners import Runner
-from google.adk.sessions import InMemorySessionService
-from google.genai import types
-from google import genai
-from google.adk.tools import VertexAiSearchTool
+from simulations.agents.agent_rag.agent import call_rag_agent
 
 I_AGENT: LlmAgent = None # Interpreting agent (interprets the results of the scorer)
 M_AGENT: LlmAgent = None # Mechanic agent (actually makes the changes to KeyIQ)
@@ -32,9 +27,30 @@ def get_key_iq_answer(question: str) -> tuple[str, str, str]:
     # Placeholder function to get KeyIQ answer, retrieved source, and retrieval context
     # In a real implementation, this would call the KeyIQ system
     kiq_answer = "This is a placeholder KeyIQ answer."
-    retrieved_source = "This is a placeholder retrieved source."
-    retrieval_context = "This is a placeholder retrieval context."
-    return kiq_answer, retrieved_source, retrieval_context
+    retrieved_sources = []
+    retrieval_contexts = []
+
+    async def run_vertex_search_example():
+        nonlocal kiq_answer, retrieved_sources, retrieval_contexts
+
+        # If calling follow-ups need to pass the session_id
+        ## TODO: replace temperature, top_p, top_k values with state
+        response = await call_rag_agent(question, 0.9, 0.3, 40)
+
+        if response:
+            kiq_answer = response['answer']
+
+            for context in response['context']:
+                retrieved_sources.append(context['source'])
+                retrieval_contexts.append(context['text'])
+    try:
+        asyncio.run(run_vertex_search_example())
+    except RuntimeError as error:
+        if "cannot be called from a running event loop" in str(error):
+            print(f"Skipping execution in running event loop (like Colab/Jupyter). Run locally.")
+        else:
+            raise error
+    return kiq_answer, str(retrieved_sources), str(retrieval_contexts)
 
 def get_score_interpretation(scores: dict):
     PROMPT = f"""Interpret the following results:

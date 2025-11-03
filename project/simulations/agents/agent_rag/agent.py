@@ -79,7 +79,7 @@ async def call_rag_agent(question, temperature, top_p, top_k):
     session_creation_start = time.perf_counter()
     session_id = str(uuid.uuid4())
     user_id = str(uuid.uuid4())
-    session = await create_session(user_id=user_id, session_id=session_id)
+    session = await create_session(session_service_vertexai_search, user_id=user_id, session_id=session_id)
     session_id = session.id
     user_id = session.user_id
     session_creation_end = time.perf_counter()

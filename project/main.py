@@ -5,6 +5,7 @@ import asyncio
 from google.adk.agents import LlmAgent
 from simulations.agents.agent_rag.agent import call_rag_agent
 import json
+import io
 
 from simulations.interpreter_agent.agent import call_interpreter_agent
 from metric_config import MetricConfigurations
@@ -22,7 +23,7 @@ def get_golden_qa_doc(uri: str) -> list[dict]:
     blob = bucket.blob(blob_name)
 
     content = blob.download_as_text()
-    df = pd.read_csv(pd.compat.StringIO(content))
+    df = pd.read_csv(io.StringIO(content))
     golden_qa_list = df.to_dict(orient="records")
 
     return golden_qa_list
@@ -134,7 +135,7 @@ def main():
             g_answer = qa["answer"]
             g_source = qa["source"]
 
-            kiq_answer, retrieved_source, retrieval_context, parameters = get_key_iq_answer(g_question, parameters)
+            kiq_answer, retrieved_source, retrieval_context = get_key_iq_answer(g_question)
 
             # Run the testing suite for each Q&A pair
             results = run_test(

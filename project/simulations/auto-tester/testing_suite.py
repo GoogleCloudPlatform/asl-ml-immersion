@@ -1,5 +1,5 @@
 from google import genai
-from google.genai.types import Content, Part
+from google.genai.types import GenerateContentConfig, Content, Part
 import pandas as pd
 import json
 
@@ -14,25 +14,24 @@ from vertexai.evaluation import (
 def generate(
     prompt: str,
     client: genai.Client,
-    model_name="gemini-2.0-flash-001",
+    model_name="gemini-2.0-flash-001"
 ):
     responses = client.models.generate_content(
-        model=model_name, contents=prompt
+        model=model_name, contents=prompt, config=GenerateContentConfig(response_mime_type="application/json")
     )
     return responses
 
 class TestingMetricSuite():
-    def __init__(self, gemini_client: genai.Client, golden_question, golden_answer, golden_source, key_iq_question, key_iq_answer, key_iq_retrieval_context, key_iq_retrieved_source):
+    def __init__(self, gemini_client: genai.Client, golden_question, golden_answer, golden_source, key_iq_answer, key_iq_retrieval_context, key_iq_retrieved_source):
         self.gemini_client = gemini_client
         self.golden_question = golden_question
         self.golden_answer = golden_answer
         self.golden_source = golden_source
-        self.key_iq_question = key_iq_question
         self.key_iq_answer = key_iq_answer
         self.key_iq_retrieval_context = key_iq_retrieval_context
         self.key_iq_retrieved_source = key_iq_retrieved_source
 
-    def is_similar(self) -> float:
+    def is_similar(self) -> dict:
     # Placeholder similarity check
         PROMPT = f"""
         You are an expert evaluator tasked with assessing the similarity between two answers to the same question.
@@ -46,18 +45,18 @@ class TestingMetricSuite():
         KeyIQ Answer: {self.key_iq_answer}
 
         Respond ONLY with a JSON object in this format:
-        {{"similarity_score": <score>}}
+        {{"similarity_score": <score>, "explanation": "<brief explanation>}}
         """
 
-        answer = generate(PROMPT, self.gemini_client)
+        answer = generate(PROMPT, self.gemini_client).text
         try:
-            similarity_score = json.loads(answer)["similarity_score"]
+            similarity_score = json.loads(answer)
         except Exception as e:
             raise ValueError(f"Could not parse similarity score: {e}")
         
         return similarity_score
 
-    def contains_correct_source(self) -> bool:
+    def contains_correct_source(self) -> dict:
         PROMPT = f"""
         You are an expert evaluator tasked with determining whether the source retrieved by KeyIQ is correct.
         Answer with "True" if the KeyIQ Retrieved Source is in the list of documents provided by the Golden Source, otherwise answer "False".
@@ -67,18 +66,22 @@ class TestingMetricSuite():
 
         Does the KeyIQ Retrieved Source match any part of the Golden Source?
         Respond ONLY with a JSON object in this format:
-        {{"contains_correct_source": <contains_correct_source>}}
+        {{"contains_correct_source": <contains_correct_source>, "explanation": "<brief explanation>}}
         """
 
-        answer = generate(PROMPT, self.gemini_client)
+        generate_config = GenerateContentConfig(
+            response_mime_type="application/json"
+        )
+
+        answer = generate(PROMPT, self.gemini_client).text
         try:
-            contains_correct_source = json.loads(answer)["contains_correct_source"]
+            contains_correct_source = json.loads(answer)
         except Exception as e:
-            raise ValueError(f"Could not parse sources: {e}")
+            raise ValueError(f"Could not parse sources: {e}; answer was: {answer}")
 
         return contains_correct_source
 
-    def is_answer_grounded(self) -> float:
+    def is_answer_grounded(self) -> dict:
         PROMPT = f"""
         You are an expert evaluator tasked with determining whether the KeyIQ answer is grounded in the provided retrieval context.
         Your goal is to determine if the KeyIQ answer is supported by the information in the retrieval context.
@@ -90,18 +93,18 @@ class TestingMetricSuite():
         Retrieval Context: {self.key_iq_retrieval_context}
 
         Respond ONLY with a JSON object in this format:
-        {{"groundedness_score": <score>}}
+        {{"groundedness_score": <score>, "explanation": "<brief explanation>}}
         """
 
-        answer = generate(PROMPT, self.gemini_client)
+        answer = generate(PROMPT, self.gemini_client).text
         try:
-            groundedness_score = json.loads(answer)["groundedness_score"]
+            groundedness_score = json.loads(answer)
         except Exception as e:
             raise ValueError(f"Could not parse groundedness_score: {e}")
         
         return groundedness_score
 
-    def is_retrieval_relevant(self) -> float:
+    def is_retrieval_relevant(self) -> dict:
         PROMPT = f"""
         You are an expert evaluator tasked with determining whether the KeyIQ provided retrieval context is relevant to the Golden Question.
         Your goal is to determine if the retrieval context contains information pertinent to answering the Golden Question.
@@ -113,12 +116,12 @@ class TestingMetricSuite():
         Golden Question: {self.golden_question}
         Retrieval Context: {self.key_iq_retrieval_context}
         Respond ONLY with a JSON object in this format:
-        {{"relevance_score": <score>}}
+        {{"relevance_score": <score>, "explanation": "<brief explanation>}}
         """
 
-        answer = generate(PROMPT, self.gemini_client)
+        answer = generate(PROMPT, self.gemini_client).text
         try:
-            relevance_score = json.loads(answer)["relevance_score"]
+            relevance_score = json.loads(answer)
         except Exception as e:
             raise ValueError(f"Could not parse relevance_score: {e}")
         
@@ -147,10 +150,10 @@ class TestingMetricSuite():
         )
 
         eval_dataset = pd.DataFrame(
-        {
-            "response": [self.key_iq_answer],
-        }
-)
+            {
+                "response": [self.key_iq_answer],
+            }
+        )
 
         EXPERIMENT_NAME = "quality-checks-experiment"
         eval_task = EvalTask(
@@ -158,5 +161,5 @@ class TestingMetricSuite():
         )
         results = eval_task.evaluate()
 
-        return results.summary_metrics
+        return str(float(results.summary_metrics['text_quality/mean']))
 

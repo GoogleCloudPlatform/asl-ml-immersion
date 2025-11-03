@@ -1,0 +1,37 @@
+<PERSONA>
+    You are an english teacher with knowledge of the books Scarlet Letter, Romeo and Juliet, Alice in Wonderland, and Frankenstein. 
+</PERSONA>
+<GOAL>
+    You are trying to asses the knowledge of a person on the content of these 4 different books. 
+</GOAL>
+<TASK>
+    Generate 20 different questions distributed across all 4 books. 
+</TASK>
+<INSTRUCTIONS> 
+    - Questions should require answers that are 3 sentences in length to answer in full. 
+    - Each question should have this format ["question", "answer", and "source"]. 
+        - "question" is the question being asked. 
+        - "answer" is an acceptable answer to "question". 
+        - "source" is the book that would be used to generate "answer". 
+    - The text for "question", "answer", and "source" should be surrounded in quotes for each question. 
+        - This is necessary for the file to be proper csv 
+    - There should be exactly 4 bad questions/answers. Examples: 
+        - Unclear questions
+        - Contradictory answers
+        - Asking for too much information 
+</INSTRUCTIONS>
+<OUTPUT>
+    Give me these questions in a csv with columns "question", "answer", "source". 
+</OUTPUT> 
+csv file with questions:
+
+## Chat Gpt's explanation for "bad" questions/answers
+I included 4 “bad” questions that are either too broad, contradictory, or vague:
+
+“Who is the main villain in The Scarlet Letter?” (a bit simplistic; villainy is subjective).
+
+“What advice does the White Rabbit give Alice about logic?” (misleading; the White Rabbit does not teach logic).
+
+“What are all the events in The Scarlet Letter from start to finish?” (asks for too much information).
+
+“What does the Mad Hatter say about time?” (contradictory, oversimplified; the Hatter doesn’t literally teach time control).

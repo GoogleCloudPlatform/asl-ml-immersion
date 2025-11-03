@@ -127,7 +127,7 @@ class TestingMetricSuite():
         
         return relevance_score
     
-    def perform_quality_checks(self):
+    def perform_quality_checks(self) -> str:
         metric_prompt_template = PointwiseMetricPromptTemplate(
             criteria={
                 "fluency": "The response is well-formed, grammatically correct, and flows naturally, making it easy to read and understand.",

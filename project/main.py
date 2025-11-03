@@ -81,7 +81,7 @@ def get_score_interpretation(scores: dict):
         return interpretation
     
     try:
-        interpretation = asyncio.run(run_interpreter_agent(PROMPT))
+        interpretation = json.loads(asyncio.run(run_interpreter_agent(PROMPT))[1]['answer'])
         print(f"Intrepretation: {interpretation}")
     except RuntimeError as error:
         if "cannot be called from a running event loop" in str(error):

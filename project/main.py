@@ -5,8 +5,11 @@ import asyncio
 from google.adk.agents import LlmAgent
 from simulations.agents.agent_rag.agent import call_rag_agent
 
-I_AGENT: LlmAgent = None # Interpreting agent (interprets the results of the scorer)
-M_AGENT: LlmAgent = None # Mechanic agent (actually makes the changes to KeyIQ)
+from simulations.interpreter_agent.agent import call_interpreter_agent
+from metric_config import MetricConfigurations
+
+from dotenv import load_dotenv
+load_dotenv()
 
 MAX_LOOPS = 5
 
@@ -61,7 +64,33 @@ def get_score_interpretation(scores: dict):
     Respond with JSON:
     {{'status': <status>, 'interpretation': <interpretation>}}
     """
-    # ask the I_AGENT to summarize
+
+    interpretation = {"message":"This is a placeholder interpretation."}
+
+    async def run_interpreter_agent(prompt, parameters={
+        'metric_descriptions':str(MetricConfigurations.METRIC_DESCRIPTIONS),
+        'scoring_thresholds':str(MetricConfigurations.SCORING_THRESHOLDS)
+    }):
+        
+        response = await call_interpreter_agent(prompt, parameters=parameters)
+
+        if response:
+            interpretation = response
+        
+        return interpretation
+    
+    try:
+        interpretation = asyncio.run(run_interpreter_agent(PROMPT))
+    except RuntimeError as error:
+        if "cannot be called from a running event loop" in str(error):
+            print(f"Skipping execution in running event loop (like Colab/Jupyter). Run locally.")
+        else:
+            raise error
+    return interpretation
+
+
+
+
 
 def invoke_mechanic(interpretations: dict) -> dict[bool, str]:
     # Invokes the mechanic agent
@@ -103,7 +132,7 @@ def main():
             g_answer = qa["answer"]
             g_source = qa["source"]
 
-            kiq_answer, retrieved_source, retrieval_context = get_key_iq_answer(g_question)
+            kiq_answer, retrieved_source, retrieval_context, parameters = get_key_iq_answer(g_question, parameters)
 
             # Run the testing suite for each Q&A pair
             results = run_test(

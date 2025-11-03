@@ -1,4 +1,4 @@
-from testing_metric_suite import TestingMetricSuite
+from simulations.auto_tester.testing_suite import TestingMetricSuite
 from google import genai
 
 

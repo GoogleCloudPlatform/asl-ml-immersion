@@ -4,6 +4,7 @@ from simulations.auto_tester.app import run_test
 import asyncio
 from google.adk.agents import LlmAgent
 from simulations.agents.agent_rag.agent import call_rag_agent
+import json
 
 from simulations.interpreter_agent.agent import call_interpreter_agent
 from metric_config import MetricConfigurations
@@ -80,7 +81,7 @@ def get_score_interpretation(scores: dict):
         return interpretation
     
     try:
-        interpretation = asyncio.run(run_interpreter_agent(PROMPT))
+        interpretation = json.loads(asyncio.run(run_interpreter_agent(PROMPT)))
     except RuntimeError as error:
         if "cannot be called from a running event loop" in str(error):
             print(f"Skipping execution in running event loop (like Colab/Jupyter). Run locally.")

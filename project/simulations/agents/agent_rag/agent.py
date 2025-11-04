@@ -32,42 +32,14 @@ def get_root_agent(state: State) -> LlmAgent:
     # Needs to be a gemini model, instruction is the system instruction for agent
     model=GENERATIVE_MODEL,
     generate_content_config=types.GenerateContentConfig(
-                                temperature=temperature,
-                                top_p=top_p,
-                                top_k=top_k,
+                                temperature=state.get_temperature(),
+                                top_p=state.get_top_p(),
+                                top_k=state.get_top_k(),
                             ),
-    instruction=f"""
-        <PERSONA>
-            You are an english literature academic with expertise on old english books.
-        </PERSONA>
-        <INSTRUCTIONS>
-            1. Use the vertexai search tool to find information relevant to the question you are asked.
-            2. Use the relevant information you found to answer the question.
-        <RULES>
-            1. Only use data in the datastore to answer questions.
-        </RULES>
-        <TONE>
-            1. Answer should be clear and concise.
-            2. Answers should have an english literature academic tone and focus
-        </TONE>
-    """,
+    instruction=state.get_system_prompt(),
     # What resources the agent has access to (This is connected to the VertexAISearch App that indexed all files from GCS bucket)
     tools=[vertex_search_tool],
 )
-        # name, description available to other agents (Clear and descriptive metadata)
-        name="vertex_search_app",
-        description=f"Agent to answer user questions using indexed documents in the <{VERTEXAI_SEARCH_APP_NAME}> VertexAISearch app.",
-        # Needs to be a gemini model, instruction is the system instruction for agent
-        model=GENERATIVE_MODEL,
-        generate_content_config=types.GenerateContentConfig(
-                                    temperature=state.temperature,
-                                    top_p=state.top_p,
-                                    top_k=state.top_k,
-                                ),
-        instruction=state.system_prompt,
-        # What resources the agent has access to (This is connected to the VertexAISearch App that indexed all files from GCS bucket)
-        tools=[vertex_search_tool],
-    )
 
 async def create_session(session_service, user_id: str, session_id: str):
     return await session_service.create_session(

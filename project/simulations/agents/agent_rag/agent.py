@@ -11,7 +11,7 @@ PROJECT_ID = "qwiklabs-asl-00-58d3f08e551b"
 REGION = "global"
 
 # VertexAISearch app/datastore information
-VERTEXAI_SEARCH_APP_NAME = "mock_keyiq_search"
+VERTEXAI_SEARCH_APP_NAME = "agents"
 DATASTORE_ID = "mock-keyiq-datastore_1761844635062"
 DATASTORE_PATH = f"projects/{PROJECT_ID}/locations/{REGION}/collections/default_collection/dataStores/{DATASTORE_ID}"
 
@@ -39,7 +39,7 @@ def get_root_agent(temperature, top_p, top_k):
             You are an english literature academic with expertise on old english books.
         </PERSONA>
         <INSTRUCTIONS>
-            1. Use the vertexai serach tool to find information relevant to the question you are asked.
+            1. Use the vertexai search tool to find information relevant to the question you are asked.
             2. Use the relevant information you found to answer the question.
         <RULES>
             1. Only use data in the datastore to answer questions.

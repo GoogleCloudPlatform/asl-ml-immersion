@@ -8,7 +8,7 @@ from google import genai
 from google.adk.tools import VertexAiSearchTool
 import time, uuid
 
-INTERPRETER_APP_NAME = "interpreter_app"
+INTERPRETER_APP_NAME = "agents"
 
 ## TODO: change to using .env values
 # GCP Globals
@@ -74,8 +74,6 @@ def instantiate_interpreter_agent(parameters={}):
 
 async def call_interpreter_agent(question, user_id="user_vsearch_1", session_id=None, parameters={}):
     print(f"\n--- Running Interpreter Agent ---")
-    print(f"User Question: <{question}>")
-    print(parameters)
     session_service, runner = instantiate_interpreter_agent(parameters)
 
     start_time = time.perf_counter()

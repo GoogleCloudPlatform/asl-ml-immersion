@@ -8,6 +8,7 @@ import json
 import io
 
 from simulations.interpreter_agent.agent import call_interpreter_agent
+from state import State
 from metric_config import MetricConfigurations
 
 from dotenv import load_dotenv
@@ -75,9 +76,6 @@ async def get_score_interpretation(scores: dict):
     {scores}
 
     If you interpret that the scores indicate a good answer, set the status to 'OK'. Otherwise, set the status to 'NI'.
-
-    Respond with JSON:
-    {{'status': <status>, 'interpretation': <interpretation>}}
     """
 
     interpretation = {"message":"This is a placeholder interpretation."}
@@ -212,9 +210,100 @@ async def main():
 
     print("Final Results:")
     print(final_scores)
+    should_test = True
+    loops = 0
+
+    # Initial State values
+    INIT_TEMPERATURE = 0.1
+    INIT_TOP_P = 0.3
+    INIT_TOP_K = 40
+    INIT_SYSTEM_PROMPT = """
+        <PERSONA>
+            You are an english literature academic with expertise on old english books.
+        </PERSONA>
+        <INSTRUCTIONS>
+            1. Use the vertexai serach tool to find information relevant to the question you are asked.
+            2. Use the relevant information you found to answer the question.
+        <RULES>
+            1. Only use data in the datastore to answer questions.
+        </RULES>
+        <TONE>
+            1. Answer should be clear and concise.
+            2. Answers should have an english literature academic tone and focus
+        </TONE>
+    """
+
+    # Store the state for each value
+    state_list = [State(INIT_TEMPERATURE, INIT_TOP_P, INIT_TOP_K, INIT_SYSTEM_PROMPT, golden_qa_list)]
+
+    while should_test and loops < MAX_LOOPS:
+        # use the state finalized in the previous interation
+        state = state_list[len(state_list) - 1]
+
+        final_scores = {}
+        for qa in state.golden_data:
+            id = qa["id"]
+            g_question = qa["question"]
+            g_answer = qa["answer"]
+            g_source = qa["source"]
+
+            kiq_answer, retrieved_source, retrieval_context = get_key_iq_answer(g_question, state)
+
+            # Run the testing suite for each Q&A pair
+            results = run_test(
+                g_question,
+                g_answer,
+                g_source,
+                kiq_answer,
+                retrieved_source,
+                retrieval_context
+            )
+
+            #print(f"Results for Q: {g_question}")
+            #print(results)
+
+            score_interpretation = get_score_interpretation(results)
+            print(f"Status: {score_interpretation['status']}")
+            print(f"Interpretation: {score_interpretation['interpretation']}")
+
+            if score_interpretation['status'] != 'OK':
+                final_scores[id] = score_interpretation['interpretation']
+
+        if len(list(final_scores.keys())) == 0:
+            # Interpreter said everything was good
+            return {
+                'status':'finished',
+                'message':f'evaluated to 100% accuracy',
+                'results':f'{final_scores}'
+            }
         
+        # if changing hyper parameters needs to output some sort of text justification as well for the reasons why each parameter changed
+        should_test, changes = invoke_mechanic(final_scores)
+
+        print(f'Changes made: {changes}')
+
+        if should_test:
+            loops += 1
+
+        if not should_test:
+            return {
+                'status':'finished',
+                'message':f'automatic testing stopped',
+                'results':f'{final_scores}'
+            }
+
+        if loops == MAX_LOOPS:
+            return {
+                'status':'finished',
+                'message':f'max_loops ({MAX_LOOPS}) reached',
+                'results':f'{final_scores}'
+            }
         
-    
+        # finalilze the state for this iteration
+        state_list.append(state)
+        
+    print("\n--- State History ---")
+    print(f"<{[state.get_state() for state in state_list]}>")
 
 
     

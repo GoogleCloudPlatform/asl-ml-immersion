@@ -2,7 +2,7 @@ from simulations.auto_tester.testing_suite import TestingMetricSuite
 from google import genai
 
 
-def run_test(g_question, g_answer, g_source, kiq_answer, retrieved_source, retrieval_context):
+def run_test(g_question, g_answer, g_source, kiq_answer, retrieved_source, retrieval_context, experiment_config):
     """
     Run the testing suite for a single test case.
 
@@ -37,7 +37,7 @@ def run_test(g_question, g_answer, g_source, kiq_answer, retrieved_source, retri
         "contains_correct_source": testing_suite.contains_correct_source(),
         "is_answer_grounded": testing_suite.is_answer_grounded(),
         "is_retrieval_relevant": testing_suite.is_retrieval_relevant(),
-        "quality_score": testing_suite.perform_quality_checks()
+        #"quality_score": testing_suite.perform_quality_checks(experiment_config)
     }
 
     return results

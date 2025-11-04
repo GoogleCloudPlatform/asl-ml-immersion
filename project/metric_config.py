@@ -4,7 +4,7 @@ class MetricConfigurations():
         "contains_correct_source": "Determines whether the source retrieved by KeyIQ matches any of the Golden (reference) sources.",
         "is_answer_grounded": "Evaluates whether the KeyIQ answer is grounded in the provided retrieval context.",
         "is_retrieval_relevant": "Evaluates how relevant the KeyIQ retrieval context is to the Golden (reference) question.",
-        "quality_score": "Evaluates the overall linguistic and structural quality of the KeyIQ answer."
+        # "quality_score": "Evaluates the overall linguistic and structural quality of the KeyIQ answer."
     }
     SCORING_THRESHOLDS = {
         "is_similar": {
@@ -26,10 +26,10 @@ class MetricConfigurations():
             "medium": 0.50,
             "low": 0.00,
         },
-        "text_quality": {
-            "excellent": 1.5,
-            "good": 0.5,
-            "fair": -0.49,
-            "poor": -0.5,
-        },
+        # "text_quality": {
+        #     "excellent": 1.5,
+        #     "good": 0.5,
+        #     "fair": -0.49,
+        #     "poor": -0.5,
+        # },
     }

@@ -13,7 +13,7 @@ PROJECT_ID = "qwiklabs-asl-00-58d3f08e551b"
 REGION = "global"
 
 # VertexAISearch app/datastore information
-VERTEXAI_SEARCH_APP_NAME = "mock_keyiq_search"
+VERTEXAI_SEARCH_APP_NAME = "agents"
 DATASTORE_ID = "mock-keyiq-datastore_1761844635062"
 DATASTORE_PATH = f"projects/{PROJECT_ID}/locations/{REGION}/collections/default_collection/dataStores/{DATASTORE_ID}"
 
@@ -26,6 +26,34 @@ vertex_search_tool = VertexAiSearchTool(data_store_id=DATASTORE_PATH)
 # Create agent based on state
 def get_root_agent(state: State) -> LlmAgent:
     return LlmAgent(
+    # name, description available to other agents (Clear and descriptive metadata)
+    name="vertex_search_app",
+    description=f"Agent to answer user questions using indexed documents in the <{VERTEXAI_SEARCH_APP_NAME}> VertexAISearch app.",
+    # Needs to be a gemini model, instruction is the system instruction for agent
+    model=GENERATIVE_MODEL,
+    generate_content_config=types.GenerateContentConfig(
+                                temperature=temperature,
+                                top_p=top_p,
+                                top_k=top_k,
+                            ),
+    instruction=f"""
+        <PERSONA>
+            You are an english literature academic with expertise on old english books.
+        </PERSONA>
+        <INSTRUCTIONS>
+            1. Use the vertexai search tool to find information relevant to the question you are asked.
+            2. Use the relevant information you found to answer the question.
+        <RULES>
+            1. Only use data in the datastore to answer questions.
+        </RULES>
+        <TONE>
+            1. Answer should be clear and concise.
+            2. Answers should have an english literature academic tone and focus
+        </TONE>
+    """,
+    # What resources the agent has access to (This is connected to the VertexAISearch App that indexed all files from GCS bucket)
+    tools=[vertex_search_tool],
+)
         # name, description available to other agents (Clear and descriptive metadata)
         name="vertex_search_app",
         description=f"Agent to answer user questions using indexed documents in the <{VERTEXAI_SEARCH_APP_NAME}> VertexAISearch app.",

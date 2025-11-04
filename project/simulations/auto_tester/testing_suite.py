@@ -1,12 +1,13 @@
 from google import genai
-from google.genai.types import GenerateContentConfig, Content, Part
+from google.genai.types import GenerateContentConfig
 import pandas as pd
 import json
+from datetime import datetime
+
+from google.cloud import aiplatform
 
 from vertexai.evaluation import (
     EvalTask,
-    MetricPromptTemplateExamples,
-    PairwiseMetric,
     PointwiseMetric,
     PointwiseMetricPromptTemplate,
 )
@@ -243,7 +244,7 @@ class TestingMetricSuite():
         
         return relevance_score
     
-    def perform_quality_checks(self) -> str:
+    def perform_quality_checks(self, experiment_config) -> str:
         """
         Evaluates the overall linguistic and structural quality of the KeyIQ answer.
 
@@ -300,9 +301,8 @@ class TestingMetricSuite():
             }
         )
 
-        EXPERIMENT_NAME = "quality-checks-experiment"
         eval_task = EvalTask(
-            dataset=eval_dataset, metrics=[text_quality], experiment=EXPERIMENT_NAME
+            dataset=eval_dataset, metrics=[text_quality], experiment=experiment_config["experiment"]
         )
         results = eval_task.evaluate()
 

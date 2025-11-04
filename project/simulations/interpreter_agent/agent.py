@@ -7,6 +7,7 @@ from google.genai import types
 from google import genai
 from google.adk.tools import VertexAiSearchTool
 import time, uuid
+from pydantic import BaseModel, Field
 
 INTERPRETER_APP_NAME = "interpreter_app"
 
@@ -24,6 +25,10 @@ async def create_session(user_id: str, session_id: str, session_service: InMemor
         user_id=user_id, 
         session_id=session_id
     )
+
+class InterpreterOuput(BaseModel):
+    status: str = Field(description="The status of the interpretation.")
+    interpretation: str = Field(description="The natural language interpreation of the evaluation metrics.")
 
 def instantiate_interpreter_agent(parameters={}):
     # Agent Definition
@@ -60,7 +65,11 @@ def instantiate_interpreter_agent(parameters={}):
         """,
         generate_content_config=types.GenerateContentConfig(
             response_mime_type="application/json"
-        )
+        ),
+        output_schema=InterpreterOuput,
+        ## can't transfer to parent or peers with output_schema defined
+        disallow_transfer_to_parent = True,
+        disallow_transfer_to_peers = True
     )
 
     session_service_interpreter_agent = InMemorySessionService()
@@ -74,8 +83,8 @@ def instantiate_interpreter_agent(parameters={}):
 
 async def call_interpreter_agent(question, user_id="user_vsearch_1", session_id=None, parameters={}):
     print(f"\n--- Running Interpreter Agent ---")
-    print(f"User Question: <{question}>")
-    print(parameters)
+    #print(f"User Question: <{question}>")
+    #print(parameters)
     session_service, runner = instantiate_interpreter_agent(parameters)
 
     start_time = time.perf_counter()

@@ -3,7 +3,6 @@ from google.adk.agents import LlmAgent
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai import types
-from google.adk.tools import VertexAiSearchTool
 
 ## TODO: change to using .env values
 # GCP Globals
@@ -18,41 +17,90 @@ DATASTORE_PATH = f"projects/{PROJECT_ID}/locations/{REGION}/collections/default_
 # Generative Model to use
 GENERATIVE_MODEL = "gemini-2.5-flash"
 
-# VertexAISearch tool to be used in rag_agent
-vertex_search_tool = VertexAiSearchTool(data_store_id=DATASTORE_PATH)
+# Tools
+# TODO: should have a tool for each hyperparameter? (Test and see what works better)
+# TODO: Finish docstring
+# TODO: Implement functionality with global state
+def change_hyperparameters(temperature: float, top_p: float, top_k: int):
+    """
+    Changes the hyperparameters of the test state
 
-#TODO: add functionality to pass in the system instruction (Another thing to tune for)
-def get_root_agent(temperature, top_p, top_k):
+    Description
+    -----------
+    This function changes the hyperparameter values temperature, top_p, and top_k of the test state.
+    These values are used in the generator of a RAG system to generate answers to users questions after the retriever has retrieved relevant documents.
+    
+    Args
+    ----
+    temperature (float) : x
+    top_p (float) : x
+    top_k (int) : x
+
+    Returns
+    -------
+    None : Nothing is returned. The hyperparameter values are update in the global state object as a side effect.
+    """
+    # Update state hyperparameter values using the global state object
+    # state.set_temp(temperature)
+    # state.set_top_p(top_p)
+    # state.set_top_k(top_k)
+    print("Changing hyperparameters")
+
+# TODO: Finish docstring
+# TODO: Implement functionality with global state
+def change_workspace_prompt(prompt: str):
+    """
+    Changes the workspace prompt of the test state
+
+    Description
+    -----------
+    This function changes the workspace prompt value of the test state.
+    This value is used in the generator of a RAG system to generate answers to user's questions after the retriever has retrieved relevant documents.
+    
+    Args
+    ----
+    prompt (str) : The system instruction 
+
+    Returns
+    -------
+    None : Nothing is returned. The workspace prompt value is updated in the global state object as a side effect.
+    """
+    # Update state workspace prompt using the global state object
+    # state.set_workspace_prompt(prompt)
+    print("Changing Workspace Prompt")
+
+#TODO: Does this need to be a different kind of agent? Just need to decide what tool to use and use it
+#TODO: Finish system instruction
+def get_root_agent():
     return LlmAgent(
-    # name, description available to other agents (Clear and descriptive metadata)
-    name="vertex_search_app",
-    description=f"Agent to answer user questions using indexed documents in the <{VERTEXAI_SEARCH_APP_NAME}> VertexAISearch app.",
-    # Needs to be a gemini model, instruction is the system instruction for agent
-    model=GENERATIVE_MODEL,
-    generate_content_config=types.GenerateContentConfig(
-                                temperature=temperature,
-                                top_p=top_p,
-                                top_k=top_k,
-                            ),
-    instruction=f"""
-        <PERSONA>
-            You are an english literature academic with expertise on old english books.
-        </PERSONA>
-        <INSTRUCTIONS>
-            1. Use the vertexai serach tool to find information relevant to the question you are asked.
-            2. Use the relevant information you found to answer the question.
-        <RULES>
-            1. Only use data in the datastore to answer questions.
-        </RULES>
-        <TONE>
-            1. Answer should be clear and concise.
-            2. Answers should have an english literature academic tone and focus
-        </TONE>
-    """,
-    # What resources the agent has access to (This is connected to the VertexAISearch App that indexed all files from GCS bucket)
-    tools=[vertex_search_tool],
-)
+        # name, description available to other agents (Clear and descriptive metadata)
+        name="mechanic_agent",
+        description=f"Changes the test state (hyperparameters, system_prompt, and/or questions) of a RAG system to improve system performance.",
+        # Needs to be a gemini model, instruction is the system instruction for agent
+        model=GENERATIVE_MODEL,
+        instruction=f"""
+            <PERSONA>
+                You are an AI agent with updating the test state to improve the issues identified in <INTERPRETATIONS>
+            </PERSONA>
+            <GOAL>
+                Change the test state state in a way that w
+            </GOAL>
+            <INSTRUCTIONS>
+                1. Use the vertexai serach tool to find information relevant to the question you are asked.
+                2. Use the relevant information you found to answer the question.
+            <RULES>
+                1. Only use data in the datastore to answer questions.
+            </RULES>
+            <TOOLS>
+                change_hyperparameters - Use this function to update the hyper
+                2. Answers should have an english literature academic tone and focus
+            </TOOLS>
+        """,
+        # What the mechanic agent can change in state to improve testing results
+        tools=[change_hyperparameters, change_workspace_prompt]
+    )
 
+# mechanic agent should have a singluar session_id (remember all the previous changes)
 async def create_session(session_service, user_id: str, session_id: str):
     return await session_service.create_session(
                                     app_name=VERTEXAI_SEARCH_APP_NAME, 
@@ -61,38 +109,40 @@ async def create_session(session_service, user_id: str, session_id: str):
                                 )
 
 # Agent Interaction Function
-## TODO: Each call to the rag agent should be a new session
-## TODO: Want to create a singluar tuning data structure that includes (question, temperature, top_p, top_k)
-async def call_mechanic_agent(evaluations, temperature=0.1, top_p=0.3, top_k=40):
-    print(f"\n--- Running Vertex AI Search Agent ---")
-    print(f"User Question: <{question}>")
+async def call_mechanic_agent(interpretations: dict, session_id: str = None):
+    print(f"\n--- Running Mechanic Agent ---")
+    print(f"Q/A Interpretations: <{interpretations}>")
+    prompt_text = f"""
+    <INTERPRETATIONS>
+        {interpretations}
+    </INTERPRETATIONS>
+    """
     start_time = time.perf_counter()
 
     # Agent Definition (Intiailizing this everytime so not biasing the test results)
-    root_agent = get_root_agent(temperature, top_p, top_k)
+    ## TODO: Want memory to persist so that agent has context on what it changed last. Should this stuff happen everytime?
+    root_agent = get_root_agent()
     session_service_vertexai_search = InMemorySessionService()
     runner_vertexai_search = Runner(
             agent=root_agent, app_name=VERTEXAI_SEARCH_APP_NAME, session_service=session_service_vertexai_search
     )
 
-    # Create session every time rag agent is invoked
-    session_creation_start = time.perf_counter()
-    session_id = str(uuid.uuid4())
+    # Only want one session throghout the whole system run. Want the agent to know what has been tried in the past.
     user_id = str(uuid.uuid4())
-    session = await create_session(session_service_vertexai_search, user_id=user_id, session_id=session_id)
-    session_id = session.id
-    user_id = session.user_id
-    session_creation_end = time.perf_counter()
-    print(f"Created session <{session_id}> in <{session_creation_end-session_creation_start}> seconds.")
+    if not session_id:
+        session_creation_start = time.perf_counter()
+
+        session_id = str(uuid.uuid4())
+        session = await create_session(session_service_vertexai_search, user_id=user_id, session_id=session_id)
+        session_id = session.id
+
+        session_creation_end = time.perf_counter()
+        print(f"Created session <{session_id}> in <{session_creation_end-session_creation_start}> seconds.")
 
 
-    content = types.Content(role='user', parts=[types.Part(text=question)])
-    agent_response = {
-        'question': question,
-        'answer': 'No answer generated',
-        'context': []
-    }
+    content = types.Content(role='user', parts=[types.Part(text=prompt_text)])
 
+    # TODO: Handle agent response appropriately
     try:
         start_time = time.perf_counter()
         for event in runner_vertexai_search.run(
@@ -100,34 +150,9 @@ async def call_mechanic_agent(evaluations, temperature=0.1, top_p=0.3, top_k=40)
         ):
             # results embedded in model's response
             if event.is_final_response() and event.content:
-                agent_answer = event.content.parts[0].text.strip()
-                agent_response['answer'] = agent_answer
-
-                chunk_idx = 0
-                for chunk in event.grounding_metadata.grounding_chunks:
-                    chunk_text = chunk.retrieved_context.text.strip()
-                    chunk_source = chunk.retrieved_context.uri
-                    agent_response['context'].append({
-                        "text": chunk_text,
-                        "source": chunk_source
-                    })
+                print(f"Possible agent results here")
 
         end_time = time.perf_counter()
         print(f"Agent RunTime: <{end_time - start_time}> secs.")
-
-        return agent_response
     except Exception as error:
         print(f"An error occured during agent invokation or execution.\nError: <{error}>")
-
-        return agent_response
-
-# Notes
-# callback
-# after tool use callback takes the event
-# grab the event grounding metadata (seen below)
-# Agent Engine
-# Write deployment.app to deploy to agent engine
-# Docs on the tool: https://github.com/google/adk-python/blob/main/src/google/adk/tools/vertex_ai_search_tool.py
-# To deploy (docs: https://google.github.io/adk-docs/deploy/agent-engine/#prerequisites-ad)
-    ## Run "uvx agent-starter-pack enhance --adk -d agent_engine" from rag-pipeline
-    ## Run "make backend" from rag-pipeline

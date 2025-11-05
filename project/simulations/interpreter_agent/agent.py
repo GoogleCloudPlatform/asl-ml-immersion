@@ -82,7 +82,7 @@ def instantiate_interpreter_agent(parameters={}):
     return session_service_interpreter_agent, runner_interpreter_agent
 
 async def call_interpreter_agent(question, user_id="user_vsearch_1", session_id=None, parameters={}):
-    print(f"\n--- Running Interpreter Agent ---")
+    #print(f"\n--- Running Interpreter Agent ---")
     session_service, runner = instantiate_interpreter_agent(parameters)
 
     start_time = time.perf_counter()
@@ -94,7 +94,7 @@ async def call_interpreter_agent(question, user_id="user_vsearch_1", session_id=
         session_id = session.id
         user_id = session.user_id
         session_creation_end = time.perf_counter()
-        print(f"Created session <{session_id}> in <{session_creation_end-session_creation_start}> seconds.")
+        #print(f"Created session <{session_id}> in <{session_creation_end-session_creation_start}> seconds.")
 
 
     content = types.Content(role='user', parts=[types.Part(text=question)])
@@ -117,7 +117,7 @@ async def call_interpreter_agent(question, user_id="user_vsearch_1", session_id=
                 agent_response['answer'] = agent_answer
 
         end_time = time.perf_counter()
-        print(f"Agent RunTime: <{end_time - start_time}> secs.")
+        #print(f"Agent RunTime: <{end_time - start_time}> secs.")
 
         return session_id, agent_response
     except Exception as error:

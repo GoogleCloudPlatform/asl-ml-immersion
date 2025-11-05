@@ -65,8 +65,8 @@ async def create_session(session_service, user_id: str, session_id: str):
 
 # Agent Interaction Function
 async def call_rag_agent(question: str, state: State) -> dict:
-    print(f"\n--- Running Vertex AI Search Agent ---")
-    print(f"User Question: <{question}>")
+    #print(f"\n--- Running Vertex AI Search Agent ---")
+    #print(f"User Question: <{question}>")
     start_time = time.perf_counter()
 
     # Agent Definition (Intiailizing this everytime so not biasing the test results)
@@ -84,7 +84,7 @@ async def call_rag_agent(question: str, state: State) -> dict:
     session_id = session.id
     user_id = session.user_id
     session_creation_end = time.perf_counter()
-    print(f"Created session <{session_id}> in <{session_creation_end-session_creation_start}> seconds.")
+    #print(f"Created session <{session_id}> in <{session_creation_end-session_creation_start}> seconds.")
 
 
     content = types.Content(role='user', parts=[types.Part(text=question)])
@@ -113,7 +113,7 @@ async def call_rag_agent(question: str, state: State) -> dict:
                     })
 
         end_time = time.perf_counter()
-        print(f"Agent RunTime: <{end_time - start_time}> secs.")
+        #print(f"Agent RunTime: <{end_time - start_time}> secs.")
 
         return agent_response
     except Exception as error:

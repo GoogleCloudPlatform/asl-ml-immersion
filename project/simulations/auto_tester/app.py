@@ -20,7 +20,7 @@ def run_test(g_question, g_answer, g_source, kiq_answer, retrieved_source, retri
     """
 
 
-    print(f"--- Running Testing Suite ---")
+    #print(f"--- Running Testing Suite ---")
     
     testing_suite = TestingMetricSuite(
         gemini_client=genai.Client(vertexai=True, location="us-central1"),

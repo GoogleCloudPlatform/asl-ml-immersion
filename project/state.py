@@ -32,6 +32,10 @@ class State:
             "golden_data": self.__golden_data
         }
     
+    def update_old_state(self):
+        self.__was_changed = False
+        self.__old_state = self.get_state().copy()
+    
     def __log_change(self):
         if not self.__was_changed:
             self.__old_state = {

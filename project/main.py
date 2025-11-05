@@ -162,7 +162,8 @@ async def run_all_interpret(test_results):
 
 import state
 async def main():
-    should_test = False
+    should_test = True
+    loops = 0
 
     GOLDEN_QA_URI_BUCKET = "gs://keyiq/GoldenQA/"
     GOLDEN_QA_URI_FILE = "golden_qa.csv"
@@ -170,52 +171,55 @@ async def main():
     current_state = state.system_state
     current_state.set_golden_data(get_golden_qa_doc(GOLDEN_QA_URI_BUCKET + GOLDEN_QA_URI_FILE))
 
-    # ---- Phase 1: RAG for all ----
-    print("Running all rag...", flush=True)
-    rag_results = await run_all_rag(current_state.get_golden_data(), current_state)
+    while should_test and loops < MAX_LOOPS:
+        # ---- Phase 1: RAG for all ----
+        print("Running all rag...", flush=True)
+        rag_results = await run_all_rag(current_state.get_golden_data(), current_state)
 
-    # ---- Phase 2: Tests for all ----
-    print("Running all tests...", flush=True)
-    test_results = await run_all_tests(current_state.get_golden_data(), rag_results, EXP_CONFIG)
+        # ---- Phase 2: Tests for all ----
+        print("Running all tests...", flush=True)
+        test_results = await run_all_tests(current_state.get_golden_data(), rag_results, EXP_CONFIG)
 
-    # ---- Phase 3: Interpreter for all ----
-    print("Running all interpretations...", flush=True)
-    interpretations = await run_all_interpret(test_results)
+        # ---- Phase 3: Interpreter for all ----
+        print("Running all interpretations...", flush=True)
+        interpretations = await run_all_interpret(test_results)
 
-    # collect final scores
-    final_scores = {
-        str(qa["id"]): interp["interpretation"]
-        for qa, interp in zip(current_state.get_golden_data(), interpretations)
-        if interp["status"] != "OK"
-    }
-
-    if not final_scores:
-        return {"status": "finished", "message": "evaluated to 100% accuracy", "results": "{}"}
-        
-    # if changing hyper parameters needs to output some sort of text justification as well for the reasons why each parameter changed
-    invoke_mechanic(final_scores)
-    print(f"Old State: {current_state.get_old_state()}")
-    print(f"New State: {str(current_state)}")
-
-    if str(current_state.get_old_state()) != str(current_state):
-        should_test = True
-
-    if should_test:
-        loops += 1
-
-    if not should_test:
-        return {
-            'status':'finished',
-            'message':f'automatic testing stopped',
-            'results':f'{final_scores}'
+        # collect final scores
+        final_scores = {
+            str(qa["id"]): interp["interpretation"]
+            for qa, interp in zip(current_state.get_golden_data(), interpretations)
+            if interp["status"] != "OK"
         }
 
-    if loops == MAX_LOOPS:
-        return {
-            'status':'finished',
-            'message':f'max_loops ({MAX_LOOPS}) reached',
-            'results':f'{final_scores}'
-        }
+        if not final_scores:
+            return {"status": "finished", "message": "evaluated to 100% accuracy", "results": "{}"}
+            
+        # if changing hyper parameters needs to output some sort of text justification as well for the reasons why each parameter changed
+        await invoke_mechanic(final_scores)
+        print(f"Old State: {current_state.get_old_state()}")
+        print(f"New State: {str(current_state)}")
+
+        if str(current_state.get_old_state()) == str(current_state):
+            should_test = False
+
+        current_state.update_old_state()
+
+        if should_test:
+            loops += 1
+
+        if not should_test:
+            return {
+                'status':'finished',
+                'message':f'automatic testing stopped',
+                'results':f'{final_scores}'
+            }
+
+        if loops == MAX_LOOPS:
+            return {
+                'status':'finished',
+                'message':f'max_loops ({MAX_LOOPS}) reached',
+                'results':f'{final_scores}'
+            }
 
 if __name__ == "__main__":
     print(asyncio.run(main()))

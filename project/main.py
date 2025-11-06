@@ -204,6 +204,7 @@ async def main():
 
         accuracy = (len(current_state.get_golden_data()) - len(final_scores)) / len(current_state.get_golden_data())
         current_state.set_accuracy(accuracy)
+        print(f"Accuracy: <{accuracy}>")
 
         if not final_scores:
             return {"status": "finished", "message": "evaluated to 100% accuracy", "results": "{}"}
@@ -217,7 +218,6 @@ async def main():
 
         print(f"\nLOOP #<{loops}> OLD STATE:\n{current_state.output_old_state()}")
         print(f"LOOP #<{loops}> NEW STATE:\n{str(current_state.output_state())}")
-        print(f"Accuracy: <{accuracy}>")
 
         print(f"\n--- END LOOP #<{loops}> ---\n")
 

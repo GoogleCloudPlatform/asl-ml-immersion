@@ -1,4 +1,5 @@
 import pandas as pd
+from google.adk.sessions import InMemorySessionService
 
 class State:
     ## Hyperparameters
@@ -12,6 +13,7 @@ class State:
 
     __old_state: dict
     __was_changed = False
+    __session_service = InMemorySessionService()
 
     def __init__(self, temperature: float, top_p: float, top_k: int, system_prompt: str, golden_data: list[dict] = []):
         self.__temperature = temperature
@@ -20,6 +22,8 @@ class State:
         self.__system_prompt = system_prompt
         self.__golden_data = golden_data
         self.__accuracy = 0
+        self.__session_id = None
+        self.__user_id = None
 
     def __str__(self):
         return f"""
@@ -65,6 +69,12 @@ class State:
         return self.__golden_data
     def get_accuracy(self):
         return self.__accuracy
+    def get_session_id(self):
+        return self.__session_id
+    def get_session_service(self):
+        return self.__session_service
+    def get_user_id(self):
+        return self.__user_id
     
     def set_temperature(self, new_temp):
         if new_temp != self.__temperature:
@@ -88,6 +98,10 @@ class State:
             self.__golden_data = new_golden_data
     def set_accuracy(self, new_acc):
         self.__accuracy = new_acc
+    def set_session_id(self, s_id):
+        self.__session_id = s_id
+    def set_user_id(self, u_id):
+        self.__user_id = u_id
 
     def get_old_state(self):
         if self.__old_state:

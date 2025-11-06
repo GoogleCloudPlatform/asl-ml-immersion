@@ -1,7 +1,6 @@
 import time, uuid
 from google.adk.agents import LlmAgent
 from google.adk.runners import Runner
-from google.adk.sessions import InMemorySessionService
 from google.genai import types
 from state import system_state
 
@@ -160,7 +159,9 @@ async def create_session(session_service, user_id: str, session_id: str):
                                 )
 
 # Agent Interaction Function
-async def call_mechanic_agent(interpretations: dict, session_id: str = None):
+async def call_mechanic_agent(interpretations: dict):
+    session_id = system_state.get_session_id()
+    user_id = system_state.get_user_id()
     #print(f"Q/A Interpretations: <{interpretations}>")
     prompt_text = f"""
     <INTERPRETATIONS>
@@ -180,19 +181,24 @@ async def call_mechanic_agent(interpretations: dict, session_id: str = None):
     # Agent Definition (Intiailizing this everytime so not biasing the test results)
     ## TODO: Want memory to persist so that agent has context on what it changed last. Should this stuff happen everytime?
     root_agent = get_root_agent()
-    session_service_vertexai_search = InMemorySessionService()
+
+
+    session_service_vertexai_search = system_state.get_session_service()
     runner_vertexai_search = Runner(
             agent=root_agent, app_name=MECHANIC_APP_NAME, session_service=session_service_vertexai_search
     )
-
     # Only want one session throghout the whole system run. Want the agent to know what has been tried in the past.
-    user_id = str(uuid.uuid4())
+    if not user_id:
+        user_id = str(uuid.uuid4())
+        system_state.set_user_id(user_id)
+
     if not session_id:
         session_creation_start = time.perf_counter()
 
         session_id = str(uuid.uuid4())
         session = await create_session(session_service_vertexai_search, user_id=user_id, session_id=session_id)
         session_id = session.id
+        system_state.set_session_id(session_id)
 
         session_creation_end = time.perf_counter()
         #print(f"Created session <{session_id}> in <{session_creation_end-session_creation_start}> seconds.")

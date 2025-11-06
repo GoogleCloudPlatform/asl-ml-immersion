@@ -175,25 +175,25 @@ async def main():
     while should_test and loops < MAX_LOOPS:
         print(f"--- START LOOP #<{loops}> ----")
         # ---- Phase 1: RAG for all ----
-        print("\nRunning all RAG agents...", flush=True)
+        print("\nRunning the RAG pipeline...", flush=True)
         rag_start = time.perf_counter()
         rag_results = await run_all_rag(current_state.get_golden_data(), current_state)
         rag_end = time.perf_counter()
-        print(f"RAG agents finished in <{round(rag_end - rag_start, 2)}> secs.", flush=True)
+        print(f"RAG finished in <{round(rag_end - rag_start, 2)}> secs.", flush=True)
 
         # ---- Phase 2: Tests for all ----
-        print("\nRunning all Test Suites...", flush=True)
+        print("\nTesting all answers...", flush=True)
         test_start = time.perf_counter()
         test_results = await run_all_tests(current_state.get_golden_data(), rag_results, EXP_CONFIG)
         test_end = time.perf_counter()
-        print(f"Test Suites finished in <{round(test_end - test_start, 2)}> secs.", flush=True)
+        print(f"Testing finished in <{round(test_end - test_start, 2)}> secs.", flush=True)
 
         # ---- Phase 3: Interpreter for all ----
-        print("\nRunning all Interpretation agents...", flush=True)
+        print("\nInterpreting results...", flush=True)
         interpretations_start = time.perf_counter()
         interpretations = await run_all_interpret(test_results)
         interpretations_end = time.perf_counter()
-        print(f"Interpretation agents finished in <{round(interpretations_end - interpretations_start, 2)}> secs.", flush=True)
+        print(f"Interpretations finished in <{round(interpretations_end - interpretations_start, 2)}> secs.", flush=True)
 
         # collect final scores
         final_scores = {

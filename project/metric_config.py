@@ -8,8 +8,8 @@ class MetricConfigurations():
     }
     SCORING_THRESHOLDS = {
         "is_similar": {
-            "high": 0.80,
-            "medium": 0.50,
+            "high": 0.70,
+            "medium": 0.40,
             "low": 0.00,
         },
         "contains_correct_source": {
@@ -17,8 +17,8 @@ class MetricConfigurations():
             "false": 0.0,
         },
         "is_answer_grounded": {
-            "high": 0.80,
-            "medium": 0.50,
+            "high": 0.70,
+            "medium": 0.40,
             "low": 0.00,
         },
         "is_retrieval_relevant": {

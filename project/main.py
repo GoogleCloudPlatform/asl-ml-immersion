@@ -191,6 +191,9 @@ async def main():
             if interp["status"] != "OK"
         }
 
+        accuracy = (len(current_state.get_golden_data()) - len(final_scores)) / len(current_state.get_golden_data())
+        current_state.set_accuracy(accuracy)
+
         if not final_scores:
             return {"status": "finished", "message": "evaluated to 100% accuracy", "results": "{}"}
             
@@ -198,6 +201,7 @@ async def main():
         await invoke_mechanic(final_scores)
         print(f"Old State: {current_state.get_old_state()}")
         print(f"New State: {str(current_state)}")
+        print(f"Accuracy: {accuracy}")
 
         if str(current_state.get_old_state()) == str(current_state):
             should_test = False

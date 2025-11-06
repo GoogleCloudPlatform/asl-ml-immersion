@@ -19,9 +19,15 @@ class State:
         self.__top_k = top_k
         self.__system_prompt = system_prompt
         self.__golden_data = golden_data
+        self.__accuracy = 0
 
     def __str__(self):
-        return str(self.get_state())
+        return f"""
+        Temperature: {self.__temperature}
+        Top-P: {self.__top_p}
+        Top-K: {self.__top_k}
+        System Prompt: {self.__system_prompt}
+        """
 
     def get_state(self) -> dict:
         return {
@@ -57,6 +63,8 @@ class State:
         return self.__system_prompt
     def get_golden_data(self):
         return self.__golden_data
+    def get_accuracy(self):
+        return self.__accuracy
     
     def set_temperature(self, new_temp):
         if new_temp != self.__temperature:
@@ -78,6 +86,8 @@ class State:
         if new_golden_data != self.__golden_data:
             self.__log_change()
             self.__golden_data = new_golden_data
+    def set_accuracy(self, new_acc):
+        self.__accuracy = new_acc
 
     def get_old_state(self):
         if self.__old_state:

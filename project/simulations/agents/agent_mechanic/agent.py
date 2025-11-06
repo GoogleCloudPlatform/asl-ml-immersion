@@ -161,8 +161,7 @@ async def create_session(session_service, user_id: str, session_id: str):
 
 # Agent Interaction Function
 async def call_mechanic_agent(interpretations: dict, session_id: str = None):
-    print(f"\n--- Running Mechanic Agent ---")
-    print(f"Q/A Interpretations: <{interpretations}>")
+    #print(f"Q/A Interpretations: <{interpretations}>")
     prompt_text = f"""
     <INTERPRETATIONS>
         {interpretations}
@@ -196,7 +195,7 @@ async def call_mechanic_agent(interpretations: dict, session_id: str = None):
         session_id = session.id
 
         session_creation_end = time.perf_counter()
-        print(f"Created session <{session_id}> in <{session_creation_end-session_creation_start}> seconds.")
+        #print(f"Created session <{session_id}> in <{session_creation_end-session_creation_start}> seconds.")
 
 
     content = types.Content(role='user', parts=[types.Part(text=prompt_text)])
@@ -211,6 +210,6 @@ async def call_mechanic_agent(interpretations: dict, session_id: str = None):
                 print(event.content.parts[0].text.strip())
 
         end_time = time.perf_counter()
-        print(f"Agent RunTime: <{end_time - start_time}> secs.")
+        #print(f"Agent RunTime: <{end_time - start_time}> secs.")
     except Exception as error:
         print(f"An error occured during agent invokation or execution.\nError: <{error}>")

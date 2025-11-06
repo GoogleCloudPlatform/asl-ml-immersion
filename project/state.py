@@ -95,6 +95,22 @@ class State:
         else:
             return {}
 
+    def output_old_state(self):
+        return {
+            "temperature": self.__old_state["temperature"],
+            "top_p": self.__old_state["top_p"],
+            "top_k": self.__old_state["top_k"],
+            "system_prompt": self.__old_state["system_prompt"],
+        }
+    
+    def output_state(self):
+        return {
+            "temperature": self.__temperature,
+            "top_p": self.__top_p,
+            "top_k": self.__top_k,
+            "system_prompt": self.__system_prompt
+        }
+
 INIT_TEMPERATURE = 0.1
 INIT_TOP_P = 0.3
 INIT_TOP_K = 40

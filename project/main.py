@@ -6,6 +6,7 @@ import asyncio
 from simulations.agents.agent_rag.agent import call_rag_agent
 import json
 import io
+import time
 
 from simulations.interpreter_agent.agent import call_interpreter_agent
 from simulations.agents.agent_mechanic.agent import call_mechanic_agent
@@ -172,17 +173,27 @@ async def main():
     current_state.set_golden_data(get_golden_qa_doc(GOLDEN_QA_URI_BUCKET + GOLDEN_QA_URI_FILE))
 
     while should_test and loops < MAX_LOOPS:
+        print(f"--- START LOOP #<{loops}> ----")
         # ---- Phase 1: RAG for all ----
-        print("Running all rag...", flush=True)
+        print("\nRunning all RAG agents...", flush=True)
+        rag_start = time.perf_counter()
         rag_results = await run_all_rag(current_state.get_golden_data(), current_state)
+        rag_end = time.perf_counter()
+        print(f"RAG agents finished in <{round(rag_end - rag_start, 2)}> secs.", flush=True)
 
         # ---- Phase 2: Tests for all ----
-        print("Running all tests...", flush=True)
+        print("\nRunning all Test Suites...", flush=True)
+        test_start = time.perf_counter()
         test_results = await run_all_tests(current_state.get_golden_data(), rag_results, EXP_CONFIG)
+        test_end = time.perf_counter()
+        print(f"Test Suites finished in <{round(test_end - test_start, 2)}> secs.", flush=True)
 
         # ---- Phase 3: Interpreter for all ----
-        print("Running all interpretations...", flush=True)
+        print("\nRunning all Interpretation agents...", flush=True)
+        interpretations_start = time.perf_counter()
         interpretations = await run_all_interpret(test_results)
+        interpretations_end = time.perf_counter()
+        print(f"Interpretation agents finished in <{round(interpretations_end - interpretations_start, 2)}> secs.", flush=True)
 
         # collect final scores
         final_scores = {
@@ -198,10 +209,17 @@ async def main():
             return {"status": "finished", "message": "evaluated to 100% accuracy", "results": "{}"}
             
         # if changing hyper parameters needs to output some sort of text justification as well for the reasons why each parameter changed
+        print(f"\n--- Running Mechanic Agent ---")
+        mechanic_start = time.perf_counter()
         await invoke_mechanic(final_scores)
-        print(f"Old State: {current_state.get_old_state()}")
-        print(f"New State: {str(current_state)}")
-        print(f"Accuracy: {accuracy}")
+        mechanic_end = time.perf_counter()
+        print(f"Mechanic agent finished in <{round(mechanic_end - mechanic_start, 2)}> secs.", flush=True)
+
+        print(f"\nLOOP #<{loops}> OLD STATE:\n{current_state.output_old_state()}")
+        print(f"LOOP #<{loops}> NEW STATE:\n{str(current_state.output_state())}")
+        print(f"Accuracy: <{accuracy}>")
+
+        print(f"\n--- END LOOP #<{loops}> ---\n")
 
         if str(current_state.get_old_state()) == str(current_state):
             should_test = False

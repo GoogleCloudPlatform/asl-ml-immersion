@@ -110,7 +110,8 @@ def get_root_agent():
             <RULES>
                 1. Ensure that you make relative changes to the hyperparameters and workspace prompt.
                 2. If <INTERPRETATIONS> leads you to believe that the RAG performance was poor because of conflicting information in retrieval documents, do not make any changes.
-                3. Respond only in JSON according to the schema provided in <OUTPUT>.
+                3. Always try to maximize <ACCURACY>. If you made changes that lowered <ACCURACY>, you might want to try reverting. Additionally, if there are changes you made that raised <ACCURACY>, you can consider those changes to have succeeded.
+                4. Respond only in JSON according to the schema provided in <OUTPUT>.
             </RULES>
             <EXAMPLES>
             (1)
@@ -166,6 +167,10 @@ async def call_mechanic_agent(interpretations: dict, session_id: str = None):
     <INTERPRETATIONS>
         {interpretations}
     </INTERPRETATIONS>
+
+    <ACCURACY>
+        {{"accuracy":{system_state.get_accuracy()}}}
+    </ACCURACY>
 
     <STATE>
         {{"temperature":{system_state.get_temperature()}, "top-p":{system_state.get_top_p()}, "top-k":{system_state.get_top_k()}, "workspace_prompt":{system_state.get_system_prompt()}}}

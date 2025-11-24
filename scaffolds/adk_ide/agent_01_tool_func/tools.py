@@ -1,3 +1,9 @@
+"""
+This is a mock weather tool that returns weather information
+for a specified city.
+"""
+
+
 def get_weather(city: str) -> dict:
     """Retrieves the current weather report for a specified city.
 
@@ -42,5 +48,7 @@ def get_weather(city: str) -> dict:
     else:
         return {
             "status": "error",
-            "error_message": f"Sorry, I don't have weather information for '{city}'.",
+            "error_message": f"""
+            Sorry, I don't have weather information for '{city}'.
+            """,
         }

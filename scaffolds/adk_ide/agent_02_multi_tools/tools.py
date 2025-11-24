@@ -1,3 +1,9 @@
+"""
+This is a mock weather tool that returns weather information
+for a specified city and mock location tool that returns
+ city name.
+"""
+
 import random
 
 

@@ -5,17 +5,17 @@ description = "ASL ADK LABs"
 requires-python = ">=3.13,<3.14"
 
 dependencies = [
-    "google-adk~=1.15.1",
-    "a2a-sdk==0.3.9",
-    "opentelemetry-exporter-gcp-trace~=1.9.0",
-    "google-cloud-logging>=3.12.0",
-    "google-cloud-aiplatform[evaluation,agent_engines]~=1.121.0",
-    "fastapi~=0.115.8",
-    "uvicorn~=0.34.0",
-    "psycopg2-binary>=2.9.10",
-    "python-dotenv==1.1.0"
+    "google-adk[a2a,otel-gcp,eval,extensions]~=1.19.0",
 ]
 
+#"a2a-sdk==0.3.16",
+#"opentelemetry-exporter-gcp-trace~=1.9.0",
+#"google-cloud-logging>=3.12.0",
+#"google-cloud-aiplatform[evaluation,agent_engines]~=1.121.0",
+#"fastapi~=0.115.8",
+#"uvicorn~=0.34.0",
+#"psycopg2-binary>=2.9.10",
+#"python-dotenv==1.1.0"
 #pip install -q stackapi==0.3.1 toolbox-core==0.5.2
 #pip install -q fastmcp==2.12.4 gradio==5.49.1
 

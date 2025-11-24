@@ -42,15 +42,21 @@ def get_weather(city: str) -> dict[str, str]:
     mock_weather_db = {
         "newyork": {
             "status": "success",
-            "report": "The weather in New York is sunny with a temperature of 25°C.",
+            "report": """
+            The weather in New York is sunny with a temperature of 25°C.
+            """,
         },
         "dublin": {
             "status": "success",
-            "report": "Dublin is experiencing light rain and a temperature of 18°C.",
+            "report": """
+            Dublin is experiencing light rain and a temperature of 18°C.
+            """,
         },
         "tokyo": {
             "status": "success",
-            "report": "It's cloudy in Tokyo with a temperature of 15°C.",
+            "report": """
+            It's cloudy in Tokyo with a temperature of 15°C.
+            """,
         },
     }
 
@@ -59,5 +65,7 @@ def get_weather(city: str) -> dict[str, str]:
     else:
         return {
             "status": "error",
-            "error_message": f"Sorry, I don't have weather information for '{city}'.",
+            "error_message": f"""
+            Sorry, I don't have weather information for '{city}'.
+            """,
         }

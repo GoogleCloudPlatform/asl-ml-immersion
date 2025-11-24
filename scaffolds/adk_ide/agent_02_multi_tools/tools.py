@@ -1,3 +1,5 @@
+import random
+
 def get_location() -> dict[str, str]:
     """Retrieves the current location.
 

@@ -3,8 +3,7 @@ from google.adk.agents import Agent
 
 MODEL = "gemini-2.0-flash"
 
-from .tools import get_pycon_events
-from .tools import get_weather
+from .tools import get_pycon_events, get_weather
 
 root_agent = Agent(
     name="pycon_agent_v2",
@@ -12,7 +11,7 @@ root_agent = Agent(
     description="Provides information about PyCon events for specific cities.",
     instruction="""
     You are an expert **PyCon Events Suggestion Assistant**.
-    
+
     When the user requests **event suggestions** for a **specific city and date range**,
     First: you must use the **'get_pycon_events' tool** to find relevant information.
     If the tool returns an error or no events are found, **inform the user politely** that you could not find any events or that there might be an issue.

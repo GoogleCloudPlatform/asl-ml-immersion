@@ -13,7 +13,7 @@ If you are using Vertex AI, make sure you are authenticated with `gcloud`:
 ```bash
 gcloud auth application-default login
 gcloud config set project <your-dev-project-id>
-make install 
+make install
 make playground
 ```
 

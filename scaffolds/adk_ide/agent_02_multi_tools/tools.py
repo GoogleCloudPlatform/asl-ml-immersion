@@ -46,7 +46,7 @@ def get_pycon_events(event_city: str) -> dict:
                     "description": "A PyCon event in Wrocław, Poland.",
                 }
             ],
-        }
+        },
     }
 
     if city_normalized in mock_events_db:
@@ -57,6 +57,7 @@ def get_pycon_events(event_city: str) -> dict:
             "status": "error",
             "error_message": f"Sorry, I couldn't find any events for '{event_city}' during that time.",
         }
+
 
 def get_weather(city: str) -> dict:
     """Retrieves the current weather report for a specified city.

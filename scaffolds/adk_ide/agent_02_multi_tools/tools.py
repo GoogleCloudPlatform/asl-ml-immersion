@@ -1,5 +1,6 @@
 import random
 
+
 def get_location() -> dict[str, str]:
     """Retrieves the current location.
 
@@ -18,6 +19,7 @@ def get_location() -> dict[str, str]:
         "status": "success",
         "report": f"The current location is {current_city}",
     }
+
 
 def get_weather(city: str) -> dict[str, str]:
     """Retrieves the current weather report for a specified city.

@@ -1,13 +1,20 @@
+"""
+Retrieves a list of PyCon events running this week for a specified city.
+"""
+
+
 def get_pycon_events(event_city: str) -> dict:
     """Retrieves a list of PyCon events running this week for a specified city.
 
     Args:
-        event_city (str): The name of the city (e.g., "New York", "London", "Tokyo").
+        event_city (str): The name of the city
+        (e.g., "New York", "London", "Tokyo").
 
     Returns:
         dict: A dictionary containing the event information.
               Includes a 'status' key ('success' or 'error').
-              If 'success', includes an 'events' key with a list of event details.
+              If 'success', includes an 'events' key
+              with a list of event details.
               If 'error', includes an 'error_message' key.
     """
     print(
@@ -46,7 +53,7 @@ def get_pycon_events(event_city: str) -> dict:
                     "description": "A PyCon event in Wrocław, Poland.",
                 }
             ],
-        }
+        },
     }
 
     if city_normalized in mock_events_db:
@@ -55,5 +62,7 @@ def get_pycon_events(event_city: str) -> dict:
     else:
         return {
             "status": "error",
-            "error_message": f"Sorry, I couldn't find any events for '{event_city}' during that time.",
+            "error_message": f"""
+            Sorry, I couldn't find any events for '{event_city}' during that time.
+            """,
         }

@@ -34,8 +34,8 @@ weather_agent = Agent(
     model=MODEL,
     description="Handles weather information requests using the 'get_weather' tool.",
     instruction="You are the Weather Agent. Your primary responsibility is to provide weather information. "
-                "Use the 'get_weather' tool for weather requests (e.g., 'weather in London'). "
-                "Do not perform any other actions.",
+    "Use the 'get_weather' tool for weather requests (e.g., 'weather in London'). "
+    "Do not perform any other actions.",
     tools=[get_weather],
 )
 

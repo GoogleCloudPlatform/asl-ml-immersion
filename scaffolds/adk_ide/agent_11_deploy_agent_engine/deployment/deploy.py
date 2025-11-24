@@ -1,10 +1,14 @@
-import vertexai
-from vertexai.preview.reasoning_engines import AdkApp
-from vertexai import agent_engines
-from dotenv import load_dotenv
+"""
+Deploys the agent to the Vertex AI Agent Engine.
+"""
+
 import os
 
+import vertexai
 from agent11_deploy_agent_engine.agent import root_agent
+from dotenv import load_dotenv
+from vertexai import agent_engines
+from vertexai.preview.reasoning_engines import AdkApp
 
 load_dotenv()
 

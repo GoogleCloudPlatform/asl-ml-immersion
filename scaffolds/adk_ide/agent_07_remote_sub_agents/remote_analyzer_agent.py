@@ -1,4 +1,10 @@
+"""
+Remote Trend Analyzer Agent
+"""
+
 import asyncio
+import logging
+
 # Ignore all warnings
 import warnings
 
@@ -12,28 +18,20 @@ from a2a.types import (
     AgentSkill,
     TransportProtocol,
 )
-
+from dotenv import load_dotenv
 from google.adk.a2a.executor.a2a_agent_executor import (
     A2aAgentExecutor,
     A2aAgentExecutorConfig,
 )
-
+from google.adk.agents import Agent
 from google.adk.artifacts import InMemoryArtifactService
 from google.adk.memory.in_memory_memory_service import InMemoryMemoryService
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
-
-warnings.filterwarnings("ignore")
-import logging
-
-logging.basicConfig(level=logging.ERROR)
 from google.adk.tools import google_search
 
-import logging
-
-from dotenv import load_dotenv
-from google.adk.agents import Agent
-
+warnings.filterwarnings("ignore")
+logging.basicConfig(level=logging.ERROR)
 logger = logging.getLogger(__name__)
 logging.basicConfig(format="[%(levelname)s]: %(message)s", level=logging.INFO)
 
@@ -89,6 +87,7 @@ analyzer_agent_card = AgentCard(
     ],
 )
 
+
 def create_agent_a2a_server(agent, agent_card):
     """Create an A2A server for any ADK agent.
 
@@ -120,6 +119,7 @@ def create_agent_a2a_server(agent, agent_card):
         agent_card=agent_card, http_handler=request_handler
     )
 
+
 async def run_agent_server(agent, agent_card, port) -> None:
     """Run a single agent server."""
     app = create_agent_a2a_server(agent, agent_card)
@@ -135,6 +135,7 @@ async def run_agent_server(agent, agent_card, port) -> None:
     server = uvicorn.Server(config)
     await server.serve()
 
+
 def main():
     """
     The synchronous entry point that sets up the event loop
@@ -142,19 +143,20 @@ def main():
     """
 
     # 2. Use asyncio.run() to execute the main coroutine
-    print(f"Starting agent server")
+    print("Starting agent server")
     try:
         asyncio.run(
             run_agent_server(
                 agent=trend_analyzer_agent,
                 agent_card=analyzer_agent_card,
-                port=10021
+                port=10021,
             )
         )
     except KeyboardInterrupt:
         print("\nServer stopped manually.")
-    except Exception as e:
+    except RuntimeError as e:
         print(f"An error occurred: {e}")
+
 
 if __name__ == "__main__":
     main()

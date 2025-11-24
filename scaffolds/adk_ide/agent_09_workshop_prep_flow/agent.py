@@ -41,7 +41,7 @@ REFLECTION_PROMPT = """You are an experienced PyCon conference reviewer and work
     Read the workshop proposal or outline provided by the user and generate constructive critique
     and actionable recommendations for it. Provide detailed feedback on the workshop's structure,
     clarity of learning objectives, proposed hands-on exercises, target audience fit,
-    and estimated pacing to ensure it meets PyCon's standards for a high-quality, 
+    and estimated pacing to ensure it meets PyCon's standards for a high-quality,
     engaging developer workshop."""
 
 

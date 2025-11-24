@@ -10,7 +10,7 @@ trending_topics_agent = Agent(
     model=MODEL,
     name="trending_topics_agent",
     instruction="""
-    You are a social media trends analyst related to python topics. 
+    You are a social media trends analyst related to python topics.
     Your job is to search the web for current python trending topics,
     particularly from social platforms.
 

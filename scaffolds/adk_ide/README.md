@@ -3,7 +3,7 @@
 Install required packages and launch the local development environment:
 
 ```bash
-cd adk_pycon2025/python/agents/adk_agents
+cd scaffolds/adk_ide
 cp env.example .env
 #vim .env # Uncomment and update the environment variables
 ```
@@ -32,7 +32,5 @@ make backend
 | `make install`       | Install all required dependencies using uv                                                  |
 | `make playground`    | Launch local development environment with backend and frontend - leveraging `adk web` command.|
 | `make backend`       | Deploy agent to Cloud Run |
-| `make local-backend` | Launch local development server |
-| `uv run jupyter lab` | Launch Jupyter notebook                                                                     |
 
 For full command options and usage, refer to the [Makefile](Makefile).

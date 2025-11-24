@@ -9,6 +9,8 @@ __pycache__/
 # IntelliJ IDEA
 .idea/
 
+.vscode/
+
 #Added to avoid exposeing Env configuration files
 .env
 

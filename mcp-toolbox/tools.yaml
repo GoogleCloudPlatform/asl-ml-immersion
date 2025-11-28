@@ -1,0 +1,24 @@
+sources:
+ my-bq-source:
+   kind: bigquery
+   project: <PROJECT_ID>
+
+tools:
+ search_release_notes_bq:
+   kind: bigquery-sql
+   source: my-bq-source
+   statement: |
+    SELECT
+     product_name,description,published_at
+    FROM
+      `bigquery-public-data`.`google_cloud_release_notes`.`release_notes`
+    WHERE
+     DATE(published_at) >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)
+    GROUP BY product_name,description,published_at
+    ORDER BY published_at DESC
+   description: |
+    Use this tool to get information on Google Cloud Release Notes.
+
+toolsets:
+ my_bq_toolset:
+   - search_release_notes_bq

@@ -9,16 +9,8 @@ __pycache__/
 # IntelliJ IDEA
 .idea/
 
-# VSCode config
-.vscode/
-
-#Added to avoid exposeing Env configuration files
-.env
-
-# OS generated files
-.DS_Store
-.DS_Store?
-.Spotlight-V100
+# ADK
+.adk/
 
 # Distribution / packaging
 .Python
@@ -37,8 +29,10 @@ wheels/
 share/python-wheels/
 *.egg-info/
 .installed.cfg
+pyvenv.cfg
 *.egg
 MANIFEST
+*.whl
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -108,7 +102,30 @@ ipython_config.py
 #   install all needed dependencies.
 #Pipfile.lock
 
-# PEP 582; used by e.g. github.com/David-OConnor/pyflow
+# UV
+#   Similar to Pipfile.lock, it is generally recommended to include uv.lock in version control.
+#   This is especially recommended for binary packages to ensure reproducibility, and is more
+#   commonly ignored for libraries.
+#uv.lock
+
+# poetry
+#   Similar to Pipfile.lock, it is generally recommended to include poetry.lock in version control.
+#   This is especially recommended for binary packages to ensure reproducibility, and is more
+#   commonly ignored for libraries.
+#   https://python-poetry.org/docs/basic-usage/#commit-your-poetrylock-file-to-version-control
+poetry.lock
+
+# pdm
+#   Similar to Pipfile.lock, it is generally recommended to include pdm.lock in version control.
+#pdm.lock
+#   pdm stores project-wide configurations in .pdm.toml, but it is recommended to not include it
+#   in version control.
+#   https://pdm.fming.dev/latest/usage/project/#working-with-version-control
+.pdm.toml
+.pdm-python
+.pdm-build/
+
+# PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
 __pypackages__/
 
 # Celery stuff
@@ -126,6 +143,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.env*
 
 # Spyder project settings
 .spyderproject
@@ -151,4 +169,50 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-*_kernel/
+# PyCharm
+#  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
+#  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
+#  and can be added to the global gitignore or merged into this file.  For a more nuclear
+#  option (not recommended) you can uncomment the following to ignore the entire idea folder.
+#.idea/
+
+# Ruff stuff:
+.ruff_cache/
+
+# PyPI configuration file
+.pypirc
+
+# Others
+.DS_Store
+bin
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+.pnpm-debug.log
+
+# next.js
+.next/
+
+# Agent Data Files
+python/agents/personalized-shopping/personalized_shopping/shared_libraries/data/
+python/agents/personalized-shopping/personalized_shopping/shared_libraries/search_engine/**
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+
+# Local 'adk web' logs
+adk_web_log.txt
+adk_web_log*.txt
+
+# Local binary directories
+bin/
+
+# Local VSCode settings
+.vscode/
+
+*.zip

@@ -1,0 +1,45 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "ADK API Server",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scaffolds/adk_ide/.venv/bin/adk",
+            "python": "${workspaceFolder}/scaffolds/adk_ide/.venv/bin/python",
+            "args": [
+                "api_server",
+                "${workspaceFolder}/scaffolds/adk_ide",
+                "--port",
+                "8502",
+                "--reload_agents"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Python Debugger: ADK Web",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scaffolds/adk_ide/.venv/bin/adk",
+            "python": "${workspaceFolder}/scaffolds/adk_ide/.venv/bin/python",
+            "args": [
+                "web",
+                "${workspaceFolder}/scaffolds/adk_ide",
+                "--port",
+                "8501",
+                "--reload_agents"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Python Debugger: Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "python": "${workspaceFolder}/scaffolds/adk_ide/.venv/bin/python",
+            "console": "integratedTerminal"
+        }
+    ]
+}

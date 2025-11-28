@@ -49,7 +49,9 @@ def get_weather_stateful(city: str, tool_context: ToolContext) -> dict:
             temp_value = temp_c
             temp_unit = "°C"
 
-        report = f"The weather in {city.capitalize()} is {condition} with a temperature of {temp_value:.0f}{temp_unit}."
+        report = f"""
+        The weather in {city.capitalize()} is {condition} with a temperature of {temp_value:.0f}{temp_unit}.
+        """
         result = {"status": "success", "report": report}
         print(
             f"--- Tool: Generated report in {preferred_unit}. Result: {result} ---"

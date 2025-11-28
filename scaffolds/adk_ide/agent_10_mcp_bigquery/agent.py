@@ -27,7 +27,11 @@ root_agent = Agent(
         "Agent to answer questions about Google Cloud Release notes."
     ),
     instruction=(
-        "You are a helpful agent who can answer user questions about the Google Cloud Release notes. Use the tools to answer the question"
+        """
+        You are a helpful agent who can answer user questions about 
+        the Google Cloud Release notes. 
+        Use the tools to answer the question
+        """
     ),
     tools=tools,
 )

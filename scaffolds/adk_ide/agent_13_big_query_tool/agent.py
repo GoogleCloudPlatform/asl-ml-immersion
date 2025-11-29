@@ -14,15 +14,13 @@
 
 import asyncio
 
+import google.auth
 from google.adk.agents import Agent
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
-from google.adk.tools.bigquery import BigQueryCredentialsConfig
-from google.adk.tools.bigquery import BigQueryToolset
-from google.adk.tools.bigquery.config import BigQueryToolConfig
-from google.adk.tools.bigquery.config import WriteMode
+from google.adk.tools.bigquery import BigQueryCredentialsConfig, BigQueryToolset
+from google.adk.tools.bigquery.config import BigQueryToolConfig, WriteMode
 from google.genai import types
-import google.auth
 
 # Define constants for this example agent
 AGENT_NAME = "bigquery_agent"
@@ -38,7 +36,6 @@ tool_config = BigQueryToolConfig(write_mode=WriteMode.BLOCKED)
 # This decouples authentication from the agent / tool lifecycle.
 # https://cloud.google.com/docs/authentication/provide-credentials-adc
 credentials_config = BigQueryCredentialsConfig()
-
 
 
 # Instantiate a BigQuery toolset

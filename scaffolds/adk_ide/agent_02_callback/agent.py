@@ -11,54 +11,57 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from google.adk.agents.llm_agent import Agent
+from typing import Any, Dict, Optional
+
 from google.adk.agents.callback_context import CallbackContext
+from google.adk.agents.llm_agent import Agent
 from google.adk.models.llm_request import LlmRequest
 from google.adk.models.llm_response import LlmResponse
 from google.adk.tools.base_tool import BaseTool
 from google.adk.tools.tool_context import ToolContext
 from google.genai.types import Content, Part
-from typing import Any, Dict, Optional
 
 MODEL = "gemini-2.0-flash"
 
 from .tools import get_location, get_weather
 
-# Before Agent Callback
-# Ideal for logging, pre-execution validation checks, or skipping agent execution.
-def before_agent_callback(callback_context: CallbackContext) -> Optional[Content]:
 
-    print(f"!!! before_agent_callback")
-    print(f"  Agent: {callback_context.agent_name}")
-    print(f"  Invocation ID: {callback_context.invocation_id}")
-    print(f"  Current State: {callback_context.state.to_dict()}")
+# Before Agent Callback
+def before_agent_callback(
+    callback_context: CallbackContext,
+) -> Optional[Content]:
+
+    print(f"--------- before_agent_callback ---------")
+    print(f"Agent: {callback_context.agent_name}")
+    print(f"Invocation ID: {callback_context.invocation_id}")
+    print(f"Current State: {callback_context.state.to_dict()}")
 
     # Allow default behavior
     return None
 
 
 # After Agent Callback
-# Ideal for logging, post-execution validation checks, or modifying/augmenting final response.
-def after_agent_callback(callback_context: CallbackContext) -> Optional[Content]:
+def after_agent_callback(
+    callback_context: CallbackContext,
+) -> Optional[Content]:
 
-    print(f"!!! after_agent_callback")
-    print(f"  Agent: {callback_context.agent_name}")
-    print(f"  Invocation ID: {callback_context.invocation_id}")
-    print(f"  Current State: {callback_context.state.to_dict()}")
+    print(f"--------- after_agent_callback ---------")
+    print(f"Agent: {callback_context.agent_name}")
+    print(f"Invocation ID: {callback_context.invocation_id}")
+    print(f"Current State: {callback_context.state.to_dict()}")
 
     # Allow default behavior
     return None
 
 
 # Before Model Callback
-# Ideal for logging, inspection/modification of LlmRequest, or skipping model call.
 def before_model_callback(
     callback_context: CallbackContext, llm_request: LlmRequest
 ) -> Optional[LlmResponse]:
 
-    print(f"!!! before_model_callback")
-    print(f"  Agent: {callback_context.agent_name}")
-    print(f"  Invocation ID: {callback_context.invocation_id}")
+    print(f"--------- before_model_callback ---------")
+    print(f"Agent: {callback_context.agent_name}")
+    print(f"Invocation ID: {callback_context.invocation_id}")
 
     # Inspect the last user message in the request
     test = False
@@ -74,7 +77,9 @@ def before_model_callback(
         print(f"  Model call skipped")
         return LlmResponse(
             content=Content(
-                parts=[Part(text=f"Model call skipped by 'before_model_callback'.")],
+                parts=[
+                    Part(text=f"Model call skipped by 'before_model_callback'.")
+                ],
                 role="model",  # Assign model role to the overriding response
             )
         )
@@ -83,14 +88,13 @@ def before_model_callback(
 
 
 # After Model Callback
-# Ideal for logging, inspection/modification of LlmResponse.
 def after_model_callback(
     callback_context: CallbackContext, llm_response: LlmResponse
 ) -> Optional[LlmResponse]:
 
-    print(f"!!! after_model_callback")
-    print(f"  Agent: {callback_context.agent_name}")
-    print(f"  Invocation ID: {callback_context.invocation_id}")
+    print(f"--------- after_model_callback ---------")
+    print(f"Agent: {callback_context.agent_name}")
+    print(f"Invocation ID: {callback_context.invocation_id}")
 
     # Inspect the model response
     test = False
@@ -120,16 +124,15 @@ def after_model_callback(
 
 
 # Before Tool Callback
-# Ideal for logging, inspection/modification of tool args, or skipping tool execution.
 def before_tool_callback(
     tool: BaseTool, args: Dict[str, Any], tool_context: ToolContext
 ) -> Optional[Dict]:
 
-    print(f"!!! before_tool_callback")
-    print(f"  Agent: {tool_context.agent_name}")
-    print(f"  Invocation ID: {tool_context.invocation_id}")
-    print(f"  Tool: {tool.name}")
-    print(f"  Args: {args}")
+    print(f"--------- before_tool_callback ---------")
+    print(f"Agent: {tool_context.agent_name}")
+    print(f"Invocation ID: {tool_context.invocation_id}")
+    print(f"Tool: {tool.name}")
+    print(f"Args: {args}")
 
     # Return tool response to skip tool execution
     test = True
@@ -146,28 +149,33 @@ def before_tool_callback(
 
 
 # After Tool Callback
-# Ideal for logging, inspection/modification of tool response.
 def after_tool_callback(
-    tool: BaseTool, args: Dict[str, Any], tool_context: ToolContext, tool_response: Dict
+    tool: BaseTool,
+    args: Dict[str, Any],
+    tool_context: ToolContext,
+    tool_response: Dict,
 ) -> Optional[Dict]:
 
-    print(f"!!! after_tool_callback")
-    print(f"  Agent: {tool_context.agent_name}")
-    print(f"  Invocation ID: {tool_context.invocation_id}")
-    print(f"  Tool: {tool.name}")
-    print(f"  Args: {args}")
-    print(f"  Tool response: {tool_response}")
+    print(f"--------- after_tool_callback ---------")
+    print(f"Agent: {tool_context.agent_name}")
+    print(f"Invocation ID: {tool_context.invocation_id}")
+    print(f"Tool: {tool.name}")
+    print(f"Args: {args}")
+    print(f"Tool response: {tool_response}")
 
     # Modify the tool response
     test = False
     if test:
         if tool.name == "get_weather":
             tool_response = "The weather is always rainy and gloomy."
-            print(f"  Tool response modified for 'get_weather' to: {tool_response}")
+            print(
+                f"Tool response modified for 'get_weather' to: {tool_response}"
+            )
             return tool_response
 
     # Allow default behavior
     return None
+
 
 root_agent = Agent(
     name="weather_agent_v2",
@@ -177,7 +185,8 @@ root_agent = Agent(
     instruction="""You are a helpful weather assistant.
     When the user asks for the weather in a specific city,
     use the 'get_weather' tool to find the information.
-    If user doesnt specify a city, use the 'get_location' tool to find the information.
+    If user doesnt specify a city, use the 'get_location' tool 
+    to find the information.
     If the tool returns an error, inform the user politely.
     If the tool is successful, present the weather report clearly.""",
     tools=[get_location, get_weather],
@@ -188,5 +197,3 @@ root_agent = Agent(
     before_tool_callback=before_tool_callback,
     after_tool_callback=after_tool_callback,
 )
-
-

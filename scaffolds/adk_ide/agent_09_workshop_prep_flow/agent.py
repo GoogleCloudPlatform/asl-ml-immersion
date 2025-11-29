@@ -21,21 +21,21 @@ MODEL = "gemini-2.5-flash"
 
 # --- Agent Prompts ---
 
-PLAN_PROMPT = """You are an expert writer tasked with writing 
+PLAN_PROMPT = """You are an expert writer tasked with writing
 a high level outline of an hands-on workshop.
-Write such an outline for the user provided topic. 
+Write such an outline for the user provided topic.
 Give an outline of the hands-on workshop along with any
 relevant notes or instructions for the sections."""
 
 
 INITIAL_WRITER_PROMPT = """
-You are a tutorial write tasked with writing excellent 
+You are a tutorial write tasked with writing excellent
 3-pages hands-on tutorial for hands-on workshop.
-Generate the best tutorial possible using google search, 
+Generate the best tutorial possible using google search,
 based on the high level outline.
-If critique is provided below, respond with a revised 
+If critique is provided below, respond with a revised
 version of your previous attempts.
-Use Markdown formatting to specify a title 
+Use Markdown formatting to specify a title
 and section headers for each paragraph.
 Utilize all of the information below as needed:
 ---
@@ -55,12 +55,12 @@ Critique:
 
 REFLECTION_PROMPT = """You are an experienced Python conference reviewer
     and workshop planning expert.
-    Read the workshop proposal or outline provided by the user 
+    Read the workshop proposal or outline provided by the user
     and generate constructive critique
-    and actionable recommendations for it. 
+    and actionable recommendations for it.
     Provide detailed feedback on the workshop's structure,
-    clarity of learning objectives, proposed hands-on exercises, 
-    target audience fit, and estimated pacing to ensure it meets 
+    clarity of learning objectives, proposed hands-on exercises,
+    target audience fit, and estimated pacing to ensure it meets
     Conference standards for a high-quality,
     engaging developer workshop."""
 
@@ -102,7 +102,7 @@ writer_agent = LlmAgent(
     output_key="draft",
 )
 
-# The loop for refining the workshop tutorial: 
+# The loop for refining the workshop tutorial:
 # Reflect -> Research Critique -> Rewrite
 refinement_loop = LoopAgent(
     name="refinement_loop",

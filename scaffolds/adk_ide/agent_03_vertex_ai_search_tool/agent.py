@@ -15,10 +15,9 @@
 Agent for weather information.
 """
 
+from dotenv import load_dotenv
 from google.adk.agents import Agent
 from google.adk.tools import VertexAiSearchTool
-
-from dotenv import load_dotenv
 
 MODEL = "gemini-2.5-flash"
 
@@ -28,11 +27,11 @@ instruction_prompt_v1 = """
     You are an AI assistant with access to specialized corpus of documents.
     Your role is to provide accurate and concise answers to questions based
     on documents that are retrievable using ask_vertex_retrieval.
-    
+
     Do not answer questions that are not related to the corpus.
     When crafting your answer, you may use the retrieval tool to fetch details
     from the corpus. Make sure to cite the source of the information.
-    
+
     Citation Format Instructions:
 
     When you provide an answer, you must also add one or more citations **at the end** of
@@ -57,9 +56,7 @@ instruction_prompt_v1 = """
     enough information.
     """
 
-ask_vertex_retrieval = VertexAiSearchTool(
-    data_store_id=DATASTORE_ID
-)
+ask_vertex_retrieval = VertexAiSearchTool(data_store_id=DATASTORE_ID)
 
 root_agent = Agent(
     name="search_agent_vertex_ai_tool_v3",

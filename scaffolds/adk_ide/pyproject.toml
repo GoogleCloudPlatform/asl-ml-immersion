@@ -15,7 +15,8 @@ dependencies = [
     "psycopg2-binary>=2.9.10",
     "python-dotenv==1.1.0",
     "fastmcp==2.12.4",
-    "toolbox-core==0.5.2"
+    "toolbox-core==0.5.2",
+    "streamlit==1.51.0"
 ]
 
 [dependency-groups]

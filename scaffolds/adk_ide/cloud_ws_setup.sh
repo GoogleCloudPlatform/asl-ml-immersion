@@ -68,12 +68,10 @@ done
 echo " Cluster is Ready."
 
 # 4. Create Workstation Configuration
-# This defines the "Default IDE" (Code OSS) and attaches the Default SA.
 echo "----------------------------------------------------------------"
 echo "Step 4: Creating Workstation Configuration '$CONFIG_NAME'..."
 
-# The image URI for the default Code OSS (VS Code) IDE.
-# We use the variable region to ensure we pull from the correct registry location.
+# IMAGE_URI remains the same
 IMAGE_URI="$REGION-docker.pkg.dev/cloud-workstations-images/predefined/code-oss:latest"
 
 if gcloud workstations configs describe $CONFIG_NAME --region=$REGION --cluster=$CLUSTER_NAME > /dev/null 2>&1; then
@@ -83,11 +81,10 @@ else
         --region=$REGION \
         --cluster=$CLUSTER_NAME \
         --machine-type="e2-standard-4" \
-        --container-image="$IMAGE_URI" \
+        --container-custom-image="$IMAGE_URI" \
         --service-account="$DEFAULT_SA" \
-        --service-account-scopes="https://www.googleapis.com/auth/cloud-platform" \
         --quiet
-    echo "Configuration created with Service Account: $DEFAULT_SA"
+    echo "Configuration created."
 fi
 
 # 5. Create the Workstation Instance

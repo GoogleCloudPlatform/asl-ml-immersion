@@ -18,19 +18,22 @@ make install
 export PATH=$PATH:~/.local/bin
 make install
 source .venv/bin/activate
+export PROJECT_ID=$(curl -s "http://metadata.google.internal/computeMetadata/v1/project/project-id" -H "Metadata-Flavor: Google")
+echo $PROJECT_ID
+gcloud config set project $PROJECT_ID
+export GOOGLE_CLOUD_PROJECT=$PROJECT_ID
+export CLOUDSDK_CORE_PROJECT=$GOOGLE_CLOUD_PROJECT
+echo $CLOUDSDK_CORE_PROJECT
+gcloud config set project $CLOUDSDK_CORE_PROJECT
 cp env.example .env
+sed -i "s/^# GOOGLE_CLOUD_PROJECT=.*/GOOGLE_CLOUD_PROJECT=$PROJECT_ID/" .env
 #vim .env # Uncomment and update the environment variables
 ```
 
 If you are using Vertex AI, make sure you are authenticated with `gcloud`:
 
 ```bash
-#gcloud auth application-default login
-gcloud auth list
-gcloud config set account <your id>-compute@developer.gserviceaccount.com
 gcloud config set project <your-dev-project-id>
-make install
-make playground
 ```
 
 # Testing API Server with curl

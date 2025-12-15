@@ -64,17 +64,17 @@ def before_model_callback(
     print(f"Invocation ID: {callback_context.invocation_id}")
 
     # Inspect the last user message in the request
-    test = False
-    if test:
+    callback_test = False
+    if callback_test:
         last_user_message = ""
         if llm_request.contents and llm_request.contents[-1].role == "user":
             if llm_request.contents[-1].parts:
                 last_user_message = llm_request.contents[-1].parts[0].text
-        print(f"  Inspecting last user message: '{last_user_message}'")
+        print(f"Inspecting last user message: '{last_user_message}'")
 
     # Return LlmResponse to skip model call
-    if test:
-        print(f"  Model call skipped")
+    if callback_test:
+        print(f"Model call skipped")
         return LlmResponse(
             content=Content(
                 parts=[
@@ -97,21 +97,21 @@ def after_model_callback(
     print(f"Invocation ID: {callback_context.invocation_id}")
 
     # Inspect the model response
-    test = False
-    if test:
+    callback_test = False
+    if callback_test:
         response_text = ""
         if llm_response.content and llm_response.content.parts:
             response_text = llm_response.content.parts[0].text
-        print(f"  Inspecting model response: '{response_text}'")
+        print(f"Model response: '{response_text}'")
 
     # Modify the model response with a new LlmResponse
-    if test:
-        print(f"  Model response modified to be uppercase")
+    if callback_test:
+        print(f"Model response modified to be uppercase")
         modified_response = LlmResponse(
             content=Content(
                 parts=[
                     Part(
-                        text=f"[Modified by after_model_callback] {llm_response.content.parts[0].text.upper()}"
+                        text=f"Modified by after_model_callback: {llm_response.content.parts[0].text.upper()}"
                     )
                 ],
                 role="model",
@@ -135,12 +135,12 @@ def before_tool_callback(
     print(f"Args: {args}")
 
     # Return tool response to skip tool execution
-    test = True
-    if test:
+    callback_test = False
+    if callback_test:
         if tool.name == "get_weather" and args.get("city").lower() == "dublin":
             tool_response = "The weather in Dublin is always rainy."
             print(
-                f"  Tool execution skipped for location Dublin and returning tool response: {tool_response}"
+                f"Tool execution skipped for location Dublin and returning tool response: {tool_response}"
             )
             return tool_response
 
@@ -164,10 +164,10 @@ def after_tool_callback(
     print(f"Tool response: {tool_response}")
 
     # Modify the tool response
-    test = False
-    if test:
+    callback_test = False
+    if callback_test:
         if tool.name == "get_weather":
-            tool_response = "The weather is always rainy and gloomy."
+            tool_response = "The weather is always sunny."
             print(
                 f"Tool response modified for 'get_weather' to: {tool_response}"
             )

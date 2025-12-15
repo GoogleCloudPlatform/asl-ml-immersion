@@ -18,13 +18,18 @@ Agent for weather information.
 from dotenv import load_dotenv
 from google.adk.agents import Agent
 from google.adk.tools import VertexAiSearchTool
-
+import os
 MODEL = "gemini-2.5-flash"
 
-DATASTORE_ID = "projects/YOUR_PROJECT_ID/locations/global/collections/default_collection/dataStores/YOUR_DATASTORE_ID"
+load_dotenv()
 
-instruction_prompt_v1 = """
-    You are an AI assistant with access to specialized corpus of documents.
+DATASTORE_ID="TODO: PUT_YOUR_DATASTORE_ID_HERE"
+
+DATASTORE_RESOURCE_ID = f"projects/{os.getenv('GOOGLE_CLOUD_PROJECT')}/locations/global/collections/default_collection/dataStores/{DATASTORE_ID}"
+
+instruction_prompt_v1 = f"""
+    You are a helpful assistant that answers questions based on information
+    found in the document store: {DATASTORE_RESOURCE_ID}.
     Your role is to provide accurate and concise answers to questions based
     on documents that are retrievable using ask_vertex_retrieval.
 
@@ -56,7 +61,7 @@ instruction_prompt_v1 = """
     enough information.
     """
 
-ask_vertex_retrieval = VertexAiSearchTool(data_store_id=DATASTORE_ID)
+ask_vertex_retrieval = VertexAiSearchTool(data_store_id=DATASTORE_RESOURCE_ID)
 
 root_agent = Agent(
     name="search_agent_vertex_ai_tool_v3",

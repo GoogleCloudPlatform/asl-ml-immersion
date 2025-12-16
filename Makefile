@@ -53,6 +53,10 @@ pytorch_kfp_kernel:
 tf_privacy_kernel:
 	./kernels/tf_privacy.sh
 
+.PHONY: keras_cv_kernel
+keras_cv_kernel:
+	./kernels/keras_cv.sh
+
 .PHONY: tests
 tests:
 	pytest tests/unit

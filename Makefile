@@ -12,39 +12,39 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-all: clean install
+ENVS = asl_core asl_agent asl_mlops
 
-kernels: \
- object_detection_kernel \
- pytorch_kfp_kernel \
- tf_privacy_kernel
+.PHONY: clean setup dev $(ENVS)
 
-.PHONY: clean
+all: setup $(ENVS)
+
+install: setup $(ENVS)
+
+install-dev: install dev
+
 clean:
 	@find . -name '*.pyc' -delete
 	@find . -name '*.pytest_cache' -delete
 	@find . -name '__pycache__' -delete
-	@find . -name '*egg-info' -delete
 
-.PHONY: install
-install:
-	@pip install --user -U pip
-	@pip install --user "Cython<3"
-	@pip install --user -e .
-	@pip install --user --no-deps -r requirements-without-deps.txt
-	@./scripts/setup_on_jupyterlab.sh
-	@pre-commit install
-	@sudo apt-get update
-	@sudo apt-get -y install graphviz
+	@echo "Removing Kernels and Venvs..."
+	@for env in $(ENVS); do \
+		bash $$env/setup_env.sh remove; \
+    	rm -rf ./$$env/asl.egg-info; \
+	done
 
-.PHONY: precommit
-precommit:
-	@pre-commit run --all-files
+setup:
+	./scripts/setup_on_jupyterlab.sh
+	sudo apt-get update
+	sudo apt-get -y install graphviz
+	curl -LsSf https://astral.sh/uv/install.sh | sh;
+	. $(HOME)/.local/bin/env
 
-.PHONY: object_detection_kernel
-object_detection_kernel:
-	./kernels/object_detection.sh
+dev:
+	pip install -U pre-commit pytest
+	pre-commit install
 
+<<<<<<< HEAD
 .PHONY: pytorch_kfp_kernel
 pytorch_kfp_kernel:
 	./kernels/pytorch_kfp.sh
@@ -60,3 +60,8 @@ keras_cv_kernel:
 .PHONY: tests
 tests:
 	pytest tests/unit
+=======
+$(ENVS):
+	@echo "=== Building Environment for $@ ==="
+	@bash $@/setup_env.sh
+>>>>>>> 7fd72def (WIP: testing modular approach)

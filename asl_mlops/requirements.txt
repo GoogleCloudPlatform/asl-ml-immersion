@@ -1,0 +1,17 @@
+# Requirements for asl-ml-immersion repository
+
+# Google & Google Cloud
+google-api-core==2.25.1
+google-cloud-storage==2.19.0
+google-cloud-aiplatform==1.100.0
+google-cloud-bigquery==3.34.0
+cloudml-hypertune
+apache-beam[gcp]==2.65.0
+
+# Machine Learning Frameworks
+scikit-learn==1.7.2
+
+# MLOps
+kubernetes==17.17.0
+kfp==2.4.0
+google-cloud-pipeline-components==2.8.0

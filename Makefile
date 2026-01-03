@@ -1,4 +1,4 @@
-# Copyright 2021 Google LLC. All Rights Reserved.
+# Copyright 2025 Google LLC. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,38 +12,40 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-ENVS = asl_core asl_agent asl_mlops
 
-.PHONY: clean setup dev $(ENVS)
+SHELL := /bin/bash
+export PATH := $(HOME)/.local/bin:$(PATH)
+SETUP_SCRIPT = ./scripts/setup_kernel.sh
 
-all: setup $(ENVS)
+PROJECTS = \
+	asl_core:asl_core:"ASL Core" \
+	asl_agent:asl_agent:"ASL Agent" \
+	asl_mlops:asl_mlops:"ASL MLOps"
 
-install: setup $(ENVS)
+.PHONY: all clean clean-all setup install
 
-install-dev: install dev
+all: setup build-kernels
+
+install: setup build-kernels
 
 clean:
 	@find . -name '*.pyc' -delete
-	@find . -name '*.pytest_cache' -delete
 	@find . -name '__pycache__' -delete
-
-	@echo "Removing Kernels and Venvs..."
-	@for env in $(ENVS); do \
-		bash $$env/setup_env.sh remove; \
-    	rm -rf ./$$env/asl.egg-info; \
+	@find . -type d -name '*.egg-info' -exec rm -rf {} +
+	
+	@for config in $(PROJECTS); do \
+		IFS=: read -r dir name disp <<< "$$config"; \
+		bash $(SETUP_SCRIPT) $$dir $$name "$$disp" remove; \
 	done
 
 setup:
 	./scripts/setup_on_jupyterlab.sh
-	sudo apt-get update
-	sudo apt-get -y install graphviz
-	curl -LsSf https://astral.sh/uv/install.sh | sh;
-	. $(HOME)/.local/bin/env
+	sudo apt-get update && sudo apt-get -y install graphviz
+	@command -v uv >/dev/null 2>&1 || curl -LsSf https://astral.sh/uv/install.sh | sh
+	pip install ipykernel
 
-dev:
-	pip install -U pre-commit pytest
-	pre-commit install
-
-$(ENVS):
-	@echo "=== Building Environment for $@ ==="
-	@bash $@/setup_env.sh
+build-kernels:
+	@for config in $(PROJECTS); do \
+		IFS=: read -r dir name disp <<< "$$config"; \
+		bash $(SETUP_SCRIPT) $$dir $$name "$$disp"; \
+	done

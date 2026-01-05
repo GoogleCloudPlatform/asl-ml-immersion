@@ -34,7 +34,7 @@ echo "--- Setting up $ENVNAME in $PROJECT_DIR ---"
 # 1. Create Venv
 if [ ! -d "$VENV_DIR" ]; then
     echo "Creating virtual environment..."
-    uv venv "$VENV_DIR"
+    uv venv "$VENV_DIR" --python 3.10 --prompt "$ENVNAME"
 fi
 
 # 2. Install Dependencies

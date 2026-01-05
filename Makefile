@@ -41,7 +41,7 @@ clean:
 	done
 
 setup:
-	./scripts/setup_on_jupyterlab.sh
+	./scripts/setup_env.sh
 	sudo apt-get update && sudo apt-get -y install graphviz
 	@command -v uv >/dev/null 2>&1 || curl -LsSf https://astral.sh/uv/install.sh | sh
 	uv python install 3.10

@@ -22,11 +22,11 @@ PROJECTS = \
 	asl_agent:asl_agent:"ASL Agent" \
 	asl_mlops:asl_mlops:"ASL MLOps"
 
-.PHONY: all clean clean-all setup install
+.PHONY: all install clean setup dev build-kernels
 
 all: setup build-kernels
 
-install: setup build-kernels
+install: setup build-kernels dev
 
 clean:
 	@find . -name '*.pyc' -delete
@@ -43,6 +43,10 @@ setup:
 	sudo apt-get update && sudo apt-get -y install graphviz
 	@command -v uv >/dev/null 2>&1 || curl -LsSf https://astral.sh/uv/install.sh | sh
 	pip install ipykernel
+
+dev:
+	pip install -U pre-commit pytest
+	pre-commit install
 
 build-kernels:
 	@for config in $(PROJECTS); do \

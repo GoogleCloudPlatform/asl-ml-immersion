@@ -67,7 +67,7 @@ cd asl-ml-immersion
 make
 ```
 
-On Cloud Workstations, click `Open Folder` -> `asl-ml-immersion` to open the repository window. If the folder is already opend, click `Command + Shift + P` and type `Developer: Reload Window` to reflect the changes to the window.
+On Cloud Workstations, click `Open Folder` -> `asl-ml-immersion` to open the repository window. If the folder is already opend, click `Command + Shift + P` and type `Developer: Reload Window` to reflect the changes.
 
 ## Using the Environment
 ### Running a notebook with built a kernel

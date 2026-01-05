@@ -32,7 +32,7 @@ clean:
 	@find . -name '*.pyc' -delete
 	@find . -name '__pycache__' -delete
 	@find . -type d -name '*.egg-info' -exec rm -rf {} +
-	
+
 	@for config in $(PROJECTS); do \
 		IFS=: read -r dir name disp <<< "$$config"; \
 		bash $(SETUP_SCRIPT) $$dir $$name "$$disp" remove; \
@@ -42,10 +42,10 @@ setup:
 	./scripts/setup_on_jupyterlab.sh
 	sudo apt-get update && sudo apt-get -y install graphviz
 	@command -v uv >/dev/null 2>&1 || curl -LsSf https://astral.sh/uv/install.sh | sh
-	pip install ipykernel
-
+	uv python install 3.10
+	uv tool install jupyter-core --with jupyter-client
 dev:
-	pip install -U pre-commit pytest
+	uv tool install pre-commit
 	pre-commit install
 
 build-kernels:

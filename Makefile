@@ -26,7 +26,9 @@ PROJECTS = \
 
 all: setup build-kernels
 
-install: setup build-kernels dev
+install: setup build-kernels
+
+dev: install install-pre-commit
 
 clean:
 	@find . -name '*.pyc' -delete
@@ -44,12 +46,13 @@ setup:
 	@command -v uv >/dev/null 2>&1 || curl -LsSf https://astral.sh/uv/install.sh | sh
 	uv python install 3.10
 	uv tool install jupyter-core --with jupyter-client
-dev:
-	uv tool install pre-commit
-	pre-commit install
 
 build-kernels:
 	@for config in $(PROJECTS); do \
 		IFS=: read -r dir name disp <<< "$$config"; \
 		bash $(SETUP_SCRIPT) $$dir $$name "$$disp"; \
 	done
+
+install-pre-commit:
+	uv tool install pre-commit
+	pre-commit install

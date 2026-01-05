@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright 2023 Google LLC. All Rights Reserved.
+# Copyright 2026 Google LLC. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,9 +13,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
 # Configure variables
 echo 'export PATH=$PATH:~/.local/bin:' >> ~/.bash_profile
 echo 'export PATH=$PATH:~/.local/bin:' >> ~/.bashrc
+
+export PROJECT_ID=$(gcloud config get-value project)
+export PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format="value(projectNumber)")
+export BUCKET=$PROJECT_ID
+export MULTIREGION=us
+export REGION=us-central1
+export ARTIFACT_REG_REPO=asl-artifact-repo
+
+
+# Grant Storage Object Admin to Compute Engine service account
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com \
+    --role roles/storage.objectAdmin
+
 
 # Enable Google Cloud services
 gcloud services enable \
@@ -33,18 +48,14 @@ gcloud services enable \
   dataflow.googleapis.com \
   run.googleapis.com
 
-# Setup Artifact Registry
-export PROJECT_ID=$(gcloud config get-value project)
-export BUCKET=$PROJECT_ID
-export MULTIREGION=us
-export REGION=us-central1
-export ARTIFACT_REG_REPO=asl-artifact-repo
 
+# Setup Artifact Registry
 if ! gcloud artifacts repositories describe $ARTIFACT_REG_REPO \
        --location=$MULTIREGION > /dev/null 2>&1; then
     gcloud artifacts repositories create $ARTIFACT_REG_REPO \
     --project=$PROJECT_ID --location=$MULTIREGION --repository-format=docker
 fi
+
 
 # Create a GCS bucket
 exists=$(gsutil ls -d | grep -w gs://${BUCKET}/)

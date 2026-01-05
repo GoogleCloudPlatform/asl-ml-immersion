@@ -1,5 +1,5 @@
 [project]
-name = "asl"
+name = "asl_mlops"
 version = "0.1"
 dynamic = ["dependencies"]
 

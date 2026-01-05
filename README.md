@@ -17,20 +17,20 @@ We have three main folders described below:
 
 ```
 ├── asl_core
-|   ├── contents - contains learning materials organized by topic
-│       ├── building_production_ml_systems
-│           ├── labs
-│           ├── solutions
-│       ├── end-to-end-structured
-│       ├── image_models
-│       ├── ...
-|   ├── kernels - contains kernel scripts needed for certain notebooks
-|   ├── scaffolds - contains sample code to accelerate AI/ML projects
-|   ├── requirements.txt - dependencies for this module
+│   ├── contents - contains learning materials organized by topic
+│   │   ├── building_production_ml_systems
+│   │   │   ├── labs
+│   │   │   └── solutions
+│   │   ├── end-to-end-structured
+│   │   ├── image_models
+│   │   ├── ...
+│   ├── kernels - contains kernel scripts needed for certain notebooks
+│   ├── scaffolds - contains sample code to accelerate AI/ML projects
+│   ├── requirements.txt - dependencies for this module
 ├── asl_mlops
-|   ├── ...
+│   ├── ...
 ├── asl_agent
-|   ├── ...
+│   ├── ...
 ├── ...
 ```
 

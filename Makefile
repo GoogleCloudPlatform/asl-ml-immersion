@@ -22,11 +22,11 @@ PROJECTS = \
 	asl_agent:asl_agent:"ASL Agent" \
 	asl_mlops:asl_mlops:"ASL MLOps"
 
-.PHONY: all clean clean-all setup install
+.PHONY: all install clean setup dev build-kernels
 
 all: setup build-kernels
 
-install: setup build-kernels
+install: setup build-kernels dev
 
 clean:
 	@find . -name '*.pyc' -delete
@@ -47,10 +47,6 @@ setup:
 dev:
 	pip install -U pre-commit pytest
 	pre-commit install
-
-$(ENVS):
-	@echo "=== Building Environment for $@ ==="
-	@bash $@/setup_env.sh
 
 build-kernels:
 	@for config in $(PROJECTS); do \

@@ -71,10 +71,11 @@ On Cloud Workstations, click `Open Folder` -> `asl-ml-immersion` to open the rep
 
 ## Using the Environment
 ### Running a notebook with built a kernel
-After the setup above, you can open a Jupyter notebook file, and execute on a module kernel (`ASL Core`, `ASL MLOps`, or `ASL Agent`).
+After the setup above, you can open a Jupyter notebook file, and execute on a module kernel (`ASL Core`, `ASL MLOps`, or `ASL Agent`). <br>
+If a correct kernel is not pre-selected, click `Select Kernel` and select a correct one.
 
-If a correct kernel is not pre-selected, click `Select Kernel` and select one. (On workbench, you can find a kernel under `Select Kernel` -> `Jupyter Kernels`) <br>
-If you can't find `Jupyter Kernels` on Cloud Workstations, click `Python Environment` -> `<- (Left Arrow)` to reload the environment.
+**On Cloud Workstations**, you can find a kernel under `Select Kernel` -> `Jupyter Kernels`. <br>
+If you can't find `Jupyter Kernels`, click `Python Environment` -> `<- (Left Arrow)` to reload the environment.
 
 **Note**: Some notebooks might require additional setup, please refer to the instructions in specific notebooks.
 

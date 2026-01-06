@@ -1,15 +1,15 @@
 # Advanced Solutions Lab
 
 ## Overview
-This repository contains AI and Machine Learning contents meant to be run on Google Cloud. This is maintained by Google Cloud’s [Advanced Solutions Lab (ASL)](https://cloud.google.com/asl) team. 
+This repository contains AI and Machine Learning contents meant to be run on Google Cloud. This is maintained by Google Cloud’s [Advanced Solutions Lab (ASL)](https://cloud.google.com/asl) team.
 
-This repository contains 3 main modules to covers various AI/ML toipcs: 
+This repository contains 3 main modules to covers various AI/ML toipcs:
 - `asl_core`: A wide range of model architectures (DNN, CNN, RNN, transformers, SNGP, etc.) targeting many data modalities (tabular, image, text, time-series) implemented mainly in Tensorflow and Keras.
 - `asl_mlops`: Tools on Google Cloud’s Vertex AI for operationalizing Tensorflow, Scikit-learn and PyTorch models at scale (e.g. Vertex training, tuning, and serving, TFX and Kubeflow pipelines).
 - `asl_agent`: Generative AI and Agent System using Gemini and Agentic Frameworks like Google ADK.
 
 ## Repository Structure
-Each module (`asl_core`, `asl_mlops`, `asl_agent`) has separate environment and contents, which are organized in each directory. 
+Each module (`asl_core`, `asl_mlops`, `asl_agent`) has separate environment and materials, which are organized in each directory.
 
 All learning materials are in the contets folder. This folder is organized by different topics. Each folder contains a `labs` and a `solutions` folder. Use the `labs` notebooks to test your coding skills by filling in TODOs and refer to the notebooks in the `solutions` folder to verify your code.
 
@@ -17,7 +17,7 @@ We have three main folders described below:
 
 ```
 ├── asl_core
-│   ├── contents - contains learning materials organized by topic
+│   ├── notebooks - contains learning materials organized by topic
 │   │   ├── building_production_ml_systems
 │   │   │   ├── labs
 │   │   │   └── solutions
@@ -43,7 +43,7 @@ This repository is tested on Vertex AI Workbench and Cloud Workstations. Spin up
 #### Option B: Cloud Workstations
 [Cloud Workstations](https://cloud.google.com/workstations) is a fully managed development environments built to meet the needs of security-sensitive enterprises, while accelerating developer onboarding and productivity, including a native integration with Gemini for Google Cloud.
 
-1. Follow [the official documentation](https://docs.cloud.google.com/workstations/docs/create-workstation) to set up a Cloud Workstations IDE. 
+1. Follow [the official documentation](https://docs.cloud.google.com/workstations/docs/create-workstation) to set up a Cloud Workstations IDE.
 2. Launch a workstation, and install `Python` and `Jupyter` extensions from the `Extension` tab on the left.
 
 **Note:** Accelerators (GPU/TPU) are not required in most of the labs, but some notebooks recommend using them.
@@ -85,7 +85,7 @@ When running a command from the terminal, make sure to activate a venv for a spe
 E.g. (under asl-ml-immersion directory),
 ```bash
 source ./asl_agent/.venv/bin/activate
-adk web ./asl_agent/contents/vertex_genai/solutions/adk_agents
+adk web ./asl_agent/notebooks/vertex_genai/solutions/adk_agents
 ```
 
 ## Contributions

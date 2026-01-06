@@ -16,6 +16,7 @@
 SHELL := /bin/bash
 export PATH := $(HOME)/.local/bin:$(PATH)
 SETUP_SCRIPT = ./scripts/setup_kernel.sh
+PYTHON_VERSION = 3.12
 
 PROJECTS = \
 	asl_core:asl_core:"ASL Core" \
@@ -44,7 +45,7 @@ setup:
 	./scripts/setup_env.sh
 	sudo apt-get update && sudo apt-get -y install graphviz
 	@command -v uv >/dev/null 2>&1 || curl -LsSf https://astral.sh/uv/install.sh | sh
-	uv python install 3.10
+	uv python install $(PYTHON_VERSION)
 	uv tool install jupyter-core --with jupyter-client
 
 build-kernels:

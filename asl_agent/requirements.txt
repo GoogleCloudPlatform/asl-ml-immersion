@@ -20,7 +20,7 @@ langchain-text-splitters==0.3.5
 pyyaml==6.0.2
 pydantic==2.11.7
 pypdf==4.3.1
-faiss-cpu==1.7.4
+faiss-cpu==1.13.2
 unstructured==0.14.4
 unstructured-client==0.22.0
 wikipedia==1.4.0

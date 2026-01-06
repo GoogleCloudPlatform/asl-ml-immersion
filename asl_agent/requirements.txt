@@ -1,8 +1,9 @@
-# Requirements for asl-ml-immersion repository
+# Requirements for asl_agent repository
 
-# Google & Google Cloud
+# Google Gen AI and ADK
 google-genai==1.23.0
 google-adk==1.14.1
+<<<<<<< HEAD
 google-api-core==2.25.1
 google-cloud-storage==2.19.0
 google-cloud-aiplatform==1.115.0
@@ -32,6 +33,8 @@ saliency==0.2.1
 lit-nlp==1.3.1
 =======
 >>>>>>> 5258916f (WIP: testing modular approach):asl_agent/requirements.txt
+=======
+>>>>>>> dd0ee813 (Updated requirements files)
 
 # Langchain dependencies
 langchain==0.3.14
@@ -53,6 +56,4 @@ faiss-cpu==1.7.4
 unstructured==0.14.4
 unstructured-client==0.22.0
 wikipedia==1.4.0
-fire==0.6.0
 litellm==1.72.6
-fastapi==0.115.13

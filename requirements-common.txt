@@ -1,0 +1,12 @@
+google-api-core
+google-cloud-storage
+google-cloud-aiplatform
+google-cloud-bigquery
+cloudml-hypertune
+apache-beam[gcp]==2.65.0
+
+ipykernel
+ipywidgets
+db-dtypes
+fire
+fastapi

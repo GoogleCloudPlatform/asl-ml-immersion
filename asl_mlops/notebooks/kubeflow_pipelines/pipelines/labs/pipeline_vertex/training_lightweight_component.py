@@ -17,7 +17,7 @@ from kfp.dsl import component
 
 # pylint: disable=unused-argument
 @component(
-    base_image="python:3.8",
+    base_image="python:3.12",
     packages_to_install=["google-cloud-aiplatform"],
 )
 def train_and_deploy(

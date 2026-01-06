@@ -20,7 +20,7 @@ from kfp.dsl import component
 
 
 @component(
-    base_image="python:3.8",
+    base_image="python:3.12",
     packages_to_install=["google-cloud-aiplatform"],
 )
 def retrieve_best_hptune_result(

@@ -5,8 +5,9 @@ scikit-learn==1.7.2
 
 # MLOps
 kubernetes==17.17.0
-kfp==2.4.0
-google-cloud-pipeline-components==2.8.0
+kfp==2.15.2
+google-cloud-pipeline-components==2.22.0
 
 # Hyperparameter Tuning
 cloudml-hypertune
+apache-beam[gcp]

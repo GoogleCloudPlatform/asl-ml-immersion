@@ -10,6 +10,7 @@ PROJECT_DIR=$(cd "$PROJECT_DIR_RAW" && pwd)
 ENVNAME=$2
 DISPLAY_NAME=$3
 ACTION=$4
+PYTHON_VERSION=3.12
 
 VENV_DIR=".venv"
 # Now VENV_PYTHON is an absolute path (e.g. /home/user/repo/asl_core/.venv/bin/python)
@@ -34,7 +35,7 @@ echo "--- Setting up $ENVNAME in $PROJECT_DIR ---"
 # 1. Create Venv
 if [ ! -d "$VENV_DIR" ]; then
     echo "Creating virtual environment..."
-    uv venv "$VENV_DIR" --python 3.10 --prompt "$ENVNAME"
+    uv venv "$VENV_DIR" --python "$PYTHON_VERSION" --prompt "$ENVNAME"
 fi
 
 # 2. Install Dependencies

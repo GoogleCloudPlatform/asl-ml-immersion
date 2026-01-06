@@ -41,7 +41,7 @@ fi
 echo "Installing dependencies..."
 # We use the absolute path $VENV_PYTHON to force uv to install HERE
 uv pip install -p "$VENV_PYTHON" "Cython<3"
-uv pip install -p "$VENV_PYTHON" pip ipykernel -r requirements.txt -e .
+uv pip install -p "$VENV_PYTHON" pip -r ../requirements-common.txt -r requirements.txt -e .
 
 if [ -f "requirements-without-deps.txt" ]; then
     uv pip install -p "$VENV_PYTHON" -U --no-deps -r requirements-without-deps.txt

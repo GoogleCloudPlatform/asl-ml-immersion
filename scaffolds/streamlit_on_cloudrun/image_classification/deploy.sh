@@ -6,7 +6,7 @@ APP_NAME=flower-classification
 
 echo "Copying the model file..."
 mkdir export
-gsutil cp -r gs://asl-public/models/flowers_model export/
+gcloud storage cp --recursive gs://asl-public/models/flowers_model export/
 
 echo "Building the application image..."
 if ! gcloud artifacts repositories describe $STREAMLIT_ARTIFACT_REG_REPO \

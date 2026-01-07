@@ -91,7 +91,7 @@ def train_evaluate(
         with open(MODEL_FILENAME, "wb") as model_file:
             pickle.dump(pipeline, model_file)
         subprocess.check_call(
-            ["gsutil", "cp", MODEL_FILENAME, AIP_MODEL_DIR], stderr=sys.stdout
+            ["gcloud", "storage", "cp", MODEL_FILENAME, AIP_MODEL_DIR], stderr=sys.stdout
         )
         print(f"Saved model in: {AIP_MODEL_DIR}")
 

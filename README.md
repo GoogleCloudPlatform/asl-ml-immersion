@@ -67,10 +67,10 @@ cd asl-ml-immersion
 make
 ```
 
-On Cloud Workstations, click `Open Folder` -> `asl-ml-immersion` to open the repository window. If the folder is already opend, click `Command + Shift + P` and type `Developer: Reload Window` to reflect the changes.
+On Cloud Workstations, click `Open Folder` -> `asl-ml-immersion` to open the repository window. If the folder is already opend, `Command + Shift + P` and type `Developer: Reload Window` to reflect the changes.
 
 ## Using the Environment
-### Running a notebook with built a kernel
+### Running a notebook
 After the setup above, you can open a Jupyter notebook file, and execute on a module kernel (`ASL Core`, `ASL MLOps`, or `ASL Agent`). <br>
 If a correct kernel is not pre-selected, click `Select Kernel` and select a correct one.
 

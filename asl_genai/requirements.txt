@@ -1,4 +1,4 @@
-# Requirements for asl_agent repository
+# Requirements for asl_genai repository
 
 # Google Gen AI and ADK
 google-genai==1.23.0

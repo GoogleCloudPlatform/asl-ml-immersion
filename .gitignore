@@ -9,6 +9,9 @@ __pycache__/
 # IntelliJ IDEA
 .idea/
 
+# ADK cache
+.adk/
+
 # VSCode config
 .vscode/
 

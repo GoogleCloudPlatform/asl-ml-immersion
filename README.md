@@ -6,10 +6,10 @@ This repository contains AI and Machine Learning contents meant to be run on Goo
 This repository contains 3 main modules to covers various AI/ML toipcs:
 - `asl_core`: A wide range of model architectures (DNN, CNN, RNN, transformers, SNGP, etc.) targeting many data modalities (tabular, image, text, time-series) implemented mainly in Tensorflow and Keras.
 - `asl_mlops`: Tools on Google Cloud’s Vertex AI for operationalizing Tensorflow, Scikit-learn and PyTorch models at scale (e.g. Vertex training, tuning, and serving, TFX and Kubeflow pipelines).
-- `asl_agent`: Generative AI and Agent System using Gemini and Agentic Frameworks like Google ADK.
+- `asl_genai`: Generative AI and Agent System using Gemini and Agentic Frameworks like Google ADK.
 
 ## Repository Structure
-Each module (`asl_core`, `asl_mlops`, `asl_agent`) has separate environment and materials, which are organized in each directory.
+Each module (`asl_core`, `asl_mlops`, `asl_genai`) has separate environment and materials, which are organized in each directory.
 
 All learning materials are in the contets folder. This folder is organized by different topics. Each folder contains a `labs` and a `solutions` folder. Use the `labs` notebooks to test your coding skills by filling in TODOs and refer to the notebooks in the `solutions` folder to verify your code.
 
@@ -29,7 +29,7 @@ We have three main folders described below:
 │   ├── requirements.txt - dependencies for this module
 ├── asl_mlops
 │   ├── ...
-├── asl_agent
+├── asl_genai
 │   ├── ...
 ├── ...
 ```
@@ -84,8 +84,8 @@ When running a command from the terminal, make sure to activate a venv for a spe
 
 E.g. (under asl-ml-immersion directory),
 ```bash
-source ./asl_agent/.venv/bin/activate
-adk web ./asl_agent/notebooks/vertex_genai/solutions/adk_agents
+source ./asl_genai/.venv/bin/activate
+adk web ./asl_genai/notebooks/vertex_genai/solutions/adk_agents
 ```
 
 ## Contributions

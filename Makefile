@@ -20,7 +20,7 @@ PYTHON_VERSION = 3.12
 
 PROJECTS = \
 	asl_core:asl_core:"ASL Core" \
-	asl_agent:asl_agent:"ASL Agent" \
+	asl_genai:asl_genai:"ASL Gen AI" \
 	asl_mlops:asl_mlops:"ASL MLOps"
 
 .PHONY: all install clean setup dev build-kernels

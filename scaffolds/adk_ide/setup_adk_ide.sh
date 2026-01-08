@@ -5,6 +5,7 @@ cd ..
 cd ..
 mkdir .vscode
 cp scaffolds/adk_ide/launch.json .vscode/
+cp scaffolds/adk_ide/settings.json .vscode/
 cd mcp-toolbox
 export VERSION=0.13.0
 curl -O https://storage.googleapis.com/genai-toolbox/v$VERSION/linux/amd64/toolbox

@@ -40,6 +40,22 @@
             "program": "${file}",
             "python": "${workspaceFolder}/scaffolds/adk_ide/.venv/bin/python",
             "console": "integratedTerminal"
-        }
+        },
+        {
+            "name": "Python: Debug Remote A2A Agent Example",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scaffolds/adk_ide/.venv/bin/uvicorn",
+            "args": [
+                "agent_05_remote_sub_agent_a2a.remote_weather_agent:a2a_app",
+                "--host", "localhost",
+                "--port", "10020"
+            ],
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/scaffolds/adk_ide/"
+            },
+            "console": "integratedTerminal"
+        },
     ]
 }
+

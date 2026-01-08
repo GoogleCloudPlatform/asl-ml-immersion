@@ -1,6 +1,11 @@
 # Requirements for asl_genai repository
 
-# Google Gen AI and ADK
+# Google & Google Cloud Libraries
+google-api-core
+google-cloud-storage
+google-cloud-aiplatform
+google-cloud-bigquery
+cloudml-hypertune
 google-genai==1.23.0
 google-adk==1.14.1
 
@@ -25,3 +30,8 @@ unstructured==0.14.4
 unstructured-client==0.22.0
 wikipedia==1.4.0
 litellm==1.72.6
+ipykernel
+ipywidgets
+db-dtypes
+fire
+fastapi

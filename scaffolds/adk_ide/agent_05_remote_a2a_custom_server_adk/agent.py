@@ -56,7 +56,7 @@ farewell_agent = Agent(
 weather_agent = RemoteA2aAgent(
     name="weather_agent_v2",
     description="Handles weather information requests using the 'get_weather' tool.",
-    agent_card=f"http://localhost:10020/.well-known/agent-card.json",
+    agent_card=f"http://localhost:10021/.well-known/agent-card.json",
 )
 
 root_agent = Agent(

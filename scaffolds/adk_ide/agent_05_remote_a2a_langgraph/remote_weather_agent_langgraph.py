@@ -41,10 +41,49 @@ from a2a.types import (
 from langgraph.graph import StateGraph, END
 from langchain_core.messages import BaseMessage, HumanMessage, AIMessage, ToolMessage
 
-# Tools
-from .tools import get_weather
-
 load_dotenv()
+
+# Tools
+def get_weather(city: str) -> dict:
+    """Retrieves the current weather report for a specified city.
+
+    Args:
+        city (str): The name of the city (e.g., "New York", "London", "Tokyo").
+
+    Returns:
+        dict: A dictionary containing the weather information.
+              Includes a 'status' key ('success' or 'error').
+              If 'success', includes a 'report' key with weather details.
+              If 'error', includes an 'error_message' key.
+    """
+    print(
+        f"--- Tool: get_weather called for city: {city} ---"
+    )  # Log tool execution
+    city_normalized = city.lower().replace(" ", "")  # Basic normalization
+
+    # Mock weather data
+    mock_weather_db = {
+        "newyork": {
+            "status": "success",
+            "report": "The weather in New York is sunny with a temperature of 25°C.",
+        },
+        "london": {
+            "status": "success",
+            "report": "It's cloudy in London with a temperature of 15°C.",
+        },
+        "tokyo": {
+            "status": "success",
+            "report": "Tokyo is experiencing light rain and a temperature of 18°C.",
+        },
+    }
+
+    if city_normalized in mock_weather_db:
+        return mock_weather_db[city_normalized]
+    else:
+        return {
+            "status": "error",
+            "error_message": f"Sorry, I don't have weather information for '{city}'.",
+        }
 
 # Setup Logger
 logging.basicConfig(level=logging.INFO)
@@ -214,8 +253,8 @@ class LangGraphExecutor:
 
 weather_agent_card = AgentCard(
     name="Weather Agent LangGraph",
-    url="http://localhost:10021",
-    description="Provides weather information via LangGraph",
+    url="http://localhost:10022",
+    description="Provides weather information",
     version="1.0",
     capabilities=AgentCapabilities(streaming=True),
     default_input_modes=["text/plain"],
@@ -263,7 +302,7 @@ async def run_agent_server(port) -> None:
 def main():
     print("Starting LangGraph agent server")
     try:
-        asyncio.run(run_agent_server(port=10021))
+        asyncio.run(run_agent_server(port=10022))
     except KeyboardInterrupt:
         print("\nServer stopped manually.")
     except Exception as e:

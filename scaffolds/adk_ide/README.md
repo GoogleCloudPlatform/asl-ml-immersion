@@ -6,6 +6,7 @@ First, open [CloudShell](https://cloud.google.com/shell) and run the following i
 ```bash
 git clone https://github.com/GoogleCloudPlatform/asl-ml-immersion.git
 cd asl-ml-immersion
+(use git checkout <branch_name> if you need to switch to a specific Git brunch)
 export PATH=$PATH:~/.local/bin
 ./scripts/cloud_workstation_setup.sh
 ```
@@ -21,51 +22,32 @@ After the Cloud Workstation is started (you should see "Running" status),
 you can open it in your browser by clicking on the "Lunch" button.
 
 In the Cloud Workstation, click "Clone Repository" button 
-and add the following repository URL:
+and add the repository URL:
 https://github.com/GoogleCloudPlatform/asl-ml-immersion.git
+Add destination folder, for example: /home/user/
 
+After the repository is cloned, you can open it using "Open" button in IDE and explore the content.
+Open IDE terminal window and move to /scaffolds/adk_ide folder and run **setup_adk_ide.sh** script :
+```
+cd scaffolds/adk_ide
+sh setup_adk_ide.sh
+```
 
+You Should see installation messages similar to the following:
+```
+....
+⚙️  Configuring IDE extensions...
+✅ Found IDE binary at: /usr/local/bin/code-oss-cloud-workstations
+✅ Configured IDE extensions.
+✅ ADK IDE configured successfully.
+```
 
-
+To test ADK in Debug mode choose "Python Debugger: ADK Web"
 
 
 # Option2: Local Development Environment Setup
-
-Install required packages and launch the local development environment:
-
-```bash
-git clone https://github.com/GoogleCloudPlatform/asl-ml-immersion.git
-cd asl-ml-immersion
-export PATH=$PATH:~/.local/bin
-mkdir .vscode
-cp scaffolds/adk_ide/launch.json .vscode/
-cd mcp-toolbox
-export VERSION=0.13.0
-curl -O https://storage.googleapis.com/genai-toolbox/v$VERSION/linux/amd64/toolbox
-chmod +x toolbox
-cd ..
-cd scaffolds/adk_ide
-make install
-export PATH=$PATH:~/.local/bin
-make install
-source .venv/bin/activate
-export PROJECT_ID=$(curl -s "http://metadata.google.internal/computeMetadata/v1/project/project-id" -H "Metadata-Flavor: Google")
-echo $PROJECT_ID
-gcloud config set project $PROJECT_ID
-export GOOGLE_CLOUD_PROJECT=$PROJECT_ID
-export CLOUDSDK_CORE_PROJECT=$GOOGLE_CLOUD_PROJECT
-echo $CLOUDSDK_CORE_PROJECT
-gcloud config set project $CLOUDSDK_CORE_PROJECT
-cp env.example .env
-sed -i "s/^# GOOGLE_CLOUD_PROJECT=.*/GOOGLE_CLOUD_PROJECT=$PROJECT_ID/" .env
-#vim .env # Uncomment and update the environment variables
-```
-
-If you are using Vertex AI, make sure you are authenticated with `gcloud`:
-
-```bash
-gcloud config set project <your-dev-project-id>
-```
+WIP
+TODO: add installation process for VSCode local setup
 
 # Testing API Server with curl
 
@@ -100,13 +82,5 @@ curl -X POST http://localhost:8502/run \
 }
 }'
 ```
-
-## Commands
-
-| Command              | Description                                                                                 |
-| -------------------- | ------------------------------------------------------------------------------------------- |
-| `make install`       | Install all required dependencies using uv                                                  |
-| `make playground`    | Launch local development environment with backend and frontend - leveraging `adk web` command.|
-| `make backend`       | Deploy agent to Cloud Run |
 
 For full command options and usage, refer to the [Makefile](Makefile).

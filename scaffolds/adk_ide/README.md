@@ -6,7 +6,7 @@ First, open [CloudShell](https://cloud.google.com/shell) and run the following i
 ```bash
 git clone https://github.com/GoogleCloudPlatform/asl-ml-immersion.git
 cd asl-ml-immersion
-(use git checkout <branch_name> if you need to switch to a specific Git brunch)
+git checkout dev-adk-ide
 export PATH=$PATH:~/.local/bin
 ./scripts/cloud_workstation_setup.sh
 ```

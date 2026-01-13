@@ -1,4 +1,4 @@
-## Cloud Workstation Setup
+# Option1: Cloud Workstation Setup
 
 First, open [CloudShell](https://cloud.google.com/shell) and run the following instructions:
 (If cloud workstation is already created, you can skip this step.)
@@ -10,12 +10,26 @@ export PATH=$PATH:~/.local/bin
 ./scripts/cloud_workstation_setup.sh
 ```
 This will create a Cloud Workstation with the required permissions.
-This step will take a 20-30 minutes to complete.
+**This step will take a 20-30 minutes to complete.**
+If your cloud shell times out, relogine and try running the script again,
+it will continue from the point where it was interrupted.
 After the setup is complete, you can open the Cloud Workstation 
-in your browser using the link provided in the output.
+in your browser using the following link: https://console.cloud.google.com/workstations
+
+Click on the "Start" button to start the Cloud Workstation.
+After the Cloud Workstation is started (you should see "Running" status), 
+you can open it in your browser by clicking on the "Lunch" button.
+
+In the Cloud Workstation, click "Clone Repository" button 
+and add the following repository URL:
+https://github.com/GoogleCloudPlatform/asl-ml-immersion.git
 
 
-# Quick Start (Local Testing)
+
+
+
+
+# Option2: Local Development Environment Setup
 
 Install required packages and launch the local development environment:
 

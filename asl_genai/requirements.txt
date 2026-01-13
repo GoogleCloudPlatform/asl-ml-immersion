@@ -6,8 +6,8 @@ google-cloud-storage
 google-cloud-aiplatform
 google-cloud-bigquery
 cloudml-hypertune
-google-genai==1.23.0
-google-adk==1.14.1
+google-genai==1.57.0
+google-adk==1.22.1
 
 # Langchain dependencies
 langchain==0.3.14
@@ -30,8 +30,13 @@ unstructured==0.14.4
 unstructured-client==0.22.0
 wikipedia==1.4.0
 litellm==1.72.6
+evaluate==0.4.0
+rouge-score==0.1.2
+
 ipykernel
 ipywidgets
 db-dtypes
 fire
 fastapi
+scipy
+pillow

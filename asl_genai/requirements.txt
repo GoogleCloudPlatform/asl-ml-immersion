@@ -1,0 +1,42 @@
+# Requirements for asl_genai repository
+
+# Google & Google Cloud Libraries
+google-api-core
+google-cloud-storage
+google-cloud-aiplatform
+google-cloud-bigquery
+cloudml-hypertune
+google-genai==1.57.0
+google-adk==1.22.1
+
+# Langchain dependencies
+langchain==0.3.14
+langsmith==0.1.129
+langgraph==0.2.61
+langchain-chroma==0.1.4
+chroma-hnswlib==0.7.3
+chromadb==0.4.14
+langchain-community==0.3.14
+langchain-core==0.3.47
+langchain-google-vertexai==2.0.15
+langchain-text-splitters==0.3.5
+
+# Utilities
+pyyaml==6.0.2
+pydantic==2.11.7
+pypdf==4.3.1
+faiss-cpu==1.13.2
+unstructured==0.14.4
+unstructured-client==0.22.0
+wikipedia==1.4.0
+litellm==1.72.6
+evaluate==0.4.0
+rouge-score==0.1.2
+
+ipykernel
+ipywidgets
+db-dtypes
+fire
+fastapi
+scipy
+pillow

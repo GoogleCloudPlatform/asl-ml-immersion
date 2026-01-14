@@ -1,0 +1,25 @@
+# Requirements for asl_mlops repository
+
+# Machine Learning Frameworks
+scikit-learn==1.7.2
+
+# MLOps
+kubernetes==17.17.0
+kfp==2.15.2
+google-cloud-pipeline-components==2.22.0
+
+# Google & Google Cloud Libraries
+google-api-core
+google-cloud-storage
+google-cloud-aiplatform
+google-cloud-bigquery
+cloudml-hypertune
+cloudml-hypertune
+apache-beam[gcp]
+
+# Utilities
+ipykernel
+ipywidgets
+db-dtypes
+fire
+fastapi

@@ -1,4 +1,4 @@
-# Copyright 2021 Google LLC. All Rights Reserved.
+# Copyright 2025 Google LLC. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,51 +12,48 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-all: clean install
 
-kernels: \
- object_detection_kernel \
- pytorch_kfp_kernel \
- tf_privacy_kernel
+SHELL := /bin/bash
+export PATH := $(HOME)/.local/bin:$(PATH)
+SETUP_SCRIPT = ./scripts/setup_kernel.sh
+PYTHON_VERSION = 3.12
 
-.PHONY: clean
+PROJECTS = \
+	asl_core:asl_core:"ASL Core" \
+	asl_genai:asl_genai:"ASL Gen AI" \
+	asl_mlops:asl_mlops:"ASL MLOps"
+
+.PHONY: all install clean setup dev build-kernels
+
+all: setup build-kernels
+
+install: setup build-kernels
+
+dev: install install-pre-commit
+
 clean:
 	@find . -name '*.pyc' -delete
-	@find . -name '*.pytest_cache' -delete
 	@find . -name '__pycache__' -delete
-	@find . -name '*egg-info' -delete
+	@find . -type d -name '*.egg-info' -exec rm -rf {} +
 
-.PHONY: install
-install:
-	@pip install --user -U pip
-	@pip install --user "Cython<3"
-	@pip install --user -e .
-	@pip install --user --no-deps -r requirements-without-deps.txt
-	@./scripts/setup_on_jupyterlab.sh
-	@pre-commit install
-	@sudo apt-get update
-	@sudo apt-get -y install graphviz
+	@for config in $(PROJECTS); do \
+		IFS=: read -r dir name disp <<< "$$config"; \
+		bash $(SETUP_SCRIPT) $$dir $$name "$$disp" remove; \
+	done
 
-.PHONY: precommit
-precommit:
-	@pre-commit run --all-files
+setup:
+	./scripts/setup_env.sh
+	sudo apt-get update && sudo apt-get -y install graphviz
+	@command -v uv >/dev/null 2>&1 || curl -LsSf https://astral.sh/uv/install.sh | sh
+	uv python install $(PYTHON_VERSION)
+	uv tool install jupyter-core --with jupyter-client
 
-.PHONY: object_detection_kernel
-object_detection_kernel:
-	./kernels/object_detection.sh
+build-kernels:
+	@for config in $(PROJECTS); do \
+		IFS=: read -r dir name disp <<< "$$config"; \
+		bash $(SETUP_SCRIPT) $$dir $$name "$$disp"; \
+	done
 
-.PHONY: pytorch_kfp_kernel
-pytorch_kfp_kernel:
-	./kernels/pytorch_kfp.sh
-
-.PHONY: tf_privacy_kernel
-tf_privacy_kernel:
-	./kernels/tf_privacy.sh
-
-.PHONY: keras_cv_kernel
-keras_cv_kernel:
-	./kernels/keras_cv.sh
-
-.PHONY: tests
-tests:
-	pytest tests/unit
+install-pre-commit:
+	uv tool install pre-commit
+	pre-commit install

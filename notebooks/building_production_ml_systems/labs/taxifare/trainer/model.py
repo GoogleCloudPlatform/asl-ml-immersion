@@ -1,71 +1,72 @@
-"""Data prep, train and evaluate DNN model."""
+# pylint: skip-file
 
 import logging
 import os
 
+import keras
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras import callbacks, models
-from tensorflow.keras.layers import (
+from keras import callbacks
+from keras.layers import (
     Concatenate,
     Dense,
     Discretization,
     Embedding,
     Flatten,
+    HashedCrossing,
     Input,
     Lambda,
 )
-from tensorflow.keras.layers.experimental.preprocessing import HashedCrossing
-
-logging.info(tf.version.VERSION)
-
-CSV_COLUMNS = [
-    "fare_amount",
-    "pickup_datetime",
-    "pickup_longitude",
-    "pickup_latitude",
-    "dropoff_longitude",
-    "dropoff_latitude",
-    "passenger_count",
-    "key",
-]
-
-LABEL_COLUMN = "fare_amount"
-DEFAULTS = [[0.0], ["na"], [0.0], [0.0], [0.0], [0.0], [0.0], ["na"]]
-UNWANTED_COLS = ["pickup_datetime", "key"]
-
-INPUT_COLS = [
-    c for c in CSV_COLUMNS if c != LABEL_COLUMN and c not in UNWANTED_COLS
-]
+from keras.metrics import RootMeanSquaredError
 
 
-def features_and_labels(row_data):
-    for unwanted_col in UNWANTED_COLS:
-        row_data.pop(unwanted_col)
-    label = row_data.pop(LABEL_COLUMN)
-    return row_data, label
+def parse_csv(row):
+    ds = tf.strings.split(row, ",")
+    label = tf.strings.to_number(ds[0])
+    feature = tf.strings.to_number(ds[2:6])  # use some features only
+    return (feature[0], feature[1], feature[2], feature[3]), label
 
 
-def load_dataset(pattern, batch_size, num_repeat):
-    dataset = tf.data.experimental.make_csv_dataset(
-        file_pattern=pattern,
-        batch_size=batch_size,
-        column_names=CSV_COLUMNS,
-        column_defaults=DEFAULTS,
-        num_epochs=num_repeat,
-        shuffle_buffer_size=1000000,
-    )
-    return dataset.map(features_and_labels)
+def create_dataset(pattern, batch_size, num_repeat, mode="eval"):
+    ds = tf.data.Dataset.list_files(pattern)
+    ds = ds.flat_map(tf.data.TextLineDataset)
+    ds = ds.map(parse_csv)
+    if mode == "train":
+        ds = ds.shuffle(buffer_size=1000)
+    ds = ds.repeat(num_repeat).batch(batch_size, drop_remainder=True)
+    return ds
 
 
-def create_train_dataset(pattern, batch_size):
-    dataset = load_dataset(pattern, batch_size, num_repeat=None)
-    return dataset.prefetch(1)
+def parse_lat_lon(row):
+    columns = tf.strings.split(row, ",")
+    # latitude idx: 3 and 5, longitude idx: 2 and 4
+    lat_strings = tf.gather(columns, [3, 5])
+    lon_strings = tf.gather(columns, [2, 4])
+    lat_features = tf.strings.to_number(lat_strings)
+    lon_features = tf.strings.to_number(lon_strings)
+    return lat_features, lon_features
 
 
-def create_eval_dataset(pattern, batch_size):
-    dataset = load_dataset(pattern, batch_size, num_repeat=1)
-    return dataset.prefetch(1)
+def adapt_normalize(train_data_path):
+    ds = tf.data.Dataset.list_files(train_data_path)
+    ds = ds.flat_map(tf.data.TextLineDataset)
+    lat_lon_ds = ds.map(parse_lat_lon).batch(10000)
+
+    lat_scaler = keras.layers.Normalization(axis=None)
+    lon_scaler = keras.layers.Normalization(axis=None)
+
+    lat_values, lon_values = next(iter(lat_lon_ds))
+
+    lat_scaler.adapt(lat_values)
+    lon_scaler.adapt(lon_values)
+
+    print("Computed statistics for latitude:")
+    print(f"mean: {lat_scaler.mean}, variance: {lat_scaler.variance}")
+    print("+++++")
+    print("Computed statistics for longitude:")
+    print(f"mean: {lon_scaler.mean}, variance: {lon_scaler.variance}")
+
+    return lat_scaler, lon_scaler
 
 
 def euclidean(params):
@@ -75,99 +76,84 @@ def euclidean(params):
     return tf.sqrt(londiff * londiff + latdiff * latdiff)
 
 
-def scale_longitude(lon_column):
-    return (lon_column + 78) / 8.0
+def transform(inputs, nbuckets, normalizers):
+    lat_scaler, lon_scaler = normalizers
 
+    # Normalize longitude
+    scaled_plon = lon_scaler(inputs["pickup_longitude"])
+    scaled_dlon = lon_scaler(inputs["dropoff_longitude"])
 
-def scale_latitude(lat_column):
-    return (lat_column - 37) / 8.0
+    # Normalize latitude
+    scaled_plat = lat_scaler(inputs["pickup_latitude"])
+    scaled_dlat = lat_scaler(inputs["dropoff_latitude"])
 
-
-def transform(inputs, nbuckets):
-    transformed = {}
-
-    # Scaling longitude from range [-70, -78] to [0, 1]
-    transformed["scaled_plon"] = Lambda(scale_longitude, name="scale_plon")(
-        inputs["pickup_longitude"]
-    )
-    transformed["scaled_dlon"] = Lambda(scale_longitude, name="scale_dlon")(
-        inputs["dropoff_longitude"]
+    # Lambda layer for the custom euclidean function
+    euclidean_distance = Lambda(euclidean, name="euclidean")(
+        [scaled_plon, scaled_plat, scaled_dlon, scaled_dlat]
     )
 
-    # Scaling latitude from range [37, 45] to [0, 1]
-    transformed["scaled_plat"] = Lambda(scale_latitude, name="scale_plat")(
-        inputs["pickup_latitude"]
-    )
-    transformed["scaled_dlat"] = Lambda(scale_latitude, name="scale_dlat")(
-        inputs["dropoff_latitude"]
-    )
+    # Discretization
+    latbuckets = np.linspace(start=-5, stop=5, num=nbuckets).tolist()
+    lonbuckets = np.linspace(start=-5, stop=5, num=nbuckets).tolist()
 
-    # Apply euclidean function
-    transformed["euclidean_distance"] = Lambda(euclidean, name="euclidean")(
-        [
-            inputs["pickup_longitude"],
-            inputs["pickup_latitude"],
-            inputs["dropoff_longitude"],
-            inputs["dropoff_latitude"],
-        ]
-    )
-
-    latbuckets = np.linspace(start=0.0, stop=1.0, num=nbuckets).tolist()
-    lonbuckets = np.linspace(start=0.0, stop=1.0, num=nbuckets).tolist()
-
-    # Bucketization with Discretization layer
-    plon = Discretization(lonbuckets, name="plon_bkt")(
-        transformed["scaled_plon"]
-    )
-    plat = Discretization(latbuckets, name="plat_bkt")(
-        transformed["scaled_plat"]
-    )
-    dlon = Discretization(lonbuckets, name="dlon_bkt")(
-        transformed["scaled_dlon"]
-    )
-    dlat = Discretization(latbuckets, name="dlat_bkt")(
-        transformed["scaled_dlat"]
-    )
+    plon = Discretization(lonbuckets, name="plon_bkt")(scaled_plon)
+    plat = Discretization(latbuckets, name="plat_bkt")(scaled_plat)
+    dlon = Discretization(lonbuckets, name="dlon_bkt")(scaled_dlon)
+    dlat = Discretization(latbuckets, name="dlat_bkt")(scaled_dlat)
 
     # Feature Cross with HashedCrossing layer
-    p_fc = HashedCrossing(num_bins=nbuckets * nbuckets, name="p_fc")(
+    p_fc = HashedCrossing(num_bins=(nbuckets + 1) ** 2, name="p_fc")(
         (plon, plat)
     )
-    d_fc = HashedCrossing(num_bins=nbuckets * nbuckets, name="d_fc")(
+    d_fc = HashedCrossing(num_bins=(nbuckets + 1) ** 2, name="d_fc")(
         (dlon, dlat)
     )
-    pd_fc = HashedCrossing(num_bins=nbuckets**4, name="pd_fc")((p_fc, d_fc))
-
-    # Embedding with Embedding layer
-    transformed["pd_embed"] = Flatten()(
-        Embedding(input_dim=nbuckets**4, output_dim=10, name="pd_embed")(pd_fc)
+    pd_fc = HashedCrossing(num_bins=(nbuckets + 1) ** 4, name="pd_fc")(
+        (p_fc, d_fc)
     )
 
-    transformed["passenger_count"] = inputs["passenger_count"]
+    # Embedding with Embedding layer
+    pd_embed = Flatten()(
+        Embedding(
+            input_dim=(nbuckets + 1) ** 4, output_dim=10, name="pd_embed"
+        )(pd_fc)
+    )
+
+    transformed = Concatenate()(
+        [
+            scaled_plon,
+            scaled_dlon,
+            scaled_plat,
+            scaled_dlat,
+            euclidean_distance,
+            pd_embed,
+        ]
+    )
 
     return transformed
 
 
-def rmse(y_true, y_pred):
-    return tf.sqrt(tf.reduce_mean(tf.square(y_pred - y_true)))
+def build_dnn_model(nbuckets, nnsize, lr, normalizers):
+    INPUT_COLS = [
+        "pickup_longitude",
+        "pickup_latitude",
+        "dropoff_longitude",
+        "dropoff_latitude",
+    ]
 
-
-def build_dnn_model(nbuckets, nnsize, lr):  # pylint: disable=unused-argument
     inputs = {
         colname: Input(name=colname, shape=(1,), dtype="float32")
         for colname in INPUT_COLS
     }
 
     # transforms
-    transformed = transform(inputs, nbuckets)
-    dnn_inputs = Concatenate()(transformed.values())
+    x = transform(inputs, nbuckets, normalizers)
 
-    x = dnn_inputs
     for layer, nodes in enumerate(nnsize):
         x = Dense(nodes, activation="relu", name=f"h{layer}")(x)
     output = Dense(1, name="fare")(x)
 
-    model = models.Model(inputs, output)
+    model = keras.Model(inputs=list(inputs.values()), outputs=output)
 
     # TODO 1a: Your code here
 
@@ -176,7 +162,6 @@ def build_dnn_model(nbuckets, nnsize, lr):  # pylint: disable=unused-argument
 
 def train_and_evaluate(hparams):
     # TODO 1b: Your code here
-
     nnsize = [int(s) for s in hparams["nnsize"].split()]
     eval_data_path = hparams["eval_data_path"]
     num_evals = hparams["num_evals"]
@@ -184,32 +169,33 @@ def train_and_evaluate(hparams):
     output_dir = hparams["output_dir"]
     train_data_path = hparams["train_data_path"]
 
-    model_export_path = os.path.join(output_dir, "savedmodel")
-    checkpoint_path = os.path.join(output_dir, "checkpoints")
+    model_export_path = os.path.join(output_dir, "model.keras")
+    serving_model_export_path = os.path.join(output_dir, "savedmodel")
+    checkpoint_path = os.path.join(output_dir, "checkpoint.keras")
     tensorboard_path = os.path.join(output_dir, "tensorboard")
 
     if tf.io.gfile.exists(output_dir):
         tf.io.gfile.rmtree(output_dir)
 
-    model = build_dnn_model(
-        nbuckets, nnsize, lr  # pylint: disable=undefined-variable
-    )
+    normalizers = adapt_normalize(eval_data_path)
+
+    model = build_dnn_model(nbuckets, nnsize, lr, normalizers)
     logging.info(model.summary())
 
-    trainds = create_train_dataset(
-        train_data_path, batch_size  # pylint: disable=undefined-variable
-    )
-    evalds = create_eval_dataset(
-        eval_data_path, batch_size  # pylint: disable=undefined-variable
-    )
-
-    steps_per_epoch = num_examples_to_train_on // (
-        batch_size * num_evals  # pylint: disable=undefined-variable
+    trainds = create_dataset(
+        pattern=train_data_path,
+        batch_size=batch_size,
+        num_repeat=None,
+        mode="train",
     )
 
-    checkpoint_cb = callbacks.ModelCheckpoint(
-        checkpoint_path, save_weights_only=True, verbose=1
+    evalds = create_dataset(
+        pattern=eval_data_path, batch_size=batch_size, num_repeat=1, mode="eval"
     )
+
+    steps_per_epoch = num_examples_to_train_on // (batch_size * num_evals)
+
+    checkpoint_cb = callbacks.ModelCheckpoint(checkpoint_path, verbose=1)
     tensorboard_cb = callbacks.TensorBoard(tensorboard_path, histogram_freq=1)
 
     history = model.fit(
@@ -221,6 +207,8 @@ def train_and_evaluate(hparams):
         callbacks=[checkpoint_cb, tensorboard_cb],
     )
 
-    # Exporting the model with default serving function.
+    # Save the Keras model file.
     model.save(model_export_path)
+    # Exporting the model in savedmodel for serving.
+    model.export(serving_model_export_path)
     return history

@@ -46,8 +46,10 @@ gcloud services enable \
   cloudbuild.googleapis.com \
   container.googleapis.com \
   dataflow.googleapis.com \
-  run.googleapis.com
-
+  run.googleapis.com \
+  modelarmor.googleapis.com \
+  cloudresourcemanager.googleapis.com \
+  telemetry.googleapis.com
 
 # Setup Artifact Registry
 if ! gcloud artifacts repositories describe $ARTIFACT_REG_REPO \

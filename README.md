@@ -54,6 +54,7 @@ After creating a Vertex Workbench Instance or Workbench, open the terminal and r
 ```bash
 gcloud auth login --update-adc
 gcloud config set project $(curl "http://metadata.google.internal/computeMetadata/v1/project/project-id" -H "Metadata-Flavor: Google")
+gcloud auth application-default set-quota-project $(curl "http://metadata.google.internal/computeMetadata/v1/project/project-id" -H "Metadata-Flavor: Google")
 ```
 The first command generate an authentication Link. Navigate to the link, login with your user, copy and paste the generated token back in the terminal.
 

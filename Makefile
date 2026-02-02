@@ -15,7 +15,6 @@
 all: clean install
 
 kernels: \
- adk_kernel \
  object_detection_kernel \
  pytorch_kfp_kernel \
  tf_privacy_kernel
@@ -42,10 +41,6 @@ install:
 precommit:
 	@pre-commit run --all-files
 
-.PHONY: adk_kernel
-adk_kernel:
-	./kernels/adk.sh
-
 .PHONY: object_detection_kernel
 object_detection_kernel:
 	./kernels/object_detection.sh
@@ -57,6 +52,10 @@ pytorch_kfp_kernel:
 .PHONY: tf_privacy_kernel
 tf_privacy_kernel:
 	./kernels/tf_privacy.sh
+
+.PHONY: keras_cv_kernel
+keras_cv_kernel:
+	./kernels/keras_cv.sh
 
 .PHONY: tests
 tests:

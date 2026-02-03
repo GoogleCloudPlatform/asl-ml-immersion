@@ -16,15 +16,11 @@
 
 # Ask user for development environment preference
 echo "Which development environment would you like to set up?"
-echo "0) Neither (Setup environment manually)"
-echo "1) Cloud Workstations"
-echo "2) Vertex AI Workbench"
-echo "3) Both"
-read -p "Enter your choice (0, 1, 2 or 3): " DEV_ENV_CHOICE
-
-# Configure variables
-echo 'export PATH=$PATH:~/.local/bin:' >> ~/.bash_profile
-echo 'export PATH=$PATH:~/.local/bin:' >> ~/.bashrc
+echo "1) Vertex AI Workbench"
+echo "2) Cloud Workstations"
+echo "3) Setup both"
+echo "4) Skip (Setup environment manually)"
+read -p "Enter your choice (1, 2, 3 or 4): " DEV_ENV_CHOICE
 
 export PROJECT_ID=$(gcloud config get-value project)
 export PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format="value(projectNumber)")
@@ -78,13 +74,12 @@ fi
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-# Run setup_workstations.sh if Cloud Workstations is selected (1 or 3)
 if [[ "$DEV_ENV_CHOICE" == "1" || "$DEV_ENV_CHOICE" == "3" ]]; then
-    echo "Running setup_workstations.sh..."
-    bash "${SCRIPT_DIR}/setup_workstations.sh"
+    echo "Running setup_workbench.sh..."
+    bash "${SCRIPT_DIR}/setup_workbench.sh"
 fi
 
 if [[ "$DEV_ENV_CHOICE" == "2" || "$DEV_ENV_CHOICE" == "3" ]]; then
-    echo "Running setup_workbench.sh..."
-    bash "${SCRIPT_DIR}/setup_workbench.sh"
+    echo "Running setup_workstations.sh..."
+    bash "${SCRIPT_DIR}/setup_workstations.sh"
 fi

@@ -60,7 +60,7 @@ setup: setup-apt setup-ide
 	@command -v uv >/dev/null 2>&1 || curl -LsSf https://astral.sh/uv/install.sh | sh
 	uv python install $(PYTHON_VERSION)
 	uv tool install jupyter-core --with jupyter-client
-
+	@grep -q "local/bin" ~/.bashrc || echo 'export PATH="$$HOME/.local/bin:$$PATH"' >> ~/.bashrc
 
 build-kernels:
 	@for config in $(PROJECTS); do \
@@ -70,4 +70,4 @@ build-kernels:
 
 install-pre-commit:
 	uv tool install pre-commit
-	pre-commit install
+	uv tool run pre-commit install

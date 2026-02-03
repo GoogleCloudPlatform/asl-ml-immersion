@@ -1,0 +1,7 @@
+SKU,ProductName,Category,SupplierID,SupplierName,QuantityOnHand,ReorderLevel,UnitPrice,UnitCost,LastStockInDate,LastStockOutDate,Location,Status,Notes
+SKU001,"Laptop Pro 15""",Electronics,SUP001,TechGlobal,60,5,1200.00,950.00,2023-04-10,2023-05-15,Warehouse A - Shelf 1,Low Stock,High-performance model
+SKU002,Wireless Mouse,Accessories,SUP002,OfficeGear,70,20,25.00,15.00,2023-03-20,2023-05-10,Warehouse B - Bin 3,Low Stock,Ergonomic design
+SKU003,Mechanical Keyboard,Accessories,SUP001,TechGlobal,40,10,75.00,50.00,2023-04-01,2023-05-05,Warehouse A - Shelf 2,In Stock,RGB Backlit
+SKU004,"27"" 4K Monitor",Electronics,SUP003,DisplayInc,25,5,300.00,220.00,2023-02-15,2023-04-28,Warehouse C - Area 1,In Stock,
+SKU005,HD Webcam,Accessories,SUP002,OfficeGear,60,15,50.00,30.00,2023-03-05,2023-05-12,Warehouse B - Bin 5,In Stock,Includes microphone
+SKU006,USB-C Hub,Accessories,SUP001,TechGlobal,30,10,35.00,20.00,2023-04-18,2023-05-01,Warehouse A - Shelf 3,Low Stock,7-in-1 adapter

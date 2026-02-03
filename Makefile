@@ -23,13 +23,11 @@ PROJECTS = \
 	asl_genai:asl_genai:"ASL Gen AI" \
 	asl_mlops:asl_mlops:"ASL MLOps"
 
-.PHONY: all install clean setup dev build-kernels
+.PHONY: all install clean setup-apt setup-ide setup build-kernels
 
-all: setup build-kernels
+all: setup build-kernels install-pre-commit
 
-install: setup build-kernels
-
-dev: install install-pre-commit
+install: all
 
 clean:
 	@find . -name '*.pyc' -delete
@@ -41,12 +39,28 @@ clean:
 		bash $(SETUP_SCRIPT) $$dir $$name "$$disp" remove; \
 	done
 
-setup:
-	./scripts/setup_env.sh
-	sudo apt-get update && sudo apt-get -y install graphviz
+setup-apt:
+	$(eval TOKEN=$(shell curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token | sed 's/.*"access_token":"\([^"]*\)".*/\1/'))
+	@export CLOUDSDK_AUTH_ACCESS_TOKEN=$(TOKEN); \
+	export GOOGLE_APPLICATION_CREDENTIALS=""; \
+	sudo rm -f /etc/apt/sources.list.d/yarn.list /usr/share/keyrings/yarn.gpg; \
+	curl -fsSL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/yarn.gpg; \
+	echo "deb [signed-by=/usr/share/keyrings/yarn.gpg] https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list; \
+	sudo apt-get update
+
+setup-ide:
+	@if command -v code-oss-cloud-workstations > /dev/null; then \
+		echo "Installing Workstation extensions..."; \
+		code-oss-cloud-workstations --install-extension ms-python.python --force; \
+		code-oss-cloud-workstations --install-extension ms-toolsai.jupyter --force; \
+	fi
+
+setup: setup-apt setup-ide
+	sudo apt-get -y install graphviz
 	@command -v uv >/dev/null 2>&1 || curl -LsSf https://astral.sh/uv/install.sh | sh
 	uv python install $(PYTHON_VERSION)
 	uv tool install jupyter-core --with jupyter-client
+
 
 build-kernels:
 	@for config in $(PROJECTS); do \

@@ -36,30 +36,31 @@ We have three main folders described below:
 
 ## Environment Setup
 ### Step 1. Create a Vertex Workbench or Cloud Workstations Environment
-This repository is tested on Vertex AI Workbench and Cloud Workstations. Spin up either following these instructions.
-#### Option A: Vertex AI Workbench
-[Vertex AI Workbench](https://cloud.google.com/vertex-ai/docs/workbench/instances/introduction) is a managed Jupyter Lab environment. Follow [the official documentation](https://cloud.google.com/vertex-ai/docs/workbench/instances/create-console-quickstart) to set up a JupyterLab instance.
+This repository is tested on Vertex AI Workbench and Cloud Workstations.
 
-#### Option B: Cloud Workstations
-[Cloud Workstations](https://cloud.google.com/workstations) is a fully managed development environments built to meet the needs of security-sensitive enterprises, while accelerating developer onboarding and productivity, including a native integration with Gemini for Google Cloud.
+**Option A: Automated Setup (Recommended)**
+Run the setup script in [Cloud Shell](https://shell.cloud.google.com) to provision your environment automatically.
+You will be prompted to select the environment to set up:
+*   **0) Neither:** Setup project infrastructure (APIs, IAM, Buckets) only.
+*   **1) Cloud Workstations:** Setup Cloud Workstations.
+*   **2) Vertex AI Workbench:** Setup Vertex AI Workbench.
+*   **3) Both:** Setup both environments.
 
-1. Follow [the official documentation](https://docs.cloud.google.com/workstations/docs/create-workstation) to set up a Cloud Workstations IDE.
-2. Launch a workstation, and install `Python` and `Jupyter` extensions from the `Extension` tab on the left.
+```bash
+git clone https://github.com/GoogleCloudPlatform/asl-ml-immersion.git
+cd asl-ml-immersion
+bash scripts/setup_env.sh
+```
+
+**Option B: Manual Setup**
+You can also manually set up the environment following the official documentation:
+*   **Vertex AI Workbench:** [Create a user-managed notebook instance](https://cloud.google.com/vertex-ai/docs/workbench/instances/create-console-quickstart)
+*   **Cloud Workstations:** [Create a workstation](https://docs.cloud.google.com/workstations/docs/create-workstation)
 
 **Note:** Accelerators (GPU/TPU) are not required in most of the labs, but some notebooks recommend using them.
 
-### Step 2. User Authentication
-After creating a Vertex Workbench Instance or Workbench, open the terminal and run the following commands to authenticate the user in the environemnt.
-
-```bash
-gcloud auth login --update-adc
-gcloud config set project $(curl "http://metadata.google.internal/computeMetadata/v1/project/project-id" -H "Metadata-Flavor: Google")
-```
-The first command generate an authentication Link. Navigate to the link, login with your user, copy and paste the generated token back in the terminal.
-
-
-### Step 3. Build the Environemnt
-Then, run the commands below to clone this repository, and build the environemnt (venvs and jupyter kernels) for each module.
+### Step 2. Build the Environemnt
+Once your environment is running, open it. Then, run the commands below **inside the environment** to clone this repository, and build the environemnt (venvs and jupyter kernels) for each module.
 
 ```bash
 git clone https://github.com/GoogleCloudPlatform/asl-ml-immersion.git

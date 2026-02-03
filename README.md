@@ -35,32 +35,30 @@ We have three main folders described below:
 ```
 
 ## Environment Setup
-### Step 1. Create a Vertex Workbench or Cloud Workstations Environment
-This repository is tested on Vertex AI Workbench and Cloud Workstations.
+### Step 1. Run the Setup Script on Cloud Shell
+This repository is tested on Vertex AI Workbench and Cloud Workstations. To begin, run the setup script in [Cloud Shell](https://shell.cloud.google.com) to configure essential project infrastructure (APIs, IAM, Buckets).
 
-**Option A: Automated Setup (Recommended)**
-Run the setup script in [Cloud Shell](https://shell.cloud.google.com) to provision your environment automatically.
-You will be prompted to select the environment to set up:
-*   **0) Neither:** Setup project infrastructure (APIs, IAM, Buckets) only.
-*   **1) Cloud Workstations:** Setup Cloud Workstations.
-*   **2) Vertex AI Workbench:** Setup Vertex AI Workbench.
-*   **3) Both:** Setup both environments.
-
+Run the setup script in [Cloud Shell](https://shell.cloud.google.com) to provision your environment.
 ```bash
 git clone https://github.com/GoogleCloudPlatform/asl-ml-immersion.git
 cd asl-ml-immersion
 bash scripts/setup_env.sh
 ```
 
-**Option B: Manual Setup**
-You can also manually set up the environment following the official documentation:
+You will be prompted to select the environment to set up:
+*   **1) Vertex AI Workbench:** Setup Vertex AI Workbench.
+*   **2) Cloud Workstations:** Setup Cloud Workstations.
+*   **3) Setup both:** Setup both environments.
+*   **4) Skip:** Setup project infrastructure (APIs, IAM, Buckets) only.
+
+By selecting the option 1-3, you can automatically setup the environment, or you can select 4 and manually set up the environment following the official documentation:
 *   **Vertex AI Workbench:** [Create a user-managed notebook instance](https://cloud.google.com/vertex-ai/docs/workbench/instances/create-console-quickstart)
 *   **Cloud Workstations:** [Create a workstation](https://docs.cloud.google.com/workstations/docs/create-workstation)
 
 **Note:** Accelerators (GPU/TPU) are not required in most of the labs, but some notebooks recommend using them.
 
 ### Step 2. Build the Environemnt
-Once your environment is running, open it. Then, run the commands below **inside the environment** to clone this repository, and build the environemnt (venvs and jupyter kernels) for each module.
+Once your environment is running, open it. Then, run the commands below in Terminal **inside the environment** to clone this repository, and build the environemnt (venvs and jupyter kernels).
 
 ```bash
 git clone https://github.com/GoogleCloudPlatform/asl-ml-immersion.git

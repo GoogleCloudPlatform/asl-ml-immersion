@@ -15,246 +15,240 @@
 
 import asyncio
 import logging
-import uuid
-from typing import TypedDict, List, Annotated, Union, Dict, Any, Literal
 import operator
+import re
+import uuid
+from typing import Annotated, Any, Dict, List, Optional, TypedDict
 
 import uvicorn
 from dotenv import load_dotenv
 
+# LangGraph & LangChain Imports
+from langchain_core.messages import (
+    AIMessage,
+    BaseMessage,
+    HumanMessage,
+    SystemMessage,
+    ToolMessage,
+)
+from langgraph.graph import END, StateGraph
+
 # A2A Imports
+from a2a.server.agent_execution import AgentExecutor, RequestContext
 from a2a.server.apps import A2AStarletteApplication
-from a2a.server.request_handlers import DefaultRequestHandler
-from a2a.server.request_handlers.default_request_handler import RequestContext
-from a2a.server.tasks import InMemoryTaskStore
 from a2a.server.events import EventQueue
+from a2a.server.request_handlers import DefaultRequestHandler
+from a2a.server.tasks import InMemoryTaskStore
 from a2a.types import (
     AgentCapabilities,
     AgentCard,
     AgentSkill,
+    Part,
+    TextPart,
     TransportProtocol,
-    TaskStatus,
-    TaskStatusUpdateEvent,
 )
-
-# LangGraph Imports
-from langgraph.graph import StateGraph, END
-from langchain_core.messages import BaseMessage, HumanMessage, AIMessage, ToolMessage
+from a2a.utils import completed_task, new_artifact
 
 load_dotenv()
-
-# Tools
-def get_weather(city: str) -> dict:
-    """Retrieves the current weather report for a specified city.
-
-    Args:
-        city (str): The name of the city (e.g., "New York", "London", "Tokyo").
-
-    Returns:
-        dict: A dictionary containing the weather information.
-              Includes a 'status' key ('success' or 'error').
-              If 'success', includes a 'report' key with weather details.
-              If 'error', includes an 'error_message' key.
-    """
-    print(
-        f"--- Tool: get_weather called for city: {city} ---"
-    )  # Log tool execution
-    city_normalized = city.lower().replace(" ", "")  # Basic normalization
-
-    # Mock weather data
-    mock_weather_db = {
-        "newyork": {
-            "status": "success",
-            "report": "The weather in New York is sunny with a temperature of 25°C.",
-        },
-        "london": {
-            "status": "success",
-            "report": "It's cloudy in London with a temperature of 15°C.",
-        },
-        "tokyo": {
-            "status": "success",
-            "report": "Tokyo is experiencing light rain and a temperature of 18°C.",
-        },
-    }
-
-    if city_normalized in mock_weather_db:
-        return mock_weather_db[city_normalized]
-    else:
-        return {
-            "status": "error",
-            "error_message": f"Sorry, I don't have weather information for '{city}'.",
-        }
 
 # Setup Logger
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("weather_agent_langgraph")
 
-# --- LangGraph Setup ---
 
+# --- State Definition ---
 class AgentState(TypedDict):
     messages: Annotated[List[BaseMessage], operator.add]
 
-def get_weather_tool_check(query: str):
-    """
-    Simple deterministic logic to mimic model decision for "weather" tool.
-    Extracts city from queries like "weather in London" or "what is the weather in Paris".
-    """
-    query = query.lower()
-    if "weather" in query:
-        words = query.split()
-        if "in" in words:
-            try:
-                city_idx = words.index("in") + 1
-                if city_idx < len(words):
-                    city = words[city_idx].strip("?.")
-                    return {"name": "get_weather", "args": {"city": city}}
-            except Exception:
-                pass
-    return None
 
-async def model_node(state: AgentState):
-    """
-    Simulates a model that decides whether to call a tool or reply directly.
-    """
-    messages = state["messages"]
-    last_msg = messages[-1]
-    
-    # helper to get text content
-    text = ""
-    if hasattr(last_msg, "content"):
-        text = last_msg.content
-    else:
-        text = str(last_msg)
+# --- Agent Logic Class ---
+import operator
+from typing import Annotated, TypedDict, List, Union, Dict, Any
 
-    logger.info(f"Model processing: {text}")
-    
-    # Check if we should call tool
-    tool_call = get_weather_tool_check(text)
-    
-    if tool_call:
-        logger.info(f"Decided to call tool: {tool_call}")
-        return {"messages": [AIMessage(
-            content="",
-            tool_calls=[{
-                "name": tool_call["name"],
-                "args": tool_call["args"],
-                "id": str(uuid.uuid4())
-            }]
-        )]}
-    
-    # If it was a ToolMessage essentially we just got the result,
-    # so we should formulate a final response.
-    # But wait, this node is also the "entry" node.
-    if isinstance(last_msg, ToolMessage):
-        # We just got tool output, return final answer based on it
-        return {"messages": [AIMessage(content=f"Here is the weather info: {last_msg.content}")]}
+from langchain_core.tools import tool
+from langchain_core.messages import SystemMessage, HumanMessage, BaseMessage
+from langchain_google_vertexai import ChatVertexAI
+from langgraph.graph import StateGraph, START, END
+from langgraph.prebuilt import ToolNode, tools_condition
+
+# --- 1. Define State & Tools (Module Level) ---
+class AgentState(TypedDict):
+    messages: Annotated[List[BaseMessage], operator.add]
+
+@tool
+def get_weather(city: str) -> dict:
+    """Retrieves the current weather report for a specified city."""
+    print(f"--- Tool: get_weather called for city: {city} ---")
+    city_normalized = city.lower().replace(" ", "")
+
+    mock_weather_db = {
+        "newyork": {
+            "status": "success",
+            "report": "The weather in New York is sunny with a temperature of 25°C."
+        },
+        "london": {
+            "status": "success",
+            "report": "It's cloudy in London with a temperature of 15°C."
+        },
+        "tokyo": {
+            "status": "success",
+            "report": "Tokyo is experiencing light rain and a temperature of 18°C."
+        },
+    }
+
+    if city_normalized in mock_weather_db:
+        return mock_weather_db[city_normalized]
+    return {
+        "status": "error",
+        "error_message": f"Sorry, I don't have weather information for '{city}'."
+    }
+
+# --- 2. Class Definition ---
+
+class LangGraphWeatherAgent:
+    def __init__(self, model_name: str = "gemini-2.0-flash"):
+        """
+        Initialize the agent with a model and build the graph.
+        """
+        # 1. Setup Model and Tools
+        self.tools = [get_weather]
+        self.llm = ChatVertexAI(model=model_name)
+        self.llm_with_tools = self.llm.bind_tools(self.tools)
         
-    # Default chat response
-    return {"messages": [AIMessage(content=f"I am a weather agent. I can only help with weather requests (e.g., 'weather in London').")]}
+        # 2. Define System Instructions
+        self.system_instruction = (
+            "You are a helpful weather assistant. "
+            "When the user asks for the weather in a specific city, "
+            "use the 'get_weather' tool to find the information. "
+            "If the tool returns an error, inform the user politely. "
+            "If the tool is successful, present the weather report clearly."
+        )
 
-def tool_node(state: AgentState):
-    """
-    Executes tools requested by the model.
-    """
-    messages = state["messages"]
-    last_msg = messages[-1]
-    
-    results = []
-    if isinstance(last_msg, AIMessage) and last_msg.tool_calls:
-        for tool_call in last_msg.tool_calls:
-            if tool_call["name"] == "get_weather":
-                try:
-                    res = get_weather(tool_call["args"]["city"])
-                    content = str(res)
-                except Exception as e:
-                    content = f"Error: {e}"
-                
-                results.append(ToolMessage(
-                    tool_call_id=tool_call["id"],
-                    content=content,
-                    name=tool_call["name"]
-                ))
-    
-    return {"messages": results}
+        # 3. Build and Compile the Graph
+        self.graph = self._build_graph()
 
-def should_continue(state: AgentState):
-    messages = state["messages"]
-    last_msg = messages[-1]
-    if isinstance(last_msg, AIMessage) and last_msg.tool_calls:
-        return "tools"
-    return END
-
-# Build Graph
-workflow = StateGraph(AgentState)
-workflow.add_node("agent", model_node)
-workflow.add_node("tools", tool_node)
-
-workflow.set_entry_point("agent")
-workflow.add_conditional_edges("agent", should_continue, {"tools": "tools", END: END})
-workflow.add_edge("tools", "agent") # Loop back to agent to generate final response
-
-app_graph = workflow.compile()
-
-
-# --- A2A Executor Adapter ---
-
-class LangGraphExecutor:
-    """
-    Adapts LangGraph execution to the A2A Executor interface used by DefaultRequestHandler.
-    """
-    async def execute(self, context: RequestContext, event_queue: EventQueue):
-        logger.info(f"Executing task {context.task_id}")
+    def _agent_node(self, state: AgentState):
+        """
+        Internal node function to invoke the model.
+        """
+        messages = state["messages"]
         
-        user_input = "Hello"
+        # Prepend system message if not present
+        if not isinstance(messages[0], SystemMessage):
+            messages = [SystemMessage(content=self.system_instruction)] + messages
+            
+        response = self.llm_with_tools.invoke(messages)
+        return {"messages": [response]}
+
+    def _build_graph(self):
+        """
+        Constructs the StateGraph with nodes and edges.
+        """
+        builder = StateGraph(AgentState)
+        
+        # Define Nodes
+        builder.add_node("agent", self._agent_node)
+        builder.add_node("tools", ToolNode(self.tools))
+        
+        # Define Edges
+        builder.add_edge(START, "agent")
+        builder.add_conditional_edges("agent", tools_condition)
+        builder.add_edge("tools", "agent")
+        
+        return builder.compile()
+
+    def invoke(self, user_query: str) -> Dict[str, Any]:
+        """
+        Public method to run the agent.
+        """
+        initial_state = {"messages": [HumanMessage(content=user_query)]}
+        result = self.graph.invoke(initial_state)
+        return result
+
+# --- A2A Executor Implementation ---
+class LangGraphExecutor(AgentExecutor):
+    """
+    Orchestrates the LangGraph agent execution within the A2A server context.
+    """
+    def __init__(self, agent: LangGraphWeatherAgent):
+        self.agent = agent
+
+    def _reconstruct_history(self, context: RequestContext) -> List[BaseMessage]:
+        """
+        Reconstructs LangChain messages from the A2A task history.
+        """
+        messages = []
+        messages.append(SystemMessage(content="You are a helpful weather assistant."))
+
+        # Extract the current user message
+        user_input = ""
         if hasattr(context, "message") and context.message:
             msg = context.message
-            if hasattr(msg, "content"):
+            if hasattr(msg, "content") and msg.content:
                 user_input = msg.content
-            elif isinstance(msg, dict):
-                user_input = msg.get("content", str(msg))
-            else:
+            elif hasattr(msg, "parts") and msg.parts:
+                texts = []
+                for part in msg.parts:
+                    if hasattr(part, "text") and part.text:
+                        texts.append(part.text)
+                    elif hasattr(part, "root") and hasattr(part.root, "text"):
+                        texts.append(part.root.text)
+                user_input = "\n".join(texts)
+            
+            if not user_input:
                 user_input = str(msg)
-        
-        logger.info(f"User input: {user_input}")
+        else:
+            user_input = "Hello"
+            
+        messages.append(HumanMessage(content=user_input))
+        return messages
 
-        # Initial State
-        inputs = {"messages": [HumanMessage(content=user_input)]}
+    async def execute(self, context: RequestContext, event_queue: EventQueue):
+        logger.info(f"Starting execution for Task ID: {context.task_id}")
+        
+        # 1. Reconstruct State
+        inputs = {"messages": self._reconstruct_history(context)}
         
         final_response = "No response generated."
         
-        # Run graph
-        async for output in app_graph.astream(inputs):
-            for key, value in output.items():
-                if "messages" in value:
-                    msgs = value["messages"]
+        # 2. Stream execution
+        async for output in self.agent.graph.astream(inputs):
+            for node_name, state_update in output.items():
+                if "messages" in state_update:
+                    msgs = state_update["messages"]
                     if msgs:
-                        last = msgs[-1]
-                        if isinstance(last, AIMessage) and not last.tool_calls:
-                            final_response = last.content
-        
+                        last_msg = msgs[-1]
+                        if isinstance(last_msg, AIMessage) and not last_msg.tool_calls:
+                            final_response = last_msg.content
+
         logger.info(f"Final response: {final_response}")
 
-        # Send completion event
-        # Try to use TaskStatus.COMPLETED if available, else string
-        status = "completed"
-        if hasattr(TaskStatus, "COMPLETED"):
-            status = TaskStatus.COMPLETED
-            
-        update_event = TaskStatusUpdateEvent(
-            task_id=context.task_id,
-            status=status,
-            result=final_response
-        )
+        # 3. Resolve Status
+        parts = [Part(root=TextPart(text=str(final_response)))]
+        update_event = completed_task(
+                    context.task_id,
+                    context.context_id,
+                    [new_artifact(parts, f"weather_{context.task_id}")],
+                    [context.message],
+                )
         
         await event_queue.enqueue_event(update_event)
 
+    async def cancel(self, task_id: str) -> None:
+        """
+        Handles task cancellation requests from the server.
+        """
+        logger.info(f"Cancellation requested for task {task_id}")
+        # In a more complex implementation, you would trigger a flag
+        # to break the 'async for' loop in execute().
+        pass
 
-# --- Server Function definitions ---
+# --- Server Setup ---
 
 weather_agent_card = AgentCard(
     name="Weather Agent LangGraph",
     url="http://localhost:10022",
-    description="Provides weather information",
+    description="Provides weather information using LangGraph",
     version="1.0",
     capabilities=AgentCapabilities(streaming=True),
     default_input_modes=["text/plain"],
@@ -264,13 +258,9 @@ weather_agent_card = AgentCard(
         AgentSkill(
             id="get_weather",
             name="Get Weather",
-            description="Provides actual weather information",
-            tags=["weather","information"],
-            examples=[
-                "Get weather in London",
-                "What is the weather in New York?",
-                "Provide weather information for Paris",
-            ],
+            description="Provides weather reports for major cities",
+            tags=["weather", "info"],
+            examples=["Weather in London", "Is it raining in Tokyo?"],
         )
     ],
 )
@@ -285,7 +275,8 @@ def create_agent_a2a_server(executor, agent_card):
     )
 
 async def run_agent_server(port) -> None:
-    executor = LangGraphExecutor()
+    agent_logic = LangGraphWeatherAgent(model_name="gemini-2.0-flash")
+    executor = LangGraphExecutor(agent=agent_logic)
     app = create_agent_a2a_server(executor, weather_agent_card)
 
     config = uvicorn.Config(
@@ -300,7 +291,7 @@ async def run_agent_server(port) -> None:
     await server.serve()
 
 def main():
-    print("Starting LangGraph agent server")
+    print("Starting LangGraph Weather Agent...")
     try:
         asyncio.run(run_agent_server(port=10022))
     except KeyboardInterrupt:

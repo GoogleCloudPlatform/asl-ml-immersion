@@ -5,6 +5,7 @@ google-api-core
 google-cloud-storage
 google-cloud-aiplatform
 google-cloud-bigquery
+google-cloud-modelarmor
 cloudml-hypertune
 <<<<<<< HEAD
 google-genai==1.23.0

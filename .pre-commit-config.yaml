@@ -30,12 +30,20 @@ repos:
     -   id: nbqa-pyupgrade
         args: [--py36-plus]
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> 0c634449 (cleaned)
     -   id: nbqa-isort
         args: [--profile=black, -l80]
 #    -   id: nbqa-black
 #        args: [-l80]
+<<<<<<< HEAD
 =======
 >>>>>>> 74771010 (Clean up the precommit config)
+=======
+>>>>>>> 10abffcd (cleaned)
+>>>>>>> 0c634449 (cleaned)
 -   repo: https://github.com/PyCQA/isort
     rev: 7.0.0
     hooks:

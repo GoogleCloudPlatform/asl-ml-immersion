@@ -84,6 +84,7 @@ else
         --container-custom-image="$IMAGE_URI" \
         --service-account="$DEFAULT_SA" \
         --service-account-scopes="https://www.googleapis.com/auth/cloud-platform" \
+        --idle-timeout=0 \
         --quiet
     echo "Configuration created."
 fi

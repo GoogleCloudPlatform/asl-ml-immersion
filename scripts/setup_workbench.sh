@@ -52,7 +52,8 @@ else
         --machine-type=$MACHINE_TYPE \
         --location=$ZONE \
         --network="projects/${PROJECT_ID}/global/networks/default" \
-        --subnet="projects/${PROJECT_ID}/regions/${REGION}/subnetworks/default"; then
+        --subnet="projects/${PROJECT_ID}/regions/${REGION}/subnetworks/default" \
+        --metadata=idle-timeout-seconds=; then
         echo "Instance created."
     else
         echo "Error: Failed to create Workbench instance."

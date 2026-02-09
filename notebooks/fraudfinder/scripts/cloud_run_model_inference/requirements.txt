@@ -1,0 +1,7 @@
+Flask==2.2.5
+Werkzeug==2.2.3
+gunicorn==20.1.0
+google-api-python-client>=1.7.8,<2
+google-cloud-aiplatform
+google-cloud-pubsub
+pandas

@@ -19,10 +19,20 @@ import logging
 import os
 
 # Initialize Vertex AI SDK
-ENDPOINT_ID = os.getenv("ENDPOINT_ID")
+ENDPOINT_NAME="ff_model_endpoint"
+#ENDPOINT_ID = os.getenv("ENDPOINT_ID")
+
 aiplatform.init(project=os.getenv("PROJECT_ID"), location=os.getenv("REGION"))
 
-def explain_fraud_transaction(transaction_features: dict[str, Any]) -> str:
+endpoints = aiplatform.Endpoint.list(
+    filter=f"display_name={ENDPOINT_NAME}",  # optional: filter by specific endpoint name
+    order_by="update_time",
+)
+
+ENDPOINT_ID = endpoints[-1].name
+print(ENDPOINT_ID)
+
+def explain_fraud_transaction(transaction_features: dict[str, float]) -> str:
     """
     Calls the Vertex AI Online Prediction endpoint to detect fraud and retrieves
     feature explanations.
@@ -91,14 +101,14 @@ def explain_fraud_transaction(transaction_features: dict[str, Any]) -> str:
             
         # Sort by absolute impact (magnitude) to find the biggest drivers
         # Positive score = pushes towards Fraud (1), Negative = pushes towards Legit (0)
-        top_drivers = sorted(feature_impacts, key=lambda x: abs(x[1]), reverse=True)[:3]
+        top_drivers = sorted(feature_impacts, key=lambda x: abs(x[1]), reverse=True)
 
         # --- specific Logic for "tx_amount" ---
         # The agent can explicitly mention amount if it was a factor
         
         # Build the text response
         explanation_text = (
-            f"**Risk Assessment:** Score: {fraud_score:.1%}\n\n"
+            f"**Risk Assessment:** Score: {fraud_score:.3%}\n\n"
             f"**Why this prediction?**\n"
         )
         
@@ -106,7 +116,7 @@ def explain_fraud_transaction(transaction_features: dict[str, Any]) -> str:
             direction = "Increased Risk" if score > 0 else "Decreased Risk"
             # Clean up technical feature names for better readability
             readable_name = name.replace("_", " ").title()
-            explanation_text += f"- {readable_name}: {direction} (Impact: {score:.3f})\n"
+            explanation_text += f"- {readable_name}: {direction} (Impact: {score:.6f})\n"
 
         return explanation_text
 
@@ -144,4 +154,4 @@ if __name__ == "__main__":
         'tx_amount': 153.8
     }
     
-    print(predict_fraud_with_explanation(test_tx))
+    print(explain_fraud_transaction(test_tx))

@@ -1,0 +1,118 @@
+sources:
+ fraudfinder-bq-source:
+   kind: bigquery
+   project: <PROJECT_ID>
+
+tools:
+ last_fraud_transaction:
+   kind: bigquery-sql
+   source: fraudfinder-bq-source
+   parameters:
+    - name: customer_id
+      type: string
+      description: The unique ID of the customer to analyze (e.g., 'C12345').
+   statement: |
+    SELECT
+        raw_tx.TX_ID AS tx_id,
+        raw_tx.TX_TS AS tx_timestamp,
+        raw_tx.CUSTOMER_ID AS customer_id,
+        raw_tx.TERMINAL_ID AS terminal_id,
+        raw_tx.TX_AMOUNT AS tx_amount,
+        raw_lb.TX_FRAUD AS tx_fraud,
+    FROM
+        `tx.ingestion_tx_records` AS raw_tx
+    LEFT JOIN
+        `tx.ingestion_tx_labels` AS raw_lb
+    ON
+        raw_tx.TX_ID = raw_lb.TX_ID
+    WHERE
+        raw_lb.TX_FRAUD=1
+    AND 
+        raw_tx.CUSTOMER_ID=@customer_id
+    ORDER BY tx_timestamp DESC
+    LIMIT 1
+   description: |
+    Use this tool to get customer last transaction was blocked by fraud detection
+
+ get_transaction_features:
+   kind: bigquery-sql
+   source: fraudfinder-bq-source
+   parameters:
+    - name: transaction_id
+      type: string
+      description: The unique ID of the transaction to analyze (e.g., 'TX_12345').
+   statement: |
+    WITH 
+          input_lookup AS (
+            SELECT
+                raw_tx.TX_TS AS feature_timestamp,
+                raw_tx.CUSTOMER_ID customer_id,
+                raw_tx.TERMINAL_ID AS terminal_id,
+                raw_tx.TX_AMOUNT AS tx_amount
+            FROM
+                `tx.ingestion_tx_records` AS raw_tx
+            WHERE
+                raw_tx.TX_ID=@transaction_id
+          ),
+          customer_lookup AS (
+            SELECT feature_timestamp AS `time`, customer_id AS entity_id FROM input_lookup
+          ),
+          terminal_lookup AS (
+            SELECT feature_timestamp AS `time`, terminal_id AS entity_id FROM input_lookup
+          )
+
+        SELECT
+          input_lookup.tx_amount as tx_amount,
+          IFNULL(f_customers.customer_id_avg_amount_1day_window, 0.0) as customer_id_avg_amount_1day_window,
+          IFNULL(f_customers.customer_id_avg_amount_7day_window, 0.0) as customer_id_avg_amount_7day_window,
+          IFNULL(f_customers.customer_id_avg_amount_14day_window, 0.0) as customer_id_avg_amount_14day_window,
+          IFNULL(CAST(f_customers.customer_id_nb_tx_1day_window AS FLOAT64), 0.0) as customer_id_nb_tx_1day_window,
+          IFNULL(CAST(f_customers.customer_id_nb_tx_7day_window AS FLOAT64), 0.0) as customer_id_nb_tx_7day_window,
+          IFNULL(CAST(f_customers.customer_id_nb_tx_14day_window AS FLOAT64), 0.0) as customer_id_nb_tx_14day_window,
+          IFNULL(f_terminals.terminal_id_risk_1day_window, 0.0)  AS terminal_id_risk_1day_window,
+          IFNULL(f_terminals.terminal_id_risk_7day_window, 0.0)  AS terminal_id_risk_7day_window,
+          IFNULL(f_terminals.terminal_id_risk_14day_window, 0.0)  AS terminal_id_risk_14day_window,
+          IFNULL(CAST(f_terminals.terminal_id_nb_tx_1day_window AS FLOAT64), 0.0)  AS terminal_id_nb_tx_1day_window,
+          IFNULL(CAST(f_terminals.terminal_id_nb_tx_7day_window AS FLOAT64), 0.0)  AS terminal_id_nb_tx_7day_window,
+          IFNULL(CAST(f_terminals.terminal_id_nb_tx_14day_window AS FLOAT64), 0.0)  AS terminal_id_nb_tx_14day_window,
+          IFNULL(f_cust_stream.customer_id_avg_amount_15min_window, 0.0) as customer_id_avg_amount_15min_window,
+          IFNULL(f_cust_stream.customer_id_avg_amount_30min_window, 0.0) as customer_id_avg_amount_30min_window,
+          IFNULL(f_cust_stream.customer_id_avg_amount_60min_window, 0.0) as customer_id_avg_amount_60min_window,
+          IFNULL(CAST(f_cust_stream.customer_id_nb_tx_15min_window AS FLOAT64), 0.0)  AS customer_id_nb_tx_15min_window,
+          IFNULL(CAST(f_cust_stream.customer_id_nb_tx_30min_window AS FLOAT64), 0.0)  AS customer_id_nb_tx_30min_window,
+          IFNULL(CAST(f_cust_stream.customer_id_nb_tx_60min_window AS FLOAT64), 0.0)  AS customer_id_nb_tx_60min_window,
+          IFNULL(f_term_stream.terminal_id_avg_amount_15min_window, 0.0) as terminal_id_avg_amount_15min_window,
+          IFNULL(f_term_stream.terminal_id_avg_amount_30min_window, 0.0) as terminal_id_avg_amount_30min_window,
+          IFNULL(f_term_stream.terminal_id_avg_amount_60min_window, 0.0) as terminal_id_avg_amount_60min_window,
+          IFNULL(CAST(f_term_stream.terminal_id_nb_tx_15min_window AS FLOAT64), 0.0)  AS terminal_id_nb_tx_15min_window,
+          IFNULL(CAST(f_term_stream.terminal_id_nb_tx_30min_window AS FLOAT64), 0.0)  AS terminal_id_nb_tx_30min_window,
+          IFNULL(CAST(f_term_stream.terminal_id_nb_tx_60min_window AS FLOAT64), 0.0)  AS terminal_id_nb_tx_60min_window
+
+        FROM input_lookup
+        LEFT JOIN ML.ENTITY_FEATURES_AT_TIME(
+          TABLE `tx.t_customers_batch_features`,
+          TABLE customer_lookup, num_rows => 1, ignore_feature_nulls => TRUE
+        ) AS f_customers ON input_lookup.customer_id = f_customers.entity_id
+
+        LEFT JOIN ML.ENTITY_FEATURES_AT_TIME(
+          TABLE `tx.t_terminals_batch_features`,
+          TABLE terminal_lookup, num_rows => 1, ignore_feature_nulls => TRUE
+        ) AS f_terminals ON input_lookup.terminal_id = f_terminals.entity_id
+
+        LEFT JOIN ML.ENTITY_FEATURES_AT_TIME(
+          TABLE `tx.t_customers_streaming_features`,
+          TABLE customer_lookup, num_rows => 1, ignore_feature_nulls => TRUE
+        ) AS f_cust_stream ON input_lookup.customer_id = f_cust_stream.entity_id
+
+        LEFT JOIN ML.ENTITY_FEATURES_AT_TIME(
+          TABLE `tx.t_terminals_streaming_features`,
+          TABLE terminal_lookup, num_rows => 1, ignore_feature_nulls => TRUE
+        ) AS f_term_stream ON input_lookup.terminal_id = f_term_stream.entity_id;
+   description: |
+    Retrieves raw transaction details and associated Machine Learning features 
+      (batch and streaming windows) for a specific Transaction ID. 
+      Returns customer and terminal feature vectors used for fraud detection.
+toolsets:
+ fraudfinder_toolset:
+   - last_fraud_transaction
+   - get_transaction_features

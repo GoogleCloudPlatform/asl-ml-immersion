@@ -84,7 +84,7 @@ from toolbox_core import ToolboxSyncClient
 toolbox = ToolboxSyncClient("http://127.0.0.1:5000")
 
 # Load all the tools
-tools = toolbox.load_toolset("fraudfinder")
+tools = toolbox.load_toolset("fraudfinder_toolset")
 
 bq_mcp_agent = Agent(
     name="transaction_info_agent",

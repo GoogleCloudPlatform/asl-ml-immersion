@@ -5,6 +5,7 @@ google-api-core
 google-cloud-storage
 google-cloud-aiplatform
 google-cloud-bigquery
+google-cloud-modelarmor
 cloudml-hypertune
 google-genai==1.57.0
 google-adk==1.22.1

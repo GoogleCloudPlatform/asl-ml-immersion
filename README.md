@@ -1,60 +1,91 @@
 # Advanced Solutions Lab
 
 ## Overview
-This repository contains Jupyter notebooks meant to be run on Vertex AI. This is maintained by Google Cloud’s [Advanced Solutions Lab (ASL)](https://cloud.google.com/asl) team. [Vertex AI](https://cloud.google.com/vertex-ai) is the next generation AI Platform on the Google Cloud Platform.
-The material covered in this repo will take a software engineer with no exposure to machine learning to an advanced level.
+This repository contains AI and Machine Learning contents meant to be run on Google Cloud. This is maintained by Google Cloud’s [Advanced Solutions Lab (ASL)](https://cloud.google.com/asl) team.
 
-In particular, the notebooks in this repository cover
-- A wide range of model architectures (DNN, CNN, RNN, transformers, SNGP, etc.) targeting many data modalities (tabular, image, text, time-series) implemented mainly in Tensorflow and Keras.
-- Tools on Google Cloud’s Vertex AI for operationalizing Tensorflow, Scikit-learn and PyTorch models at scale (e.g. Vertex training, tuning, and serving, TFX and Kubeflow pipelines).
-
-If you are new to machine learning or Vertex AI start here:  [Introduction to TensorFlow](https://github.com/GoogleCloudPlatform/asl-ml-immersion/tree/master/notebooks/introduction_to_tensorflow)
-
+This repository contains 3 main modules to covers various AI/ML toipcs:
+- `asl_core`: A wide range of model architectures (DNN, CNN, RNN, transformers, SNGP, etc.) targeting many data modalities (tabular, image, text, time-series) implemented mainly in Tensorflow and Keras.
+- `asl_mlops`: Tools on Google Cloud’s Vertex AI for operationalizing Tensorflow, Scikit-learn and PyTorch models at scale (e.g. Vertex training, tuning, and serving, TFX and Kubeflow pipelines).
+- `asl_genai`: Generative AI and Agent System using Gemini and Agentic Frameworks like Google ADK.
 
 ## Repository Structure
-All notebooks are in the notebooks folder. This folder is organized by different ML topics. Each folder contains a `labs` and a `solutions` folder. Use the `labs` notebooks to test your coding skills by filling in TODOs and refer to the notebooks in the `solutions` folder to verify your code.
+Each module (`asl_core`, `asl_mlops`, `asl_genai`) has separate environment and materials, which are organized in each directory.
+
+All learning materials are in the contets folder. This folder is organized by different topics. Each folder contains a `labs` and a `solutions` folder. Use the `labs` notebooks to test your coding skills by filling in TODOs and refer to the notebooks in the `solutions` folder to verify your code.
 
 We have three main folders described below:
 
 ```
-├── kernels - contains kernel scripts needed for certain notebooks in lab folder
-├── notebooks - contains labs and solutions notebook organized by topic
-│   ├── bigquery
-│   ├── building_production_ml_systems
-│   ├── docker_and_kubernetes
-│   ├── . . .
-├── scripts - contains setup scripts for enabling and setting up services on Vertex AI
+├── asl_core
+│   ├── notebooks - contains learning materials organized by topic
+│   │   ├── building_production_ml_systems
+│   │   │   ├── labs
+│   │   │   └── solutions
+│   │   ├── end-to-end-structured
+│   │   ├── image_models
+│   │   ├── ...
+│   ├── kernels - contains kernel scripts needed for certain notebooks
+│   ├── scaffolds - contains sample code to accelerate AI/ML projects
+│   ├── requirements.txt - dependencies for this module
+├── asl_mlops
+│   ├── ...
+├── asl_genai
+│   ├── ...
+├── ...
 ```
 
-For a more detailed breakdown of the notebooks in this repo, please refer to this [readme](https://github.com/GoogleCloudPlatform/asl-ml-immersion/blob/master/notebooks/README.md).
+## Environment Setup
+### Step 1. Run the Setup Script on Cloud Shell
+This repository is tested on Vertex AI Workbench and Cloud Workstations. To begin, run the setup script in [Cloud Shell](https://shell.cloud.google.com) to configure essential project infrastructure (APIs, IAM, Buckets).
 
-
-## Environment Setup (Vertex AI)
-
-First, open [CloudShell](https://cloud.google.com/shell) and run the following instructions:
-
+Run the setup script in [Cloud Shell](https://shell.cloud.google.com) to provision your environment.
 ```bash
 git clone https://github.com/GoogleCloudPlatform/asl-ml-immersion.git
 cd asl-ml-immersion
-./scripts/setup_on_cloudshell.sh
+bash scripts/setup_env.sh
 ```
 
-Second, follow the instruction of [the official documentation](https://cloud.google.com/vertex-ai/docs/workbench/instances/create-console-quickstart) to set up a JupyterLab instance on [Vertex AI Workbench Instance](https://cloud.google.com/vertex-ai/docs/workbench/instances/introduction).
+You will be prompted to select the environment to set up:
+*   **1) Vertex AI Workbench:** Setup Vertex AI Workbench.
+*   **2) Cloud Workstations:** Setup Cloud Workstations.
+*   **3) Setup both:** Setup both environments.
+*   **4) Skip:** Setup project infrastructure (APIs, IAM, Buckets) only.
+
+By selecting the option 1-3, you can automatically setup the environment, or you can select 4 and manually set up the environment following the official documentation:
+*   **Vertex AI Workbench:** [Create a user-managed notebook instance](https://cloud.google.com/vertex-ai/docs/workbench/instances/create-console-quickstart)
+*   **Cloud Workstations:** [Create a workstation](https://docs.cloud.google.com/workstations/docs/create-workstation)
 
 **Note:** Accelerators (GPU/TPU) are not required in most of the labs, but some notebooks recommend using them.
 
-After creating a Vertex Workbench Instance, open the terminal *in your JupyterLab instance* and run the following commands:
+### Step 2. Build the Environemnt
+Once your environment is running, open it. Then, run the commands below in Terminal **inside the environment** to clone this repository, and build the environemnt (venvs and jupyter kernels).
 
 ```bash
 git clone https://github.com/GoogleCloudPlatform/asl-ml-immersion.git
 cd asl-ml-immersion
-export PATH=$PATH:~/.local/bin
-make install
+make
 ```
+
+On Cloud Workstations, click `Open Folder` -> `asl-ml-immersion` to open the repository window. If the folder is already opend, `Command + Shift + P` and type `Developer: Reload Window` to reflect the changes.
+
+## Using the Environment
+### Running a notebook
+After the setup above, you can open a Jupyter notebook file, and execute on a module kernel (`ASL Core`, `ASL MLOps`, or `ASL Agent`). <br>
+If a correct kernel is not pre-selected, click `Select Kernel` and select a correct one.
+
+**On Cloud Workstations**, you can find a kernel under `Select Kernel` -> `Jupyter Kernels`. <br>
+If you can't find `Jupyter Kernels`, click `Python Environment` -> `<- (Left Arrow)` to reload the environment.
 
 **Note**: Some notebooks might require additional setup, please refer to the instructions in specific notebooks.
 
-After running these commands, you can open and execute a notebook on the base "Python 3" kernel.
+### Running a command on Terminal
+When running a command from the terminal, make sure to activate a venv for a specific environment.
+
+E.g. (under asl-ml-immersion directory),
+```bash
+source ./asl_genai/.venv/bin/activate
+adk web ./asl_genai/notebooks/vertex_genai/solutions/adk_agents
+```
 
 ## Contributions
 Currently, only Googlers can contribute to this repo. See [CONTRIBUTING.md](https://github.com/GoogleCloudPlatform/asl-ml-immersion/blob/master/CONTRIBUTING.md) for more details on the contribution workflow.

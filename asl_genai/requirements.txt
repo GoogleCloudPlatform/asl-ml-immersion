@@ -47,3 +47,5 @@ fire
 fastapi
 scipy
 pillow
+plotly
+scikit-learn

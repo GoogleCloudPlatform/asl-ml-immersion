@@ -22,6 +22,11 @@ ZONE="us-central1-a"
 INSTANCE_NAME="asl-lab-workbench"
 MACHINE_TYPE="e2-standard-4"
 
+if [ "$ENABLE_GPU" == "true" ]; then
+    INSTANCE_NAME="${INSTANCE_NAME}-gpu"
+    MACHINE_TYPE="n1-standard-4"
+fi
+
 # ==============================================================================
 # PRE-FLIGHT CHECKS
 # ==============================================================================
@@ -47,13 +52,20 @@ if gcloud workbench instances describe $INSTANCE_NAME --location=$ZONE --project
     echo "Instance '$INSTANCE_NAME' already exists. Skipping creation."
 else
     echo "Creating instance... (This takes a few minutes)"
+
+    GPU_ARGS=""
+    if [ "$ENABLE_GPU" == "true" ]; then
+        GPU_ARGS="--accelerator-type=NVIDIA_TESLA_T4 --accelerator-core-count=1 --install-gpu-driver"
+    fi
+
     if gcloud workbench instances create $INSTANCE_NAME \
         --project=$PROJECT_ID \
         --machine-type=$MACHINE_TYPE \
         --location=$ZONE \
         --network="projects/${PROJECT_ID}/global/networks/default" \
         --subnet="projects/${PROJECT_ID}/regions/${REGION}/subnetworks/default" \
-        --metadata=idle-timeout-seconds=; then
+        --metadata=idle-timeout-seconds= \
+        $GPU_ARGS; then
         echo "Instance created."
     else
         echo "Error: Failed to create Workbench instance."

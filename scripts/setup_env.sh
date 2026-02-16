@@ -22,6 +22,16 @@ echo "3) Setup both"
 echo "4) Skip (Setup environment manually)"
 read -p "Enter your choice (1, 2, 3 or 4): " DEV_ENV_CHOICE
 
+# Ask user for GPU preference
+echo "Do you want to attach a GPU (T4) to the environment? (y/n)"
+read -p "Enter your choice: " GPU_CHOICE
+
+if [[ "$GPU_CHOICE" == "y" || "$GPU_CHOICE" == "Y" ]]; then
+    export ENABLE_GPU="true"
+else
+    export ENABLE_GPU="false"
+fi
+
 export PROJECT_ID=$(gcloud config get-value project)
 export PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format="value(projectNumber)")
 export BUCKET=$PROJECT_ID

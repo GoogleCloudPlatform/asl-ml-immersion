@@ -50,7 +50,9 @@ gcloud services enable \
   cloudbuild.googleapis.com \
   container.googleapis.com \
   dataflow.googleapis.com \
-  run.googleapis.com
+  run.googleapis.com \
+  telemetry.googleapis.com \
+  modelarmor.googleapis.com
 
 
 # Setup Artifact Registry

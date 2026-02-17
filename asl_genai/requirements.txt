@@ -79,5 +79,9 @@ fire
 fastapi
 scipy
 pillow
+<<<<<<< HEAD
 plotly
 scikit-learn
+=======
+fsspec
+>>>>>>> 68cc3ad0 (Add fsspec module)

@@ -84,4 +84,8 @@ plotly
 scikit-learn
 =======
 fsspec
+<<<<<<< HEAD
 >>>>>>> 68cc3ad0 (Add fsspec module)
+=======
+gcsfs
+>>>>>>> 2511fc7d (Add gcsfs module)

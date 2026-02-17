@@ -1,3 +1,3 @@
-FROM gcr.io/deeplearning-platform-release/base-cpu
-RUN pip install kfp==2.4.0 google-cloud-aiplatform==1.43.0 fire
+FROM python:3.12
+RUN pip install kfp==2.15.2 google-cloud-aiplatform fire
 ENTRYPOINT ["/bin/bash"]

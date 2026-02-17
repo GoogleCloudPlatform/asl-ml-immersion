@@ -55,7 +55,9 @@ By selecting the option 1-3, you can automatically setup the environment, or you
 *   **Vertex AI Workbench:** [Create a user-managed notebook instance](https://cloud.google.com/vertex-ai/docs/workbench/instances/create-console-quickstart)
 *   **Cloud Workstations:** [Create a workstation](https://docs.cloud.google.com/workstations/docs/create-workstation)
 
-**Note:** Accelerators (GPU/TPU) are not required in most of the labs, but some notebooks recommend using them.
+Next, you will be asked if you want to attach a GPU (Nvidia T4) to the environment. Select `y` or `n` depending on your preference.
+
+**Note:** Accelerators (GPU/TPU) are not required in most of the notebooks, but some notebooks recommend using them.
 
 ### Step 2. Build the Environemnt
 Once your environment is running, open it. Then, run the commands below in Terminal **inside the environment** to clone this repository, and build the environemnt (venvs and jupyter kernels).

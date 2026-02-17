@@ -27,3 +27,4 @@ ipywidgets
 db-dtypes
 fire
 fastapi
+seaborn

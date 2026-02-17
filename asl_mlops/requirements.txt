@@ -18,6 +18,7 @@ cloudml-hypertune
 apache-beam[gcp]
 
 # Utilities
+setuptools<82
 ipykernel
 ipywidgets
 db-dtypes

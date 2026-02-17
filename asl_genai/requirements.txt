@@ -42,3 +42,4 @@ fire
 fastapi
 scipy
 pillow
+fsspec

@@ -29,3 +29,4 @@ db-dtypes
 fire
 fastapi
 seaborn
+fsspec

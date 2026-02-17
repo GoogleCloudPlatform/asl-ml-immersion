@@ -43,3 +43,4 @@ fastapi
 scipy
 pillow
 fsspec
+gcsfs

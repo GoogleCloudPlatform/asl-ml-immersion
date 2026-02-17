@@ -25,3 +25,4 @@ db-dtypes
 fire
 fastapi
 fsspec
+gcsfs

@@ -97,6 +97,7 @@ else
         --service-account="$DEFAULT_SA" \
         --service-account-scopes="https://www.googleapis.com/auth/cloud-platform" \
         --idle-timeout=0 \
+        --running-timeout=0 \
         $GPU_ARGS \
         --quiet
     echo "Configuration created."

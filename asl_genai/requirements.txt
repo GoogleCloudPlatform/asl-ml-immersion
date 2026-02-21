@@ -42,5 +42,7 @@ fire
 fastapi
 scipy
 pillow
+plotly
+scikit-learn
 fsspec
 gcsfs

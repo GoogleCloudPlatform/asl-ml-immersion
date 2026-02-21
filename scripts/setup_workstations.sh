@@ -10,6 +10,13 @@ CLUSTER_NAME="asl-lab-cluster"
 CONFIG_NAME="asl-lab-code-oss-config"
 WORKSTATION_NAME="asl-lab-workstation"
 
+MACHINE_TYPE="e2-standard-4"
+if [ "$ENABLE_GPU" == "true" ]; then
+    CONFIG_NAME="${CONFIG_NAME}-gpu"
+    WORKSTATION_NAME="${WORKSTATION_NAME}-gpu"
+    MACHINE_TYPE="n1-standard-4"
+fi
+
 # The network/subnet where the cluster will live.
 # Ensure Private Google Access is enabled on this subnet.
 NETWORK="default"
@@ -77,14 +84,21 @@ IMAGE_URI="$REGION-docker.pkg.dev/cloud-workstations-images/predefined/code-oss:
 if gcloud workstations configs describe $CONFIG_NAME --region=$REGION --cluster=$CLUSTER_NAME > /dev/null 2>&1; then
     echo "Configuration '$CONFIG_NAME' already exists. Skipping."
 else
+    GPU_ARGS=""
+    if [ "$ENABLE_GPU" == "true" ]; then
+        GPU_ARGS="--accelerator-type=nvidia-tesla-t4 --accelerator-count=1"
+    fi
+
     gcloud workstations configs create $CONFIG_NAME \
         --region=$REGION \
         --cluster=$CLUSTER_NAME \
-        --machine-type="e2-standard-4" \
+        --machine-type="$MACHINE_TYPE" \
         --container-custom-image="$IMAGE_URI" \
         --service-account="$DEFAULT_SA" \
         --service-account-scopes="https://www.googleapis.com/auth/cloud-platform" \
         --idle-timeout=0 \
+        --running-timeout=0 \
+        $GPU_ARGS \
         --quiet
     echo "Configuration created."
 fi

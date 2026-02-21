@@ -22,8 +22,12 @@ google-cloud-bigquery
 cloudml-hypertune
 
 # Utilities
+setuptools<82
 ipykernel
 ipywidgets
 db-dtypes
 fire
 fastapi
+seaborn
+fsspec
+gcsfs

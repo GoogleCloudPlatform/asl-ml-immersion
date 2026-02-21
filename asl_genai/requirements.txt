@@ -34,6 +34,7 @@ litellm==1.72.6
 evaluate==0.4.0
 rouge-score==0.1.2
 
+setuptools<82
 ipykernel
 ipywidgets
 db-dtypes
@@ -43,3 +44,5 @@ scipy
 pillow
 plotly
 scikit-learn
+fsspec
+gcsfs

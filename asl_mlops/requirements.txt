@@ -2,6 +2,9 @@
 
 # Machine Learning Frameworks
 scikit-learn==1.7.2
+torch==2.3.1
+torchtext==0.18.0
+torch-model-archiver==0.10.0
 
 # MLOps
 kubernetes==17.17.0

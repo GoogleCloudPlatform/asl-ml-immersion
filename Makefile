@@ -23,7 +23,7 @@ PROJECTS = \
 	asl_genai:asl_genai:"ASL Gen AI" \
 	asl_mlops:asl_mlops:"ASL MLOps"
 
-.PHONY: all install clean setup-apt setup-ide setup build-kernels
+.PHONY: all install clean setup-apt setup-ide setup build-kernels tf_privacy_kernel keras_cv_kernel
 
 all: setup build-kernels install-pre-commit
 
@@ -62,11 +62,19 @@ setup: setup-apt setup-ide
 	uv tool install jupyter-core --with jupyter-client
 	@grep -q "local/bin" ~/.bashrc || echo 'export PATH="$$HOME/.local/bin:$$PATH"' >> ~/.bashrc
 
+# Build main kernels
 build-kernels:
 	@for config in $(PROJECTS); do \
 		IFS=: read -r dir name disp <<< "$$config"; \
 		bash $(SETUP_SCRIPT) $$dir $$name "$$disp"; \
 	done
+
+# Build Special Kernels
+tf_privacy_kernel:
+	./asl_core/kernels/tf_privacy.sh
+
+keras_cv_kernel:
+	./asl_core/kernels/keras_cv.sh
 
 install-pre-commit:
 	uv tool install pre-commit

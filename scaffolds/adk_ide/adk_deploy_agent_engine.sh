@@ -4,10 +4,8 @@ export APP_NAME="weather_agent_v1"
 export AGENT_PATH="./agent_01_tool_func"
 export BUCKET_URI="gs://$GOOGLE_CLOUD_STORAGE_BUCKET"
 !gsutil ls $BUCKET_URI || gsutil mb -l $GOOGLE_CLOUD_LOCATION $BUCKET_URI
-adk deploy cloud_run \
---project=$GOOGLE_CLOUD_PROJECT \
---region=$GOOGLE_CLOUD_LOCATION \
---service_name=$SERVICE_NAME \
---app_name=$APP_NAME \
---with_ui \
-$AGENT_PATH
+adk deploy agent_engine \
+        --project=$GOOGLE_CLOUD_PROJECT \
+        --region=$GOOGLE_CLOUD_LOCATION \
+        --display_name="My First Agent" \
+        $AGENT_PATH

@@ -1,0 +1,80 @@
+# Copyright 2025 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import asyncio
+import logging
+from google.adk.sessions import InMemorySessionService
+from google.adk.runners import Runner
+from google.genai import types
+from agent import story_flow_agent
+
+# --- Configure Logging ---
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# --- Constants ---
+APP_NAME = "story_app"
+USER_ID = "12345"
+SESSION_ID = "123344"
+
+INITIAL_STATE = {"topic": "a brave kitten exploring a haunted house"}
+
+# --- Setup Runner and Session ---
+async def setup_session_and_runner():
+    session_service = InMemorySessionService()
+    session = await session_service.create_session(app_name=APP_NAME, user_id=USER_ID, session_id=SESSION_ID, state=INITIAL_STATE)
+    logger.info(f"Initial session state: {session.state}")
+    runner = Runner(
+        agent=story_flow_agent, # Pass the custom orchestrator agent
+        app_name=APP_NAME,
+        session_service=session_service
+    )
+    return session_service, runner
+
+# --- Function to Interact with the Agent ---
+async def call_agent_async(user_input_topic: str):
+    """
+    Sends a new topic to the agent (overwriting the initial one if needed)
+    and runs the workflow.
+    """
+
+    session_service, runner = await setup_session_and_runner()
+
+    current_session = session_service.sessions[APP_NAME][USER_ID][SESSION_ID]
+    current_session.state["topic"] = user_input_topic
+    logger.info(f"Updated session state topic to: {user_input_topic}")
+
+    content = types.Content(role='user', parts=[types.Part(text=f"Generate a story about the preset topic.")])
+    events = runner.run_async(user_id=USER_ID, session_id=SESSION_ID, new_message=content)
+
+    final_response = "No final response captured."
+    async for event in events:
+        if event.is_final_response() and event.content and event.content.parts:
+            logger.info(f"Potential final response from [{event.author}]: {event.content.parts[0].text}")
+            final_response = event.content.parts[0].text
+
+    print("\n--- Agent Interaction Result ---")
+    print("Agent Final Response: ", final_response)
+
+    final_session = await session_service.get_session(app_name=APP_NAME, 
+                                                user_id=USER_ID, 
+                                                session_id=SESSION_ID)
+    print("Final Session State:")
+    import json
+    print(json.dumps(final_session.state, indent=2))
+    print("-------------------------------\n")
+
+# --- Run the Agent ---
+if __name__ == "__main__":
+    asyncio.run(call_agent_async("a lonely robot finding a friend in a junkyard"))

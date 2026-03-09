@@ -9,6 +9,8 @@ google-cloud-modelarmor
 cloudml-hypertune
 google-genai==1.57.0
 google-adk==1.22.1
+google-cloud-spanner==3.57.0
+spanner-graph-notebook==1.1.8
 
 # Langchain dependencies
 langchain==0.3.14
@@ -21,6 +23,10 @@ langchain-community==0.3.14
 langchain-core==0.3.47
 langchain-google-vertexai==2.0.15
 langchain-text-splitters==0.3.5
+langchain-experimental==0.3.4
+langchain-google-spanner==0.9.0
+networkx==3.5
+
 
 # Utilities
 pyyaml==6.0.2

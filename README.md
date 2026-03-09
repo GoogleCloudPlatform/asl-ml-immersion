@@ -42,6 +42,7 @@ Run the setup script in [Cloud Shell](https://shell.cloud.google.com) to provisi
 ```bash
 git clone https://github.com/GoogleCloudPlatform/asl-ml-immersion.git
 cd asl-ml-immersion
+git checkout genai_bootcamp_202603
 bash scripts/setup_env.sh
 ```
 
@@ -65,6 +66,7 @@ Once your environment is running, open it. Then, run the commands below in Termi
 ```bash
 git clone https://github.com/GoogleCloudPlatform/asl-ml-immersion.git
 cd asl-ml-immersion
+git checkout genai_bootcamp_202603
 make
 ```
 

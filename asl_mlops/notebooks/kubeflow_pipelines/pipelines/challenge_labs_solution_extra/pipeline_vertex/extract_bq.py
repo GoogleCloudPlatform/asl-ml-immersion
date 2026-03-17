@@ -18,7 +18,11 @@ from kfp.dsl import Input, component
 
 
 @component(
-    base_image="gcr.io/ml-pipeline/google-cloud-pipeline-components:2.8.0",
+    base_image="python:3.12",
+    packages_to_install=[
+        "google-cloud-bigquery",
+        "google_cloud_pipeline_components==2.22.0",
+    ],
 )
 def extract_bq_op(bq_table: Input[BQTable], destination_uri: str):
 

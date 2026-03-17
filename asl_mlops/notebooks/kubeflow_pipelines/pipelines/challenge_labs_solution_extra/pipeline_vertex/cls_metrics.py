@@ -18,11 +18,14 @@ from kfp.dsl import ClassificationMetrics, Input, Output, component
 
 
 @component(
-    base_image="us-docker.pkg.dev/vertex-ai/training/sklearn-cpu.1-0:latest",
+    base_image="python:3.12",
     packages_to_install=[
-        "google-cloud-pipeline-components==2.8.0",
+        "numpy>=1.26.0,<2.0.0",
+        "scikit-learn==1.2.2",
+        "google-cloud-pipeline-components==2.22.0",
         "google-cloud-bigquery",
         "db-dtypes",
+        "pandas>=2.1.0",
     ],
 )
 def compute_cls_metrics(

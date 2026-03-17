@@ -26,24 +26,20 @@ repos:
 -   repo: https://github.com/nbQA-dev/nbQA
     rev: 1.9.1
     hooks:
-    -   id: nbqa-black
-        args: [-l80]
     -   id: nbqa-pyupgrade
         args: [--py36-plus]
-    -   id: nbqa-isort
-        args: [--profile=black, -l80]
 -   repo: https://github.com/PyCQA/isort
     rev: 7.0.0
     hooks:
     -   id: isort
         args: ["--profile", "black", "-l80"]
--   repo: https://github.com/psf/black-pre-commit-mirror
-    rev: 25.12.0
-    hooks:
-    -   id: black
-        args: [-l 80]
-    -   id: black-jupyter
-        args: [-l 80]
+        types_or: [python, pyi, jupyter]
+- repo: https://github.com/psf/black
+  rev: 25.12.0
+  hooks:
+    - id: black
+      args: [-l 80]
+      types_or: [python, pyi, jupyter]
 -   repo: https://github.com/asottile/pyupgrade
     rev: v3.21.2
     hooks:

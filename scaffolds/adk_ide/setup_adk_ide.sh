@@ -6,6 +6,9 @@ cd ..
 mkdir .vscode
 cp scaffolds/adk_ide/launch.json .vscode/
 cp scaffolds/adk_ide/settings.json .vscode/
+mkdir .devcontainer
+cp scaffolds/adk_ide/devcontainer_template/Dockerfile .devcontainer/
+cp scaffolds/adk_ide/devcontainer_template/devcontainer.json .devcontainer/
 cd mcp-toolbox
 export VERSION=0.13.0
 curl -O https://storage.googleapis.com/genai-toolbox/v$VERSION/linux/amd64/toolbox
@@ -28,18 +31,27 @@ sed -i "s/^# GOOGLE_CLOUD_PROJECT=.*/GOOGLE_CLOUD_PROJECT=$PROJECT_ID/" .env
 
 echo "⚙️  Configuring IDE extensions..."
 
-# Define the binary name (it varies slightly by image version, this function finds it)
+# Define the binary name (it varies across local VS Code, Cloud Workstations, or open-source builds)
 CODE_BIN=$(which code-oss-cloud-workstations || which code || which code-oss)
 
 if [ -z "$CODE_BIN" ]; then
-    echo "❌ Error: Could not find code-oss binary."
+    echo "❌ Error: Could not find IDE binary."
 else
     echo "✅ Found IDE binary at: $CODE_BIN"
     
-    # Install Python Extension (includes Debugger)
-    # The --force flag ensures it updates if already present
+    # Install Dev Containers Extension (crucial for local/remote container dev)
+    echo "📦 Installing Dev Containers..."
+    "$CODE_BIN" --install-extension ms-vscode-remote.remote-containers --force
+    
+    # Install Python Extension
+    echo "📦 Installing Python..."
     "$CODE_BIN" --install-extension ms-python.python --force
-    echo "✅ Configured IDE extensions."
+
+    # Install Ruff Extension (Astral's lightning-fast linter/formatter to pair with uv)
+    echo "📦 Installing Ruff..."
+    "$CODE_BIN" --install-extension charliermarsh.ruff --force
+    
+    echo "✅ Successfully configured IDE extensions."
 fi
 
 echo "✅ ADK IDE configured successfully."

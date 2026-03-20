@@ -29,6 +29,26 @@ gcloud config set project $CLOUDSDK_CORE_PROJECT
 cp env.example .env
 sed -i "s/^# GOOGLE_CLOUD_PROJECT=.*/GOOGLE_CLOUD_PROJECT=$PROJECT_ID/" .env
 
+echo "⚙️  Detecting environment and configuring IDE extensions..."
+
+# 1. Detect the environment by checking available binaries
+if command -v code-oss-cloud-workstations &> /dev/null; then
+    echo "☁️  Environment detected: Google Cloud Workstation"
+    CODE_BIN="code-oss-cloud-workstations"
+    IS_LOCAL=false
+elif command -v code &> /dev/null; then
+    echo "💻 Environment detected: Local VS Code"
+    CODE_BIN="code"
+    IS_LOCAL=true
+elif command -v code-oss &> /dev/null; then
+    echo "🐧 Environment detected: VS Code OSS / VDI"
+    CODE_BIN="code-oss"
+    IS_LOCAL=false
+else
+    echo "❌ Error: Could not find any IDE binary."
+    exit 1
+fi
+
 echo "⚙️  Configuring IDE extensions..."
 
 # Define the binary name (it varies across local VS Code, Cloud Workstations, or open-source builds)
@@ -38,6 +58,14 @@ if [ -z "$CODE_BIN" ]; then
     echo "❌ Error: Could not find IDE binary."
 else
     echo "✅ Found IDE binary at: $CODE_BIN"
+
+    # 2. Conditionally install the Dev Containers extension
+    if [ "$IS_LOCAL" = true ]; then
+        echo "📦 Installing Dev Containers extension..."
+        "$CODE_BIN" --install-extension ms-vscode-remote.remote-containers --force
+    else
+        echo "⏩ Skipping Dev Containers extension (Native to Cloud / Not on Open VSX)."
+    fi  
     
     # Install Python Extension
     echo "📦 Installing Python..."

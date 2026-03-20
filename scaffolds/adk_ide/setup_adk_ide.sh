@@ -6,9 +6,6 @@ cd ..
 mkdir .vscode
 cp scaffolds/adk_ide/launch.json .vscode/
 cp scaffolds/adk_ide/settings.json .vscode/
-mkdir .devcontainer
-cp scaffolds/adk_ide/devcontainer_template/Dockerfile .devcontainer/
-cp scaffolds/adk_ide/devcontainer_template/devcontainer.json .devcontainer/
 cd mcp-toolbox
 export VERSION=0.13.0
 curl -O https://storage.googleapis.com/genai-toolbox/v$VERSION/linux/amd64/toolbox
@@ -62,6 +59,9 @@ else
     # 2. Conditionally install the Dev Containers extension
     if [ "$IS_LOCAL" = true ]; then
         echo "📦 Installing Dev Containers extension..."
+        mkdir -p .devcontainer
+        cp scaffolds/adk_ide/devcontainer_template/Dockerfile .devcontainer/
+        cp scaffolds/adk_ide/devcontainer_template/devcontainer.json .devcontainer/
         "$CODE_BIN" --install-extension ms-vscode-remote.remote-containers --force
     else
         echo "⏩ Skipping Dev Containers extension (Native to Cloud / Not on Open VSX)."

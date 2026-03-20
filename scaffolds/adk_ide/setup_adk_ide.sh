@@ -39,15 +39,15 @@ if [ -z "$CODE_BIN" ]; then
 else
     echo "✅ Found IDE binary at: $CODE_BIN"
     
-    # Install Dev Containers Extension (crucial for local/remote container dev)
-    echo "📦 Installing Dev Containers..."
-    "$CODE_BIN" --install-extension ms-vscode-remote.remote-containers --force
-    
     # Install Python Extension
     echo "📦 Installing Python..."
     "$CODE_BIN" --install-extension ms-python.python --force
 
-    # Install Ruff Extension (Astral's lightning-fast linter/formatter to pair with uv)
+    # Install Dev Containers Extension (crucial for local/remote container dev)
+    echo "📦 Installing Dev Containers..."
+    "$CODE_BIN" --install-extension ms-vscode-remote.remote-containers --force
+
+    # Install Ruff Extension (linter/formatter to pair with uv)
     echo "📦 Installing Ruff..."
     "$CODE_BIN" --install-extension charliermarsh.ruff --force
     

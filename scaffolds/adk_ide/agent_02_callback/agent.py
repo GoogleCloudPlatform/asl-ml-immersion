@@ -21,7 +21,7 @@ from google.adk.tools.base_tool import BaseTool
 from google.adk.tools.tool_context import ToolContext
 from google.genai.types import Content, Part
 
-MODEL = "gemini-2.0-flash"
+MODEL = "gemini-2.5-flash"
 
 from .tools import get_location, get_weather
 

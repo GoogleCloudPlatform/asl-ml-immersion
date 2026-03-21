@@ -37,7 +37,7 @@ APP_NAME_OPENAPI = "openapi_petstore_app"
 USER_ID_OPENAPI = "user_openapi_1"
 SESSION_ID_OPENAPI = f"session_openapi_{uuid.uuid4()}" # Unique session ID
 AGENT_NAME_OPENAPI = "petstore_manager_agent"
-GEMINI_MODEL = "gemini-2.0-flash"
+MODEL = "gemini-2.5-flash"
 
 # --- Sample OpenAPI Specification (JSON String) ---
 # A basic Pet Store API example using httpbin.org as a mock server
@@ -55,7 +55,7 @@ petstore_toolset = OpenAPIToolset(
 # --- Agent Definition ---
 root_agent = LlmAgent(
     name=AGENT_NAME_OPENAPI,
-    model=GEMINI_MODEL,
+    model=MODEL,
     tools=[petstore_toolset], # Pass the list of RestApiTool objects
     instruction="""You are a Pet Store assistant managing pets via an API.
     Use the available tools to fulfill user requests.

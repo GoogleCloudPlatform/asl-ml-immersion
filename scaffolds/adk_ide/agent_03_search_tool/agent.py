@@ -18,7 +18,7 @@ Agent for weather information.
 from google.adk.agents import Agent
 from google.adk.tools import google_search
 
-MODEL = "gemini-2.0-flash"
+MODEL = "gemini-2.5-flash"
 
 root_agent = Agent(
     name="search_agent_v3",

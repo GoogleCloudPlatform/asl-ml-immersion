@@ -21,6 +21,7 @@ from typing import List
 from google.adk import Agent
 from google.adk.tools.tool_context import ToolContext
 
+MODEL = "gemini-2.5-flash"
 
 async def get_weather(city: str, tool_context: ToolContext) -> dict:
   """Get the current weather for a city.
@@ -215,7 +216,7 @@ async def get_population(cities: List[str], tool_context: ToolContext) -> dict:
 
 
 root_agent = Agent(
-    model='gemini-2.0-flash',
+    model=MODEL,
     name='parallel_function_test_agent',
     description=(
         'Agent for testing parallel function calling performance and thread'

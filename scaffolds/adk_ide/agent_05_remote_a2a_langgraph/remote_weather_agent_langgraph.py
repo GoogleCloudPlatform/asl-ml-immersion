@@ -106,7 +106,7 @@ def get_weather(city: str) -> dict:
 # --- 2. Class Definition ---
 
 class LangGraphWeatherAgent:
-    def __init__(self, model_name: str = "gemini-2.0-flash"):
+    def __init__(self, model_name: str = "gemini-2.5-flash"):
         """
         Initialize the agent with a model and build the graph.
         """

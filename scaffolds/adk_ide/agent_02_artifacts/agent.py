@@ -22,7 +22,7 @@ from google.adk.tools.tool_context import ToolContext
 from google.genai.types import Content, Part
 from google.adk.tools import load_artifacts
 
-MODEL = "gemini-2.0-flash"
+MODEL = "gemini-2.5-flash"
 
 from google.adk.tools.tool_context import ToolContext
 from google.genai import types

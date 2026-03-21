@@ -26,7 +26,7 @@ google_search_agent = Agent(
 
 root_agent = Agent(
     name="agent4_agent_tool",
-    model="gemini-2.0-flash",  # Can be a string for Gemini or a LiteLlm object
+    model="gemini-2.5-flash",  # Can be a string for Gemini or a LiteLlm object
     description="Provides information about PyCon events for specific cities.",
     instruction="""
     You are an expert **PyCon Events Suggestion Assistant**.

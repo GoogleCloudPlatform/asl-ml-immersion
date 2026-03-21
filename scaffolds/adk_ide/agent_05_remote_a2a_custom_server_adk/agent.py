@@ -16,7 +16,7 @@ from google.adk.agents import Agent
 from google.adk.agents.remote_a2a_agent import RemoteA2aAgent
 from .tools import say_goodbye, say_hello
 
-MODEL = "gemini-2.0-flash"
+MODEL = "gemini-2.5-flash"
 
 # --- Greeting Agent ---
 greeting_agent = Agent(

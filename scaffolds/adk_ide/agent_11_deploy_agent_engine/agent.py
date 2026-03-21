@@ -19,7 +19,7 @@ from google.adk.agents import Agent
 
 from .tools import get_pycon_events
 
-MODEL = "gemini-2.0-flash"
+MODEL = "gemini-2.5-flash"
 
 root_agent = Agent(
     name="pycon_agent_v1",

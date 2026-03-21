@@ -45,7 +45,7 @@ logging.basicConfig(format="[%(levelname)s]: %(message)s", level=logging.INFO)
 
 load_dotenv()
 
-MODEL = "gemini-2.0-flash"
+MODEL = "gemini-2.5-flash"
 
 logger.info("Create Weather Agent ...")
 

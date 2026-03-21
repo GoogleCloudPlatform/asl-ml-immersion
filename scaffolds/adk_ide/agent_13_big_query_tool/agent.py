@@ -29,7 +29,7 @@ import google.auth
 # Define constants for this example agent
 AGENT_NAME = "bigquery_agent"
 APP_NAME = "bigquery_app"
-GEMINI_MODEL = "gemini-2.0-flash"
+GEMINI_MODEL = "gemini-2.5-flash"
 
 # Define an appropriate credential type
 #AuthCredentialTypes.OAUTH2

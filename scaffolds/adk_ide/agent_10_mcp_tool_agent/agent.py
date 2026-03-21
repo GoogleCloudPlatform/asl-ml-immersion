@@ -38,7 +38,7 @@ MODEL = "gemini-2.5-flash"
 MCP_SERVER_URL = "http://0.0.0.0:4200/inventory"
 
 root_agent = LlmAgent(
-    model="gemini-2.0-flash",
+    model=MODEL,
     name="inventory_assistant",
     description="You are a specialized assistant for inventory management.",
     instruction=(

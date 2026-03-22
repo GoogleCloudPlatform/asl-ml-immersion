@@ -12,9 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
+from dotenv import load_dotenv
 from google.adk.agents import Agent
 from google.adk.agents.remote_a2a_agent import RemoteA2aAgent
 from .tools import say_goodbye, say_hello
+
+# Load environment variables from .env file
+env_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
+print(f"Loading .env from {env_file}")
+load_dotenv(dotenv_path=env_file)
 
 MODEL = "gemini-2.5-flash"
 

@@ -43,7 +43,10 @@ logging.basicConfig(level=logging.ERROR)
 logger = logging.getLogger(__name__)
 logging.basicConfig(format="[%(levelname)s]: %(message)s", level=logging.INFO)
 
-load_dotenv()
+import os
+env_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
+print(f"Loading .env from {env_file}")
+load_dotenv(dotenv_path=env_file)
 
 MODEL = "gemini-2.5-flash"
 

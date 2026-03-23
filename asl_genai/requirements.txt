@@ -6,6 +6,7 @@ google-cloud-storage
 google-cloud-aiplatform
 google-cloud-bigquery
 google-cloud-modelarmor
+<<<<<<< HEAD
 cloudml-hypertune
 <<<<<<< HEAD
 google-genai==1.23.0
@@ -43,6 +44,8 @@ lit-nlp==1.3.1
 =======
 >>>>>>> dd0ee813 (Updated requirements files)
 =======
+=======
+>>>>>>> 8cc9d25b (fix minor requirements.txt issues)
 google-genai==1.57.0
 google-adk==1.22.1
 >>>>>>> 57738359 (update asl_genai requirements.txt)

@@ -9,6 +9,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 import uvicorn
 from google.adk.a2a.utils.agent_to_a2a import to_a2a
 from starlette.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
 
 from remote_weather_agent import root_agent
 
@@ -32,4 +33,11 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+  # Load environment variables from .env file
+  try:    
+      env_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
+      print(f"Loading .env from {env_file}")
+      load_dotenv(dotenv_path=env_file)
+  except Exception as e:
+      print(f"Error loading .env file: {e}")
+  main()

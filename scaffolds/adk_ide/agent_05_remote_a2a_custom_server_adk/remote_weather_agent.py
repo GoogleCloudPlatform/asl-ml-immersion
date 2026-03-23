@@ -44,9 +44,13 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(format="[%(levelname)s]: %(message)s", level=logging.INFO)
 
 import os
-env_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
-print(f"Loading .env from {env_file}")
-load_dotenv(dotenv_path=env_file)
+# Load environment variables from .env file
+try:    
+    env_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
+    print(f"Loading .env from {env_file}")
+    load_dotenv(dotenv_path=env_file)
+except Exception as e:
+    print(f"Error loading .env file: {e}")
 
 MODEL = "gemini-2.5-flash"
 

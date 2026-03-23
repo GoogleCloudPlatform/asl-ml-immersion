@@ -16,6 +16,14 @@ from dotenv import load_dotenv
 from google.adk.agents import Agent
 from google.adk.a2a.utils.agent_to_a2a import to_a2a
 
+# Load environment variables from .env file
+try:    
+    env_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
+    print(f"Loading .env from {env_file}")
+    load_dotenv(dotenv_path=env_file)
+except Exception as e:
+    print(f"Error loading .env file: {e}")
+
 MODEL = "gemini-2.5-flash"
 
 def get_weather(city: str) -> dict:

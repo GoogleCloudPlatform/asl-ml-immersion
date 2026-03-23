@@ -300,4 +300,11 @@ def main():
         print(f"An error occurred: {e}")
 
 if __name__ == "__main__":
+    # Load environment variables from .env file
+    try:    
+        env_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
+        print(f"Loading .env from {env_file}")
+        load_dotenv(dotenv_path=env_file)
+    except Exception as e:
+        print(f"Error loading .env file: {e}")  
     main()

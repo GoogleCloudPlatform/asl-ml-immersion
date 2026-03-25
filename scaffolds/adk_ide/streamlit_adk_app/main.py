@@ -13,8 +13,16 @@ def main():
     # 2. Build the absolute path to app.py
     app_path = os.path.join(current_dir, "app.py")
     
-    # 3. Point sys.argv to the absolute path
-    sys.argv = ["streamlit", "run", app_path]
+    # 3. Point sys.argv to the absolute path AND append Workstation flags
+    sys.argv = [
+        "streamlit", 
+        "run", 
+        app_path,
+        "--server.address=0.0.0.0",
+        "--server.headless=true",
+        "--server.enableCORS=false",
+        "--server.enableXsrfProtection=false"
+    ]
     
     # Execute the Streamlit CLI within the current Python process
     sys.exit(stcli.main())

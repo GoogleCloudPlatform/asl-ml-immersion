@@ -12,8 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from google.adk.agents import Agent
+from google.adk.models import Gemini
+from google.genai import types
 
 MODEL = "gemini-2.5-flash"
+GOOGLE_CLOUD_PROJECT = os.getenv("GOOGLE_CLOUD_PROJECT")
+GOOGLE_CLOUD_LOCATION = os.getenv("GOOGLE_CLOUD_LOCATION")
 
 from .tools import get_weather
 

@@ -10,7 +10,7 @@ export ADK_CUSTOM_IMAGE_APP_NAME="adk-custom-image-demo-agent"
 gcloud run deploy $ADK_CUSTOM_IMAGE_APP_NAME \
   --source . \
   --port 8080 \
-  --memory 2G \
+  --memory 4G \
   --project=$GOOGLE_CLOUD_PROJECT \
   --region=$GOOGLE_CLOUD_LOCATION \
   --allow-unauthenticated \

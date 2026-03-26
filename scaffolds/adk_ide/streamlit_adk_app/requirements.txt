@@ -1,0 +1,5 @@
+streamlit==1.51.0
+google-cloud-aiplatform==1.130.0
+google-genai==1.55.0
+httpx==0.28.1
+python-dotenv==1.0.1

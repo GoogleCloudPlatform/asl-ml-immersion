@@ -11,61 +11,36 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-"""
-This file initializes a FastAPI application for ADK agent
-using get_fast_api_app() from ADK. Session service URI and a flag
-for a web interface configured via environment variables.
-It can then be run using Uvicorn, which listens on a port specified by
-the PORT environment variable or defaults to 8080.
-This approach offers more flexibility, particularly if you want to
-embed ADK Agent within a custom FastAPI application.
-It is used for Cloud Run deployment with standard gcloud run deploy command.
-"""
-
 import os
 
 import uvicorn
-from dotenv import load_dotenv
 from fastapi import FastAPI
 from google.adk.cli.fast_api import get_fast_api_app
-from google.cloud import logging as google_cloud_logging
 
-
-# Load environment variables from .env file
-load_dotenv()
-
-logging_client = google_cloud_logging.Client()
-logger = logging_client.logger(__name__)
-
-AGENT_DIR = os.path.dirname(os.path.abspath(__file__))
-print("AGENT_DIR")
-
-# Get session service URI from environment variables
-session_uri = os.getenv("SESSION_SERVICE_URI", None)
-
-# Get Enable Web interface serving flag from environment variables
+# Get the directory where agent is located
+AGENT_DIR = "./my_agent"
+# Example session service URI (e.g., SQLite)
+# Note: Use 'sqlite+aiosqlite' instead of 'sqlite' because DatabaseSessionService requires an async driver
+SESSION_SERVICE_URI = "sqlite+aiosqlite:///./sessions.db"
+# Example allowed origins for CORS
+ALLOWED_ORIGINS = ["http://localhost", "http://localhost:8080", "*"]
 # Set web=True if you intend to serve a web interface, False otherwise
-web_interface_enabled = True #os.getenv("SERVE_WEB_INTERFACE", 'False').lower() in ('true', '1')
+SERVE_WEB_INTERFACE = True
 
-# Prepare arguments for get_fast_api_app
-app_args = {"agents_dir": AGENT_DIR, "web": web_interface_enabled}
+# Call the function to get the FastAPI app instance
+# Ensure the agent directory name ('my_agent') matches your agent folder
+app: FastAPI = get_fast_api_app(
+    agents_dir=AGENT_DIR,
+    session_service_uri=SESSION_SERVICE_URI,
+    allow_origins=ALLOWED_ORIGINS,
+    web=SERVE_WEB_INTERFACE,
+)
 
-# Only include session_service_uri if it's provided
-if session_uri:
-    app_args["session_service_uri"] = session_uri
-else:
-    logger.log_text(
-        "SESSION_SERVICE_URI not provided. Using in-memory session service instead. "
-        "All sessions will be lost when the server restarts.",
-        severity="WARNING",
-    )
-
-# Create FastAPI app with appropriate arguments
-app: FastAPI = get_fast_api_app(**app_args)
-
-app.title = "adk_cloudrun"
-app.description = "ADK Agent CloudRun"
+# You can add more FastAPI routes or configurations below if needed
+# Example:
+# @app.get("/hello")
+# async def read_root():
+#     return {"Hello": "World"}
 
 if __name__ == "__main__":
     # Use the PORT environment variable provided by Cloud Run, defaulting to 8080

@@ -24,6 +24,7 @@ echo 'Deploying the application to Cloud Run...'
 gcloud run deploy $APP_NAME \
   --image $CONTAINER_PATH:latest --min-instances 1 --max-instances 1 --cpu 1 \
   --memory 4Gi --region us-central1 \
+  --no-allow-unauthenticated \
   --invoker-iam-check \
   --update-env-vars GCP_PROJECT=$GOOGLE_CLOUD_PROJECT,GCP_REGION=$GOOGLE_CLOUD_LOCATION
 

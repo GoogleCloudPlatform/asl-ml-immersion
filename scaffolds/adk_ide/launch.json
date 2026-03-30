@@ -12,7 +12,9 @@
                 "${workspaceFolder}/scaffolds/adk_ide",
                 "--port",
                 "8502",
-                "--reload_agents"
+                "--reload_agents",
+                "--allow_origins",
+                "*"
             ],
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}"
@@ -28,7 +30,9 @@
                 "${workspaceFolder}/scaffolds/adk_ide",
                 "--port",
                 "8501",
-                "--reload_agents"
+                "--reload_agents",
+                "--allow_origins",
+                "*"
             ],
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}"

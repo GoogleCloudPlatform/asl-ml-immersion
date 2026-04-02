@@ -8,6 +8,7 @@ google-cloud-bigquery
 google-cloud-modelarmor
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 cloudml-hypertune
 <<<<<<< HEAD
 google-genai==1.23.0
@@ -52,6 +53,9 @@ google-adk==1.22.1
 >>>>>>> 57738359 (update asl_genai requirements.txt)
 =======
 google-genai==1.64.0
+=======
+google-genai==1.69.0
+>>>>>>> 0da459d1 (updated google-genai to 1.69.0)
 google-adk==1.28.0
 >>>>>>> 5ffe9086 (updated requirements.txt)
 

@@ -100,4 +100,8 @@ fsspec
 >>>>>>> 68cc3ad0 (Add fsspec module)
 =======
 gcsfs
+<<<<<<< HEAD
 >>>>>>> 2511fc7d (Add gcsfs module)
+=======
+nbformat>=4.2.0
+>>>>>>> ea9d5ba5 (added missing nbformat dependency)

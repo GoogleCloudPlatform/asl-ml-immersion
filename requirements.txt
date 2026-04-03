@@ -49,7 +49,7 @@ unstructured==0.14.4
 unstructured-client==0.22.0
 wikipedia==1.4.0
 fire==0.6.0
-litellm==1.72.6
+litellm==1.83.0
 fastapi==0.115.13
 
 # For development work

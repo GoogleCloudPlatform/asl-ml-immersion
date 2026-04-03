@@ -3,7 +3,7 @@
 # Google & Google Cloud Libraries
 google-api-core
 google-cloud-storage
-google-cloud-aiplatform
+google-cloud-aiplatform==1.145.0
 google-cloud-bigquery
 google-cloud-modelarmor
 <<<<<<< HEAD

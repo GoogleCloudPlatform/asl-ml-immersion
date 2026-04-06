@@ -33,8 +33,7 @@ PIPELINE_NAME = os.getenv("PIPELINE_NAME", "covertype")
 DISPLAY_NAME = os.getenv("MODEL_DISPLAY_NAME", PIPELINE_NAME)
 TARGET_COLUMN = os.getenv("TARGET_COLUMN", "Cover_Type")
 SERVING_MACHINE_TYPE = os.getenv("SERVING_MACHINE_TYPE", "n1-standard-16")
-# VertexAI AutoML Component image version
-VERTEX_KFP_IMAGE = "gcr.io/ml-pipeline/google-cloud-pipeline-components:2.16.1"
+
 
 @dsl.pipeline(
     name=f"{PIPELINE_NAME}-vertex-automl-pipeline",
@@ -56,9 +55,6 @@ def create_pipeline():
         dataset=dataset_create_task.outputs["dataset"],
         target_column=TARGET_COLUMN,
     )
-
-    # Override the container image version
-    automl_training_task.set_container_image(VERTEX_KFP_IMAGE)
 
     endpoint_create_task = EndpointCreateOp(
         project=PROJECT,

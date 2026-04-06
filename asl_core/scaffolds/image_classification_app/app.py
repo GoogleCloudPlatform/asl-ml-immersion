@@ -3,7 +3,7 @@
 import numpy as np
 import streamlit as st
 import tensorflow as tf
-from tensorflow.keras.models import load_model
+from keras.models import load_model
 
 st.set_page_config(page_title="5-Flower Classifier", page_icon="🌷")
 
@@ -22,14 +22,13 @@ CLASSES = ["daisy", "dandelion", "roses", "sunflowers", "tulips"]
 
 @st.cache_resource(show_spinner=False)
 def load_and_cache_model():
-    model_path = "flowers_model"
+    model_path = "flowers_model.keras"
     model = load_model(model_path)
     return model
 
 
 def read_image(img_bytes):
     img = tf.image.decode_jpeg(img_bytes, channels=IMG_CHANNELS)
-    img = tf.image.convert_image_dtype(img, tf.float32)
     return img
 
 
@@ -45,7 +44,7 @@ def main():
     file_uploaded = st.file_uploader("Choose File", type=["png", "jpg", "jpeg"])
     if file_uploaded is not None:
         image = read_image(file_uploaded.read())
-        st.image(image.numpy(), caption="Uploaded Image", use_column_width=True)
+        st.image(image.numpy(), caption="Uploaded Image")
         class_btn = st.button("Classify")
         if class_btn:
             with st.spinner("Model predicting...."):

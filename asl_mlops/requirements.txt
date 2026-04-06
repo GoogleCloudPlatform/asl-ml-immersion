@@ -25,3 +25,4 @@ fire
 fastapi
 fsspec
 gcsfs
+tqdm

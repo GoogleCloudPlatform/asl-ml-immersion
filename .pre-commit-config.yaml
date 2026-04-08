@@ -67,3 +67,29 @@ repos:
     hooks:
     -   id: pylint
         args: ["--disable", "unexpected-keyword-arg,no-value-for-parameter,too-many-function-args"]
+
+-   repo: local
+    hooks:
+      # Hook for ASL Core
+      - id: uv-compile-core
+        name: uv compile core
+        entry: uv pip compile asl_core/pyproject.toml --upgrade --output-file=asl_core/requirements.lock
+        language: system
+        files: ^asl_core/(pyproject\.toml|requirements\.txt)$
+        pass_filenames: false
+
+      # Hook for ASL MLOps
+      - id: uv-compile-mlops
+        name: uv compile mlops
+        entry: uv pip compile asl_mlops/pyproject.toml --upgrade --output-file=asl_mlops/requirements.lock
+        language: system
+        files: ^asl_mlops/(pyproject\.toml|requirements\.txt)$
+        pass_filenames: false
+
+      # Hook for ASL GenAI
+      - id: uv-compile-genai
+        name: uv compile genai
+        entry: uv pip compile asl_genai/pyproject.toml --upgrade --output-file=asl_genai/requirements.lock
+        language: system
+        files: ^asl_genai/(pyproject\.toml|requirements\.txt)$
+        pass_filenames: false

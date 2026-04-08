@@ -6,6 +6,7 @@
 ci:
     autofix_prs: false  # as it would fail the Google CLA check
     autoupdate_schedule: quarterly
+    skip: [pip-compile]
 
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
@@ -68,28 +69,20 @@ repos:
     -   id: pylint
         args: ["--disable", "unexpected-keyword-arg,no-value-for-parameter,too-many-function-args"]
 
--   repo: local
+-   repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.11.4
     hooks:
-      # Hook for ASL Core
-      - id: uv-compile-core
+      - id: pip-compile
         name: uv compile core
-        entry: uv pip compile asl_core/pyproject.toml --upgrade --output-file=asl_core/requirements.lock
-        language: system
+        args: [asl_core/pyproject.toml, --upgrade, --output-file=asl_core/requirements.lock]
         files: ^asl_core/(pyproject\.toml|requirements\.txt)$
-        pass_filenames: false
 
-      # Hook for ASL MLOps
-      - id: uv-compile-mlops
+      - id: pip-compile
         name: uv compile mlops
-        entry: uv pip compile asl_mlops/pyproject.toml --upgrade --output-file=asl_mlops/requirements.lock
-        language: system
+        args: [asl_mlops/pyproject.toml, --upgrade, --output-file=asl_mlops/requirements.lock]
         files: ^asl_mlops/(pyproject\.toml|requirements\.txt)$
-        pass_filenames: false
 
-      # Hook for ASL GenAI
-      - id: uv-compile-genai
+      - id: pip-compile
         name: uv compile genai
-        entry: uv pip compile asl_genai/pyproject.toml --upgrade --output-file=asl_genai/requirements.lock
-        language: system
+        args: [asl_genai/pyproject.toml, --upgrade, --output-file=asl_genai/requirements.lock]
         files: ^asl_genai/(pyproject\.toml|requirements\.txt)$
-        pass_filenames: false

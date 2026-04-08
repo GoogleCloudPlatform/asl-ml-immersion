@@ -13,7 +13,6 @@ ACTION=$4
 PYTHON_VERSION=3.12
 
 VENV_DIR=".venv"
-# Now VENV_PYTHON is an absolute path (e.g. /home/user/repo/asl_core/.venv/bin/python)
 VENV_PYTHON="${PROJECT_DIR}/${VENV_DIR}/bin/python"
 VENV_BIN="${PROJECT_DIR}/${VENV_DIR}/bin"
 
@@ -40,9 +39,15 @@ fi
 
 # 2. Install Dependencies
 echo "Installing dependencies..."
-# We use the absolute path $VENV_PYTHON to force uv to install HERE
 uv pip install -p "$VENV_PYTHON" "Cython<3"
-uv pip install -p "$VENV_PYTHON" pip -r requirements.txt -e .
+
+if [ -f "requirements.lock" ]; then
+    echo "Installing dependencies from requirements.lock..."
+    uv pip install -p "$VENV_PYTHON" pip -r requirements.lock -e .
+else
+    echo "Installing dependencies from requirements.txt..."
+    uv pip install -p "$VENV_PYTHON" pip -r requirements.txt -e .
+fi
 
 if [ -f "requirements-without-deps.txt" ]; then
     uv pip install -p "$VENV_PYTHON" -U --no-deps -r requirements-without-deps.txt

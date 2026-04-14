@@ -1,5 +1,6 @@
 """Streamlit Image Classification App"""
 
+import keras
 import numpy as np
 import streamlit as st
 import tensorflow as tf
@@ -33,7 +34,7 @@ def read_image(img_bytes):
 
 
 def predict(model, image):
-    image = tf.image.resize(image, [IMG_HEIGHT, IMG_WIDTH])
+    image = keras.ops.image.resize(image, [IMG_HEIGHT, IMG_WIDTH])
     image = np.expand_dims(image, axis=0)
     predictions = model.predict(image)
     pred_index = np.argmax(predictions[0])

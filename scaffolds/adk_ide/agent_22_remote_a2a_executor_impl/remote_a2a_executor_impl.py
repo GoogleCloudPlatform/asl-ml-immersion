@@ -65,190 +65,75 @@ class AgentState(TypedDict):
 import operator
 from typing import Annotated, TypedDict, List, Union, Dict, Any
 
-from langchain_core.tools import tool
-from langchain_core.messages import SystemMessage, HumanMessage, BaseMessage
-from langchain_google_vertexai import ChatVertexAI
-from langgraph.graph import StateGraph, START, END
-from langgraph.prebuilt import ToolNode, tools_condition
+# from langchain_core.tools import tool
+# from langchain_core.messages import SystemMessage, HumanMessage, BaseMessage
+# from langchain_google_vertexai import ChatVertexAI
+# from langgraph.graph import StateGraph, START, END
+# from langgraph.prebuilt import ToolNode, tools_condition
 
 # --- 1. Define State & Tools (Module Level) ---
-class AgentState(TypedDict):
-    messages: Annotated[List[BaseMessage], operator.add]
+# class AgentState(TypedDict):
+#     messages: Annotated[List[BaseMessage], operator.add]
 
-@tool
-def get_weather(city: str) -> dict:
-    """Retrieves the current weather report for a specified city."""
-    print(f"--- Tool: get_weather called for city: {city} ---")
-    city_normalized = city.lower().replace(" ", "")
+class HelloWorldAgent:
+    """Hello World Agent."""
 
-    mock_weather_db = {
-        "newyork": {
-            "status": "success",
-            "report": "The weather in New York is sunny with a temperature of 25°C."
-        },
-        "london": {
-            "status": "success",
-            "report": "It's cloudy in London with a temperature of 15°C."
-        },
-        "tokyo": {
-            "status": "success",
-            "report": "Tokyo is experiencing light rain and a temperature of 18°C."
-        },
-    }
+    async def invoke(self) -> str:
+        """Invoke the Hello World agent to generate a response."""
+        return 'Hello, World!'
 
-    if city_normalized in mock_weather_db:
-        return mock_weather_db[city_normalized]
-    return {
-        "status": "error",
-        "error_message": f"Sorry, I don't have weather information for '{city}'."
-    }
 
-# --- 2. Class Definition ---
+class HelloWorldAgentExecutor(AgentExecutor):
+    """Test AgentProxy Implementation."""
 
-class LangGraphWeatherAgent:
-    def __init__(self, model_name: str = "gemini-2.5-flash"):
-        """
-        Initialize the agent with a model and build the graph.
-        """
-        # 1. Setup Model and Tools
-        self.tools = [get_weather]
-        self.llm = ChatVertexAI(model=model_name)
-        self.llm_with_tools = self.llm.bind_tools(self.tools)
-        
-        # 2. Define System Instructions
-        self.system_instruction = (
-            "You are a helpful weather assistant. "
-            "When the user asks for the weather in a specific city, "
-            "use the 'get_weather' tool to find the information. "
-            "If the tool returns an error, inform the user politely. "
-            "If the tool is successful, present the weather report clearly."
+    def __init__(self) -> None:
+        self.agent = HelloWorldAgent()
+
+
+async def execute(
+    self,
+    context: RequestContext,
+    event_queue: EventQueue,
+) -> None:
+    """Execute the agent process and enqueue the final response."""
+    task = context.current_task or new_task(context.message)
+    await event_queue.enqueue_event(task)
+
+    await event_queue.enqueue_event(
+        TaskStatusUpdateEvent(
+            task_id=context.task_id,
+            context_id=context.context_id,
+            status=TaskStatus(
+                state=TaskState.TASK_STATE_WORKING,
+                message=new_agent_text_message('Processing request...'),
+            ),
         )
+    )
 
-        # 3. Build and Compile the Graph
-        self.graph = self._build_graph()
+    result = await self.agent.invoke()
 
-    def _agent_node(self, state: AgentState):
-        """
-        Internal node function to invoke the model.
-        """
-        messages = state["messages"]
-        
-        # Prepend system message if not present
-        if not isinstance(messages[0], SystemMessage):
-            messages = [SystemMessage(content=self.system_instruction)] + messages
-            
-        response = self.llm_with_tools.invoke(messages)
-        return {"messages": [response]}
+    await event_queue.enqueue_event(
+        TaskArtifactUpdateEvent(
+            task_id=context.task_id,
+            context_id=context.context_id,
+            artifact=new_text_artifact(name='result', text=result),
+        )
+    )
+    await event_queue.enqueue_event(
+        TaskStatusUpdateEvent(
+            task_id=context.task_id,
+            context_id=context.context_id,
+            status=TaskStatus(state=TaskState.TASK_STATE_COMPLETED),
+        )
+    )
 
-    def _build_graph(self):
-        """
-        Constructs the StateGraph with nodes and edges.
-        """
-        builder = StateGraph(AgentState)
-        
-        # Define Nodes
-        builder.add_node("agent", self._agent_node)
-        builder.add_node("tools", ToolNode(self.tools))
-        
-        # Define Edges
-        builder.add_edge(START, "agent")
-        builder.add_conditional_edges("agent", tools_condition)
-        builder.add_edge("tools", "agent")
-        
-        return builder.compile()
-
-    def invoke(self, user_query: str) -> Dict[str, Any]:
-        """
-        Public method to run the agent.
-        """
-        initial_state = {"messages": [HumanMessage(content=user_query)]}
-        result = self.graph.invoke(initial_state)
-        return result
-
-# --- A2A Executor Implementation ---
-class LangGraphExecutor(AgentExecutor):
-    """
-    Orchestrates the LangGraph agent execution within the A2A server context.
-    """
-    def __init__(self, agent: LangGraphWeatherAgent):
-        self.agent = agent
-
-    def _reconstruct_history(self, context: RequestContext) -> List[BaseMessage]:
-        """
-        Reconstructs LangChain messages from the A2A task history.
-        """
-        messages = []
-        messages.append(SystemMessage(content="You are a helpful weather assistant."))
-
-        # Extract the current user message
-        user_input = ""
-        if hasattr(context, "message") and context.message:
-            msg = context.message
-            if hasattr(msg, "content") and msg.content:
-                user_input = msg.content
-            elif hasattr(msg, "parts") and msg.parts:
-                texts = []
-                for part in msg.parts:
-                    if hasattr(part, "text") and part.text:
-                        texts.append(part.text)
-                    elif hasattr(part, "root") and hasattr(part.root, "text"):
-                        texts.append(part.root.text)
-                user_input = "\n".join(texts)
-            
-            if not user_input:
-                user_input = str(msg)
-        else:
-            user_input = "Hello"
-            
-        messages.append(HumanMessage(content=user_input))
-        return messages
-
-    async def execute(self, context: RequestContext, event_queue: EventQueue):
-        logger.info(f"Starting execution for Task ID: {context.task_id}")
-        
-        # 1. Reconstruct State
-        inputs = {"messages": self._reconstruct_history(context)}
-        
-        final_response = "No response generated."
-        
-        # 2. Stream execution
-        async for output in self.agent.graph.astream(inputs):
-            for node_name, state_update in output.items():
-                if "messages" in state_update:
-                    msgs = state_update["messages"]
-                    if msgs:
-                        last_msg = msgs[-1]
-                        if isinstance(last_msg, AIMessage) and not last_msg.tool_calls:
-                            final_response = last_msg.content
-
-        logger.info(f"Final response: {final_response}")
-
-        # 3. Resolve Status
-        parts = [Part(root=TextPart(text=str(final_response)))]
-        update_event = completed_task(
-                    context.task_id,
-                    context.context_id,
-                    [new_artifact(parts, f"weather_{context.task_id}")],
-                    [context.message],
-                )
-        
-        await event_queue.enqueue_event(update_event)
-
-    async def cancel(self, task_id: str) -> None:
-        """
-        Handles task cancellation requests from the server.
-        """
-        logger.info(f"Cancellation requested for task {task_id}")
-        # In a more complex implementation, you would trigger a flag
-        # to break the 'async for' loop in execute().
-        pass
 
 # --- Server Setup ---
 
 weather_agent_card = AgentCard(
-    name="Weather Agent LangGraph",
-    url="http://localhost:10022",
-    description="Provides weather information using LangGraph",
+    name="Hello World A2A Agent",
+    url="http://localhost:10025",
+    description="Simple A2A server implementation",
     version="1.0",
     capabilities=AgentCapabilities(streaming=True),
     default_input_modes=["text/plain"],
@@ -256,11 +141,11 @@ weather_agent_card = AgentCard(
     preferred_transport=TransportProtocol.jsonrpc,
     skills=[
         AgentSkill(
-            id="get_weather",
-            name="Get Weather",
-            description="Provides weather reports for major cities",
-            tags=["weather", "info"],
-            examples=["Weather in London", "Is it raining in Tokyo?"],
+            id="say_hello",
+            name="Say Hello",
+            description="Returns a greeting",
+            tags=["hello", "info"],
+            examples=["Say hello"],
         )
     ],
 )
@@ -275,8 +160,8 @@ def create_agent_a2a_server(executor, agent_card):
     )
 
 async def run_agent_server(port) -> None:
-    agent_logic = LangGraphWeatherAgent(model_name="gemini-2.0-flash")
-    executor = LangGraphExecutor(agent=agent_logic)
+    agent_logic = HelloWorldAgent()
+    executor = HelloWorldAgentExecutor(agent=agent_logic)
     app = create_agent_a2a_server(executor, weather_agent_card)
 
     config = uvicorn.Config(
@@ -291,7 +176,7 @@ async def run_agent_server(port) -> None:
     await server.serve()
 
 def main():
-    print("Starting LangGraph Weather Agent...")
+    print("Starting Say Hello Agent...")
     try:
         asyncio.run(run_agent_server(port=10022))
     except KeyboardInterrupt:

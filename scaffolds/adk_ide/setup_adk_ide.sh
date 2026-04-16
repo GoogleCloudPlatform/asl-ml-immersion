@@ -6,11 +6,6 @@ cd ..
 mkdir .vscode
 cp scaffolds/adk_ide/launch.json .vscode/
 cp scaffolds/adk_ide/settings.json .vscode/
-# cd mcp-toolbox
-# export VERSION=0.13.0
-# curl -O https://storage.googleapis.com/genai-toolbox/v$VERSION/linux/amd64/toolbox
-# chmod +x toolbox
-# cd ..
 cd scaffolds/adk_ide
 make install
 export PATH=$PATH:~/.local/bin
@@ -72,8 +67,8 @@ else
     "$CODE_BIN" --install-extension ms-python.python --force
 
     # Install Ruff Extension (linter/formatter to pair with uv)
-    echo "📦 Installing Ruff..."
-    "$CODE_BIN" --install-extension charliermarsh.ruff --force
+    # echo "📦 Installing Ruff..."
+    #"$CODE_BIN" --install-extension charliermarsh.ruff --force
     
     echo "✅ Successfully configured IDE extensions."
 fi

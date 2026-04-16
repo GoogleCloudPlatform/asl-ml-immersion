@@ -24,9 +24,9 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "pytest>=8.3.4",
-    "pytest-asyncio>=0.23.8",
-    "nest-asyncio>=1.6.0",
+    #"pytest>=8.3.4",
+    #"pytest-asyncio>=0.23.8",
+    #"nest-asyncio>=1.6.0",
 ]
 
 [project.optional-dependencies]

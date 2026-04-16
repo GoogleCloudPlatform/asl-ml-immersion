@@ -275,7 +275,7 @@ def create_agent_a2a_server(executor, agent_card):
     )
 
 async def run_agent_server(port) -> None:
-    agent_logic = LangGraphWeatherAgent(model_name="gemini-2.0-flash")
+    agent_logic = LangGraphWeatherAgent(model_name="gemini-2.5-flash")
     executor = LangGraphExecutor(agent=agent_logic)
     app = create_agent_a2a_server(executor, weather_agent_card)
 

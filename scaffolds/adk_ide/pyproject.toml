@@ -10,7 +10,7 @@ dependencies = [
     "psycopg2-binary>=2.9.10",
     "python-dotenv==1.1.0",
     "fastmcp[tasks]==3.2.4",
-    "toolbox-core==1.0.0",
+    "toolbox-core==0.5.10",
     "streamlit==1.51.0",
     "langchain==0.3.14",
     "langsmith==0.1.129",

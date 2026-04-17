@@ -6,7 +6,7 @@ requires-python = ">=3.13,<3.14"
 
 dependencies = [
     "google-adk[a2a,eval,extensions,otel-gcp]==1.28.0",
-    "uvicorn~=0.34.0",
+    "uvicorn==0.44.0",
     "psycopg2-binary>=2.9.10",
     "python-dotenv==1.1.0",
     "fastmcp[tasks]==3.2.4",

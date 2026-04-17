@@ -1,12 +1,7 @@
 #!/bin/bash
 
 export PATH=$PATH:~/.local/bin
-cd ..
-cd ..
-mkdir .vscode
-cp scaffolds/adk_ide/launch.json .vscode/
-cp scaffolds/adk_ide/settings.json .vscode/
-cd scaffolds/adk_ide
+#cd scaffolds/adk_ide
 make install
 export PATH=$PATH:~/.local/bin
 make install
@@ -20,6 +15,12 @@ echo $CLOUDSDK_CORE_PROJECT
 gcloud config set project $CLOUDSDK_CORE_PROJECT
 cp env.example .env
 sed -i "s/^# GOOGLE_CLOUD_PROJECT=.*/GOOGLE_CLOUD_PROJECT=$PROJECT_ID/" .env
+cd ..
+cd ..
+mkdir .vscode
+cp scaffolds/adk_ide/launch.json .vscode/
+cp scaffolds/adk_ide/settings.json .vscode/
+cd scaffolds/adk_ide
 
 echo "⚙️  Detecting environment and configuring IDE extensions..."
 

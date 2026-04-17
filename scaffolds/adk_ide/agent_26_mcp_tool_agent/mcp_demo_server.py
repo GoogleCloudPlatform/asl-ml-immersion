@@ -15,8 +15,7 @@
 import asyncio
 import csv
 import os
-
-from fastmcp import FastMCP
+from mcp.server.fastmcp import FastMCP, Context
 from pydantic import Field
 
 # Define the path to the CSV file relative to this script
@@ -25,6 +24,7 @@ from pydantic import Field
 CSV_FILE_PATH = os.path.join(os.path.dirname(__file__), "sku_data.csv")
 
 global mcp
+
 mcp = FastMCP(
     name="Inventory MCP Server",
     instructions="""
@@ -34,8 +34,9 @@ mcp = FastMCP(
     Call list_skus() to get the list of all the SKUs or any details related the items/SKUs.
     Call update_sku_qty(sku_id) to update the quantity of a specific SKU.
     """,
+    host="0.0.0.0",
+    port=4200,
 )
-
 
 @mcp.tool()
 def list_skus(sku_name: str = Field("*", description="Name of the SKU")):
@@ -137,12 +138,5 @@ def update_sku_qty(
     except Exception as e:
         return {"error": f"Failed to update SKU quantity: {str(e)}"}
 
-
 if __name__ == "__main__":
-    asyncio.run(
-        mcp.run_sse_async(
-            host="0.0.0.0",
-            port=4200,
-            path="/inventory",
-        )
-    )
+    mcp.run(transport="sse")

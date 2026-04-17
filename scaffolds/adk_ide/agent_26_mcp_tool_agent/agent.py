@@ -17,25 +17,17 @@ This is a simple example of using MCP Toolset to create a tool for inventory man
 """
 import asyncio
 from contextlib import AsyncExitStack
-from uuid import uuid4
-
-import click
-from google.adk.agents import Agent, LlmAgent
-from google.adk.runners import Runner
-from google.adk.sessions import InMemorySessionService
-from google.adk.tools.agent_tool import AgentTool
+from google.adk.agents import LlmAgent
 from google.adk.tools.mcp_tool.mcp_session_manager import (
     SseServerParams,
     StdioConnectionParams,
 )
 from google.adk.tools.mcp_tool.mcp_toolset import McpToolset
-from google.genai import types
-from pydantic import BaseModel
 
 MODEL = "gemini-2.5-flash"
 
 # TODO: IMPORTANT! Change the path below to your remote MCP Server path
-MCP_SERVER_URL = "http://0.0.0.0:4200/inventory"
+MCP_SERVER_URL = "http://0.0.0.0:4200/sse"
 
 root_agent = LlmAgent(
     model=MODEL,
@@ -43,7 +35,7 @@ root_agent = LlmAgent(
     description="You are a specialized assistant for inventory management.",
     instruction=(
         "Help user get answer to their queries about inventory and update "
-        "the items."
+        "or process the items."
     ),
     tools=[
         McpToolset(

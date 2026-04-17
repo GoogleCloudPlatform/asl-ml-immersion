@@ -8,7 +8,7 @@ PROJECT_ID=$(gcloud config get-value project)
 REGION="us-central1"
 CLUSTER_NAME="asl-lab-cluster"
 CONFIG_NAME="asl-lab-code-oss-config"
-WORKSTATION_NAME="asl-lab-adk-workstation"
+WORKSTATION_NAME="asl-lab-adk-workstation-v2"
 
 # The network/subnet where the cluster will live.
 # Ensure Private Google Access is enabled on this subnet.

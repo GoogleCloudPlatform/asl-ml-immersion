@@ -7,7 +7,7 @@ google-cloud-aiplatform==1.145.0
 google-cloud-bigquery
 google-cloud-modelarmor
 google-genai==1.69.0
-google-adk==1.28.0
+google-adk==1.28.1
 
 # Langchain dependencies
 langchain==0.3.14

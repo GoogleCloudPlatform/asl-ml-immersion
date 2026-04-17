@@ -1,4 +1,3 @@
-
 # Copyright 2025 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,24 +13,15 @@
 # limitations under the License.
 
 import asyncio
-import logging
 import operator
-import re
-import uuid
-from typing import Annotated, Any, Dict, List, Optional, TypedDict
+import os
+from typing import Annotated, List, TypedDict
 
 import uvicorn
 from dotenv import load_dotenv
 
 # LangGraph & LangChain Imports
-from langchain_core.messages import (
-    AIMessage,
-    BaseMessage,
-    HumanMessage,
-    SystemMessage,
-    ToolMessage,
-)
-from langgraph.graph import END, StateGraph
+from langchain_core.messages import BaseMessage
 
 # A2A Imports
 from a2a.server.agent_execution import AgentExecutor, RequestContext
@@ -39,22 +29,23 @@ from a2a.server.apps import A2AStarletteApplication
 from a2a.server.events import EventQueue
 from a2a.server.request_handlers import DefaultRequestHandler
 from a2a.server.tasks import InMemoryTaskStore
+
+# A2A Utils & Types
+from a2a.utils import (
+    new_agent_text_message,
+    new_task,
+    new_text_artifact,
+)
 from a2a.types import (
     AgentCapabilities,
     AgentCard,
     AgentSkill,
-    Part,
-    TextPart,
+    TaskArtifactUpdateEvent,
+    TaskState,
+    TaskStatus,
+    TaskStatusUpdateEvent,
     TransportProtocol,
 )
-from a2a.utils import completed_task, new_artifact
-
-load_dotenv()
-
-# Setup Logger
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("weather_agent_langgraph")
-
 
 # --- State Definition ---
 class AgentState(TypedDict):
@@ -62,25 +53,12 @@ class AgentState(TypedDict):
 
 
 # --- Agent Logic Class ---
-import operator
-from typing import Annotated, TypedDict, List, Union, Dict, Any
-
-# from langchain_core.tools import tool
-# from langchain_core.messages import SystemMessage, HumanMessage, BaseMessage
-# from langchain_google_vertexai import ChatVertexAI
-# from langgraph.graph import StateGraph, START, END
-# from langgraph.prebuilt import ToolNode, tools_condition
-
-# --- 1. Define State & Tools (Module Level) ---
-# class AgentState(TypedDict):
-#     messages: Annotated[List[BaseMessage], operator.add]
-
 class HelloWorldAgent:
     """Hello World Agent."""
 
     async def invoke(self) -> str:
         """Invoke the Hello World agent to generate a response."""
-        return 'Hello, World!'
+        return 'Hello, A2A World!'
 
 
 class HelloWorldAgentExecutor(AgentExecutor):
@@ -89,50 +67,59 @@ class HelloWorldAgentExecutor(AgentExecutor):
     def __init__(self) -> None:
         self.agent = HelloWorldAgent()
 
+    async def execute(
+        self,
+        context: RequestContext,
+        event_queue: EventQueue,
+    ) -> None:
+        """Execute the agent process and enqueue the final response."""
+        task = context.current_task or new_task(context.message)
+        await event_queue.enqueue_event(task)
 
-async def execute(
-    self,
-    context: RequestContext,
-    event_queue: EventQueue,
-) -> None:
-    """Execute the agent process and enqueue the final response."""
-    task = context.current_task or new_task(context.message)
-    await event_queue.enqueue_event(task)
-
-    await event_queue.enqueue_event(
-        TaskStatusUpdateEvent(
-            task_id=context.task_id,
-            context_id=context.context_id,
-            status=TaskStatus(
-                state=TaskState.TASK_STATE_WORKING,
-                message=new_agent_text_message('Processing request...'),
-            ),
+        # 1. Update status to WORKING
+        await event_queue.enqueue_event(
+            TaskStatusUpdateEvent(
+                task_id=context.task_id,
+                context_id=context.context_id,
+                status=TaskStatus(
+                    state=TaskState.working,
+                    message=new_agent_text_message('Processing request...'),
+                ),
+                final=False,
+            )
         )
-    )
 
-    result = await self.agent.invoke()
+        result = await self.agent.invoke()
 
-    await event_queue.enqueue_event(
-        TaskArtifactUpdateEvent(
-            task_id=context.task_id,
-            context_id=context.context_id,
-            artifact=new_text_artifact(name='result', text=result),
+        await event_queue.enqueue_event(
+            TaskArtifactUpdateEvent(
+                task_id=context.task_id,
+                context_id=context.context_id,
+                artifact=new_text_artifact(name='result', text=result),
+            )
         )
-    )
-    await event_queue.enqueue_event(
-        TaskStatusUpdateEvent(
-            task_id=context.task_id,
-            context_id=context.context_id,
-            status=TaskStatus(state=TaskState.TASK_STATE_COMPLETED),
+        
+        # 2. Update status to COMPLETED
+        await event_queue.enqueue_event(
+            TaskStatusUpdateEvent(
+                task_id=context.task_id,
+                context_id=context.context_id,
+                status=TaskStatus(state=TaskState.completed),
+                final=True,
+            )
         )
-    )
+
+    async def cancel(
+        self, context: RequestContext, event_queue: EventQueue
+    ) -> None:
+        """Raise exception as cancel is not supported."""
+        raise NotImplementedError('Cancel is not supported')
 
 
 # --- Server Setup ---
-
-weather_agent_card = AgentCard(
+hello_world_agent_card = AgentCard(
     name="Hello World A2A Agent",
-    url="http://localhost:10025",
+    url="http://localhost:10023",
     description="Simple A2A server implementation",
     version="1.0",
     capabilities=AgentCapabilities(streaming=True),
@@ -150,7 +137,8 @@ weather_agent_card = AgentCard(
     ],
 )
 
-def create_agent_a2a_server(executor, agent_card):
+
+def create_agent_a2a_server(executor: AgentExecutor, agent_card: AgentCard) -> A2AStarletteApplication:
     handler = DefaultRequestHandler(
         agent_executor=executor,
         task_store=InMemoryTaskStore(),
@@ -159,10 +147,10 @@ def create_agent_a2a_server(executor, agent_card):
         agent_card=agent_card, http_handler=handler
     )
 
-async def run_agent_server(port) -> None:
-    agent_logic = HelloWorldAgent()
-    executor = HelloWorldAgentExecutor(agent=agent_logic)
-    app = create_agent_a2a_server(executor, weather_agent_card)
+
+async def run_agent_server(port: int) -> None:
+    executor = HelloWorldAgentExecutor()
+    app = create_agent_a2a_server(executor, hello_world_agent_card)
 
     config = uvicorn.Config(
         app.build(),
@@ -175,14 +163,16 @@ async def run_agent_server(port) -> None:
     server = uvicorn.Server(config)
     await server.serve()
 
+
 def main():
-    print("Starting Say Hello Agent...")
+    print("Starting Hello World Agent on port 10023...")
     try:
-        asyncio.run(run_agent_server(port=10022))
+        asyncio.run(run_agent_server(port=10023))
     except KeyboardInterrupt:
         print("\nServer stopped manually.")
     except Exception as e:
         print(f"An error occurred: {e}")
+
 
 if __name__ == "__main__":
     # Load environment variables from .env file
@@ -192,4 +182,5 @@ if __name__ == "__main__":
         load_dotenv(dotenv_path=env_file)
     except Exception as e:
         print(f"Error loading .env file: {e}")  
+        
     main()

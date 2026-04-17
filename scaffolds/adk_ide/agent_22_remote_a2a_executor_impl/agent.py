@@ -14,20 +14,27 @@
 
 from google.adk.agents import Agent
 from google.adk.agents.remote_a2a_agent import RemoteA2aAgent
-from .tools import say_goodbye, say_hello
+from .tools import say_goodbye, get_weather
 
 MODEL = "gemini-2.5-flash"
 
 # --- Greeting Agent ---
-greeting_agent = Agent(
-    model=MODEL,
+# greeting_agent = Agent(
+#     model=MODEL,
+#     name="greeting_agent",
+#     instruction="You are the Greeting Agent. Your ONLY task is to provide a friendly greeting to the user. "
+#     "Use the 'say_hello' tool to generate the greeting. "
+#     "If the user provides their name, make sure to pass it to the tool. "
+#     "Do not engage in any other conversation or tasks.",
+#     description="Handles simple greetings and hellos using the 'say_hello' tool.",  # Crucial for delegation
+#     tools=[say_hello],
+# )
+
+# Using RemoteA2aAgent to communicate with Weather Agent
+greeting_agent = RemoteA2aAgent(
     name="greeting_agent",
-    instruction="You are the Greeting Agent. Your ONLY task is to provide a friendly greeting to the user. "
-    "Use the 'say_hello' tool to generate the greeting. "
-    "If the user provides their name, make sure to pass it to the tool. "
-    "Do not engage in any other conversation or tasks.",
-    description="Handles simple greetings and hellos using the 'say_hello' tool.",  # Crucial for delegation
-    tools=[say_hello],
+    description="Handles requests using the 'say_hello' tool.",
+    agent_card=f"http://localhost:10023/.well-known/agent-card.json",
 )
 
 # --- Farewell Agent ---
@@ -42,21 +49,14 @@ farewell_agent = Agent(
     tools=[say_goodbye],
 )
 
-# weather_agent = Agent(
-#     name="weather_agent_v2",  # Give it a new version name
-#     model=MODEL,
-#     description="Handles weather information requests using the 'get_weather' tool.",
-#     instruction="You are the Weather Agent. Your primary responsibility is to provide weather information. "
-#     "Use the 'get_weather' tool for weather requests (e.g., 'weather in London'). "
-#     "Do not perform any other actions.",
-#     tools=[get_weather],
-# )
-
-# Using RemoteA2aAgent to communicate with Weather Agent
-weather_agent = RemoteA2aAgent(
-    name="weather_agent_v2",
+weather_agent = Agent(
+    name="weather_agent_v2",  # Give it a new version name
+    model=MODEL,
     description="Handles weather information requests using the 'get_weather' tool.",
-    agent_card=f"http://localhost:10022/.well-known/agent-card.json",
+    instruction="You are the Weather Agent. Your primary responsibility is to provide weather information. "
+    "Use the 'get_weather' tool for weather requests (e.g., 'weather in London'). "
+    "Do not perform any other actions.",
+    tools=[get_weather],
 )
 
 root_agent = Agent(
@@ -73,4 +73,3 @@ root_agent = Agent(
     "For anything else, respond appropriately or state you cannot handle it.",
     sub_agents=[greeting_agent, farewell_agent, weather_agent],
 )
-

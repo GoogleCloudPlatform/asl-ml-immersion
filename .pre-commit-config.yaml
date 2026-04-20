@@ -6,6 +6,7 @@
 ci:
     autofix_prs: false  # as it would fail the Google CLA check
     autoupdate_schedule: quarterly
+    skip: [pip-compile]
 
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
@@ -50,3 +51,21 @@ repos:
     hooks:
     -   id: pylint
         args: ["--disable", "unexpected-keyword-arg,no-value-for-parameter,too-many-function-args"]
+
+-   repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.11.4
+    hooks:
+      - id: pip-compile
+        name: uv compile core
+        args: [asl_core/pyproject.toml, --upgrade, --output-file=asl_core/requirements.lock]
+        files: ^asl_core/(pyproject\.toml|requirements\.txt)$
+
+      - id: pip-compile
+        name: uv compile mlops
+        args: [asl_mlops/pyproject.toml, --upgrade, --output-file=asl_mlops/requirements.lock]
+        files: ^asl_mlops/(pyproject\.toml|requirements\.txt)$
+
+      - id: pip-compile
+        name: uv compile genai
+        args: [asl_genai/pyproject.toml, --upgrade, --output-file=asl_genai/requirements.lock]
+        files: ^asl_genai/(pyproject\.toml|requirements\.txt)$

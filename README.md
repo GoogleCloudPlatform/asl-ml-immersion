@@ -86,7 +86,7 @@ When running a command from the terminal, make sure to activate a venv for a spe
 E.g. (under asl-ml-immersion directory),
 ```bash
 source ./asl_genai/.venv/bin/activate
-adk web ./asl_genai/notebooks/building_agents/solutions/adk_agents
+adk web ./asl_genai/notebooks/vertex_genai/solutions/adk_agents
 ```
 
 ## Contributions

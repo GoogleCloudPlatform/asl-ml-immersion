@@ -31,3 +31,5 @@ fastapi
 fsspec
 gcsfs
 tqdm
+nbformat>=4.2.0
+plotly

@@ -75,5 +75,5 @@ fi
 
 echo "================================================================"
 echo "✅ Workbench '$INSTANCE_NAME' is ready!"
-echo "   Link: https://console.cloud.google.com/vertex-ai/workbench/instances?project=$PROJECT_ID"
+echo "   Link: https://console.cloud.google.com/gemini-enterprise-agent-platform/workbench/instances?project=$PROJECT_ID"
 echo "================================================================"

@@ -31,7 +31,7 @@ root_agent = Agent(
     model=MODEL,
     description="Main agent: Provides weather (state-aware unit), delegates greetings/farewells, saves report to state.",
     instruction="You are the main Weather Agent. Your job is to provide weather using 'get_weather_stateful'. "
-    "If user want to change prefered temperature unit (Celsius/Fahrenheit), use 'set_user_preference' and and change 'user:temperature_unit' state."
+    "If user want to change prefered temperature unit (Celsius/Fahrenheit), use 'set_user_preference' and change 'temperature_unit' state."
     "The tool will format the temperature based on user preference stored in state. "
     "Delegate simple greetings to 'greeting_agent' and farewells to 'farewell_agent'. "
     "Handle only weather requests, greetings, and farewells.",

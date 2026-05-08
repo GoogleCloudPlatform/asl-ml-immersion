@@ -1,7 +1,7 @@
 # Requirements for asl_core module
 
 # Machine Learning Frameworks
-keras==3.12.0
+keras==3.13.2
 keras_hub==0.21.1
 tensorflow[and-cuda]==2.18.1
 tensorflow-datasets==4.9.9

@@ -16,7 +16,7 @@
 
 # Ask user for development environment preference
 echo "Which development environment would you like to set up?"
-echo "1) Vertex AI Workbench"
+echo "1) Workbench"
 echo "2) Cloud Workstations"
 echo "3) Setup both"
 echo "4) Skip (Setup environment manually)"

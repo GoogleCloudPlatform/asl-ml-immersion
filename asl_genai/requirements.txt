@@ -10,7 +10,7 @@ google-genai==1.69.0
 google-adk==1.28.0
 
 # Langchain dependencies
-langchain==0.3.14
+langchain==0.3.30
 langsmith==0.1.129
 langgraph==0.2.61
 langchain-chroma==0.1.4

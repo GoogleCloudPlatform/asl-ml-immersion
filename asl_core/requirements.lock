@@ -48,7 +48,7 @@ attrs==26.1.0
     #   referencing
 cachetools==5.5.2
     # via apache-beam
-certifi==2026.2.25
+certifi==2026.4.22
     # via
     #   httpcore
     #   httpx
@@ -57,7 +57,7 @@ cffi==2.0.0
     # via cryptography
 charset-normalizer==3.4.7
     # via requests
-click==8.3.2
+click==8.3.3
     # via nltk
 cloudml-hypertune==0.1.0.dev6
     # via asl-core (asl_core/pyproject.toml)
@@ -73,7 +73,7 @@ contourpy==1.3.3
     # via matplotlib
 crcmod==1.7
     # via apache-beam
-cryptography==46.0.7
+cryptography==48.0.0
     # via
     #   google-auth
     #   secretstorage
@@ -97,7 +97,7 @@ dnspython==2.8.0
     # via pymongo
 docopt==0.6.2
     # via hdfs
-docstring-parser==0.17.0
+docstring-parser==0.18.0
     # via
     #   google-cloud-aiplatform
     #   simple-parsing
@@ -110,21 +110,21 @@ etils==1.14.0
     #   tensorflow-datasets
 executing==2.2.1
     # via stack-data
-fastapi==0.135.3
+fastapi==0.136.1
     # via asl-core (asl_core/pyproject.toml)
-fastavro==1.12.1
+fastavro==1.12.2
     # via apache-beam
 fasteners==0.20
     # via
     #   apache-beam
     #   google-apitools
-filelock==3.25.2
+filelock==3.29.0
     # via lit-nlp
 fire==0.7.1
     # via asl-core (asl_core/pyproject.toml)
 flatbuffers==25.12.19
     # via tensorflow
-fonttools==4.62.1
+fonttools==4.63.0
     # via matplotlib
 frozenlist==1.8.0
     # via
@@ -139,7 +139,7 @@ gast==0.7.0
     # via tensorflow
 gcsfs==2025.12.0
     # via asl-core (asl_core/pyproject.toml)
-google-api-core==2.30.2
+google-api-core==2.30.3
     # via
     #   asl-core (asl_core/pyproject.toml)
     #   apache-beam
@@ -164,8 +164,9 @@ google-api-core==2.30.2
     #   google-cloud-vision
 google-apitools==0.5.31
     # via apache-beam
-google-auth==2.49.1
+google-auth==2.52.0
     # via
+    #   asl-core (asl_core/pyproject.toml)
     #   apache-beam
     #   gcsfs
     #   google-api-core
@@ -192,9 +193,9 @@ google-auth==2.49.1
     #   keyrings-google-artifactregistry-auth
 google-auth-httplib2==0.2.1
     # via apache-beam
-google-auth-oauthlib==1.3.1
+google-auth-oauthlib==1.4.0
     # via gcsfs
-google-cloud-aiplatform==1.146.0
+google-cloud-aiplatform==1.153.1
     # via
     #   asl-core (asl_core/pyproject.toml)
     #   apache-beam
@@ -203,11 +204,11 @@ google-cloud-bigquery==3.41.0
     #   asl-core (asl_core/pyproject.toml)
     #   apache-beam
     #   google-cloud-aiplatform
-google-cloud-bigquery-storage==2.37.0
+google-cloud-bigquery-storage==2.38.0
     # via apache-beam
-google-cloud-bigtable==2.36.0
+google-cloud-bigtable==2.38.0
     # via apache-beam
-google-cloud-core==2.5.1
+google-cloud-core==2.6.0
     # via
     #   apache-beam
     #   google-cloud-bigquery
@@ -218,13 +219,13 @@ google-cloud-core==2.5.1
     #   google-cloud-translate
 google-cloud-datastore==2.24.0
     # via apache-beam
-google-cloud-dlp==3.35.0
+google-cloud-dlp==3.36.0
     # via apache-beam
 google-cloud-language==2.20.0
     # via apache-beam
 google-cloud-monitoring==2.30.0
     # via google-cloud-spanner
-google-cloud-pubsub==2.36.0
+google-cloud-pubsub==2.38.0
     # via
     #   apache-beam
     #   google-cloud-pubsublite
@@ -234,7 +235,7 @@ google-cloud-recommendations-ai==0.10.18
     # via apache-beam
 google-cloud-resource-manager==1.17.0
     # via google-cloud-aiplatform
-google-cloud-spanner==3.64.0
+google-cloud-spanner==3.66.0
     # via apache-beam
 google-cloud-storage==2.19.0
     # via
@@ -244,26 +245,26 @@ google-cloud-storage==2.19.0
     #   google-cloud-aiplatform
 google-cloud-storage-control==1.11.0
     # via gcsfs
-google-cloud-translate==3.25.0
+google-cloud-translate==3.26.0
     # via lit-nlp
 google-cloud-videointelligence==2.19.0
     # via apache-beam
-google-cloud-vision==3.13.0
+google-cloud-vision==3.14.0
     # via apache-beam
 google-crc32c==1.8.0
     # via
     #   google-cloud-bigtable
     #   google-cloud-storage
     #   google-resumable-media
-google-genai==1.71.0
+google-genai==2.3.0
     # via google-cloud-aiplatform
 google-pasta==0.2.0
     # via tensorflow
-google-resumable-media==2.8.2
+google-resumable-media==2.9.0
     # via
     #   google-cloud-bigquery
     #   google-cloud-storage
-googleapis-common-protos==1.74.0
+googleapis-common-protos==1.75.0
     # via
     #   google-api-core
     #   grpc-google-iam-v1
@@ -284,6 +285,7 @@ grpcio==1.65.5
     #   apache-beam
     #   google-api-core
     #   google-cloud-bigquery-storage
+    #   google-cloud-bigtable
     #   google-cloud-datastore
     #   google-cloud-dlp
     #   google-cloud-language
@@ -324,7 +326,7 @@ httplib2==0.22.0
     #   oauth2client
 httpx==0.28.1
     # via google-genai
-idna==3.11
+idna==3.15
     # via
     #   anyio
     #   httpx
@@ -338,7 +340,7 @@ importlib-metadata==8.7.1
     # via opentelemetry-api
 ipykernel==7.2.0
     # via asl-core (asl_core/pyproject.toml)
-ipython==9.12.0
+ipython==9.13.0
     # via
     #   ipykernel
     #   ipywidgets
@@ -357,7 +359,7 @@ jax==0.5.0
     # via asl-core (asl_core/pyproject.toml)
 jaxlib==0.5.0
     # via jax
-jedi==0.19.2
+jedi==0.20.0
     # via ipython
 jeepney==0.9.0
     # via
@@ -383,9 +385,9 @@ jupyter-core==5.9.1
     #   jupyter-client
 jupyterlab-widgets==3.0.16
     # via ipywidgets
-kagglehub==1.0.0
+kagglehub==1.0.1
     # via keras-hub
-kagglesdk==0.1.16
+kagglesdk==0.1.23
     # via kagglehub
 keras==3.12.0
     # via
@@ -410,21 +412,21 @@ lit-nlp==1.3.1
     # via asl-core (asl_core/pyproject.toml)
 llvmlite==0.47.0
     # via numba
-lxml==6.0.2
+lxml==6.1.0
     # via sacrebleu
 markdown==3.10.2
     # via tensorboard
-markdown-it-py==4.0.0
+markdown-it-py==4.2.0
     # via rich
 markupsafe==3.0.3
     # via
     #   jinja2
     #   werkzeug
-matplotlib==3.10.8
+matplotlib==3.10.9
     # via
     #   lit-nlp
     #   seaborn
-matplotlib-inline==0.2.1
+matplotlib-inline==0.2.2
     # via
     #   ipykernel
     #   ipython
@@ -440,7 +442,7 @@ ml-dtypes==0.5.4
     #   tensorflow
 mmh3==5.2.1
     # via google-cloud-spanner
-more-itertools==11.0.1
+more-itertools==11.0.2
     # via
     #   jaraco-classes
     #   jaraco-functools
@@ -456,7 +458,7 @@ networkx==3.6.1
     # via scikit-image
 nltk==3.9.4
     # via rouge-score
-numba==0.65.0
+numba==0.65.1
     # via shap
 numpy==1.26.4
     # via
@@ -529,21 +531,21 @@ oauthlib==3.3.1
     # via requests-oauthlib
 objsize==0.7.1
     # via apache-beam
-opentelemetry-api==1.40.0
+opentelemetry-api==1.41.1
     # via
     #   google-cloud-pubsub
     #   google-cloud-spanner
     #   opentelemetry-resourcedetector-gcp
     #   opentelemetry-sdk
     #   opentelemetry-semantic-conventions
-opentelemetry-resourcedetector-gcp==1.11.0a0
+opentelemetry-resourcedetector-gcp==1.12.0a0
     # via google-cloud-spanner
-opentelemetry-sdk==1.40.0
+opentelemetry-sdk==1.41.1
     # via
     #   google-cloud-pubsub
     #   google-cloud-spanner
     #   opentelemetry-resourcedetector-gcp
-opentelemetry-semantic-conventions==0.61b0
+opentelemetry-semantic-conventions==0.62b1
     # via
     #   google-cloud-spanner
     #   opentelemetry-sdk
@@ -551,13 +553,13 @@ opt-einsum==3.4.0
     # via
     #   jax
     #   tensorflow
-optree==0.19.0
+optree==0.19.1
     # via keras
-orjson==3.11.8
+orjson==3.11.9
     # via apache-beam
 overrides==7.7.0
     # via google-cloud-pubsublite
-packaging==26.0
+packaging==26.2
     # via
     #   apache-beam
     #   db-dtypes
@@ -574,13 +576,13 @@ packaging==26.0
     #   tensorboard
     #   tensorflow
     #   wheel
-pandas==3.0.2
+pandas==3.0.3
     # via
     #   db-dtypes
     #   lit-nlp
     #   seaborn
     #   shap
-parso==0.8.6
+parso==0.8.7
     # via jedi
 pexpect==4.9.0
     # via ipython
@@ -590,7 +592,7 @@ pillow==12.2.0
     #   lit-nlp
     #   matplotlib
     #   scikit-image
-platformdirs==4.9.4
+platformdirs==4.9.6
     # via jupyter-core
 pluggy==1.6.0
     # via keyrings-google-artifactregistry-auth
@@ -602,11 +604,11 @@ promise==2.3
     # via tensorflow-datasets
 prompt-toolkit==3.0.52
     # via ipython
-propcache==0.4.1
+propcache==0.5.2
     # via
     #   aiohttp
     #   yarl
-proto-plus==1.27.2
+proto-plus==1.28.0
     # via
     #   apache-beam
     #   google-api-core
@@ -658,6 +660,7 @@ protobuf==5.29.6
 psutil==7.2.2
     # via
     #   ipykernel
+    #   ipython
     #   portpicker
     #   tensorflow-datasets
 ptyprocess==0.7.0
@@ -682,12 +685,12 @@ pyasn1-modules==0.4.2
     #   oauth2client
 pycparser==3.0
     # via cffi
-pydantic==2.12.5
+pydantic==2.13.4
     # via
     #   fastapi
     #   google-cloud-aiplatform
     #   google-genai
-pydantic-core==2.41.5
+pydantic-core==2.46.4
     # via pydantic
 pydot==1.4.2
     # via apache-beam
@@ -698,7 +701,7 @@ pygments==2.20.0
     #   rich
 pyjwt==2.12.1
     # via redis
-pymongo==4.16.0
+pymongo==4.17.0
     # via apache-beam
 pyparsing==3.3.2
     # via
@@ -712,7 +715,7 @@ python-dateutil==2.9.0.post0
     #   jupyter-client
     #   matplotlib
     #   pandas
-pytz==2026.1.post1
+pytz==2026.2
     # via apache-beam
 pyyaml==6.0.3
     # via
@@ -731,13 +734,13 @@ referencing==0.37.0
     # via
     #   jsonschema
     #   jsonschema-specifications
-regex==2026.4.4
+regex==2026.5.9
     # via
     #   apache-beam
     #   keras-hub
     #   nltk
     #   sacrebleu
-requests==2.33.1
+requests==2.34.2
     # via
     #   apache-beam
     #   gcsfs
@@ -757,7 +760,7 @@ requests==2.33.1
     #   tensorflow-datasets
 requests-oauthlib==2.0.0
     # via google-auth-oauthlib
-rich==14.3.3
+rich==15.0.0
     # via
     #   keras
     #   keras-hub
@@ -878,7 +881,7 @@ tqdm==4.67.3
     #   nltk
     #   shap
     #   tensorflow-datasets
-traitlets==5.14.3
+traitlets==5.15.0
     # via
     #   ipykernel
     #   ipython
@@ -911,9 +914,9 @@ typing-inspection==0.4.2
     # via
     #   fastapi
     #   pydantic
-urllib3==2.6.3
+urllib3==2.7.0
     # via requests
-wcwidth==0.6.0
+wcwidth==0.7.0
     # via prompt-toolkit
 websockets==16.0
     # via google-genai
@@ -921,7 +924,7 @@ werkzeug==3.1.8
     # via
     #   lit-nlp
     #   tensorboard
-wheel==0.46.3
+wheel==0.47.0
     # via astunparse
 widgetsnbextension==4.0.15
     # via ipywidgets
@@ -932,7 +935,7 @@ wrapt==2.1.2
     #   tensorflow-datasets
 yarl==1.23.0
     # via aiohttp
-zipp==3.23.0
+zipp==3.23.1
     # via
     #   etils
     #   importlib-metadata

@@ -81,8 +81,13 @@ gcloud services enable \
   run.googleapis.com \
   telemetry.googleapis.com \
   modelarmor.googleapis.com
+<<<<<<< HEAD
 
 >>>>>>> 0df8de7d (clean up setup process and scripts):scripts/setup_env.sh
+=======
+  cloudresourcemanager.googleapis.com \
+  pubsub.googleapis.com
+>>>>>>> 051b4d94 (fix conflicts)
 
 # Setup Artifact Registry
 if ! gcloud artifacts repositories describe $ARTIFACT_REG_REPO \

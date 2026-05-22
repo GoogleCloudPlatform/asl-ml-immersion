@@ -17,7 +17,8 @@ google-cloud-storage
 google-cloud-aiplatform
 google-cloud-bigquery
 cloudml-hypertune
-apache-beam[gcp]
+apache-beam[gcp]>=2.72.0
+google-auth==2.52.0
 
 # Utilities
 setuptools<82

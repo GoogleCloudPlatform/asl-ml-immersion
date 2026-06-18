@@ -5,7 +5,7 @@ This repository contains AI and Machine Learning contents meant to be run on Goo
 
 This repository contains 3 main modules to covers various AI/ML toipcs:
 - `asl_core`: A wide range of model architectures (DNN, CNN, RNN, transformers, SNGP, etc.) targeting many data modalities (tabular, image, text, time-series) implemented mainly in Tensorflow and Keras.
-- `asl_mlops`: Tools on Google Cloud’s Agent Platform for operationalizing Tensorflow, Scikit-learn and PyTorch models at scale (e.g. Agent Platform training, tuning, and serving, TFX and Kubeflow pipelines).
+- `asl_mlops`: Tools on Google Cloud’s Agent Platform for operationalizing Tensorflow, Scikit-learn and PyTorch models at scale (e.g. Agent Platform training, tuning, and serving and MLOps on Kubeflow pipelines).
 - `asl_genai`: Generative AI and Agent System using Gemini and Agentic Frameworks like Google ADK.
 
 ## Repository Structure

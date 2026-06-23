@@ -3,13 +3,12 @@
 # Google & Google Cloud Libraries
 google-api-core
 google-cloud-storage
-google-cloud-aiplatform
+google-cloud-aiplatform==1.151.0
 google-cloud-bigquery
-cloudml-hypertune
-google-genai==1.57.0
-google-adk==1.22.1
-google-cloud-spanner==3.57.0
-spanner-graph-notebook==1.1.8
+google-cloud-modelarmor
+google-genai==1.75.0
+google-adk==1.33.0
+google-auth==2.52.0
 
 # Langchain dependencies
 langchain==0.3.14
@@ -29,7 +28,7 @@ networkx==3.5
 
 # Utilities
 pyyaml==6.0.2
-pydantic==2.11.7
+pydantic==2.12.0
 pypdf==4.3.1
 faiss-cpu==1.13.2
 unstructured==0.14.4
@@ -39,6 +38,7 @@ litellm==1.72.6
 evaluate==0.4.0
 rouge-score==0.1.2
 
+setuptools<82
 ipykernel
 ipywidgets
 db-dtypes
@@ -46,3 +46,8 @@ fire
 fastapi
 scipy
 pillow
+plotly
+scikit-learn
+fsspec
+gcsfs
+nbformat>=4.2.0

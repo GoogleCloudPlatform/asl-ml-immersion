@@ -20,10 +20,15 @@ google-cloud-storage
 google-cloud-aiplatform
 google-cloud-bigquery
 cloudml-hypertune
+google-auth==2.52.0
 
 # Utilities
+setuptools<82
 ipykernel
 ipywidgets
 db-dtypes
 fire
 fastapi
+seaborn
+fsspec
+gcsfs

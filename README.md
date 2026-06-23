@@ -5,7 +5,7 @@ This repository contains AI and Machine Learning contents meant to be run on Goo
 
 This repository contains 3 main modules to covers various AI/ML toipcs:
 - `asl_core`: A wide range of model architectures (DNN, CNN, RNN, transformers, SNGP, etc.) targeting many data modalities (tabular, image, text, time-series) implemented mainly in Tensorflow and Keras.
-- `asl_mlops`: Tools on Google Cloud’s Vertex AI for operationalizing Tensorflow, Scikit-learn and PyTorch models at scale (e.g. Vertex training, tuning, and serving, TFX and Kubeflow pipelines).
+- `asl_mlops`: Tools on Google Cloud’s Agent Platform for operationalizing Tensorflow, Scikit-learn and PyTorch models at scale (e.g. Agent Platform training, tuning, and serving and MLOps on Kubeflow pipelines).
 - `asl_genai`: Generative AI and Agent System using Gemini and Agentic Frameworks like Google ADK.
 
 ## Repository Structure
@@ -36,7 +36,7 @@ We have three main folders described below:
 
 ## Environment Setup
 ### Step 1. Run the Setup Script on Cloud Shell
-This repository is tested on Vertex AI Workbench and Cloud Workstations. To begin, run the setup script in [Cloud Shell](https://shell.cloud.google.com) to configure essential project infrastructure (APIs, IAM, Buckets).
+This repository is tested on Agent Platform Workbench and Cloud Workstations. To begin, run the setup script in [Cloud Shell](https://shell.cloud.google.com) to configure essential project infrastructure (APIs, IAM, Buckets).
 
 Run the setup script in [Cloud Shell](https://shell.cloud.google.com) to provision your environment.
 ```bash
@@ -46,16 +46,18 @@ bash scripts/setup_env.sh
 ```
 
 You will be prompted to select the environment to set up:
-*   **1) Vertex AI Workbench:** Setup Vertex AI Workbench.
+*   **1) Agent Platform Workbench:** Setup Agent Platform Workbench.
 *   **2) Cloud Workstations:** Setup Cloud Workstations.
 *   **3) Setup both:** Setup both environments.
 *   **4) Skip:** Setup project infrastructure (APIs, IAM, Buckets) only.
 
 By selecting the option 1-3, you can automatically setup the environment, or you can select 4 and manually set up the environment following the official documentation:
-*   **Vertex AI Workbench:** [Create a user-managed notebook instance](https://cloud.google.com/vertex-ai/docs/workbench/instances/create-console-quickstart)
+*   **Agent Platform Workbench:** [Create a user-managed notebook instance](https://docs.cloud.google.com/gemini-enterprise-agent-platform/notebooks/workbench/instances/create-console-quickstart)
 *   **Cloud Workstations:** [Create a workstation](https://docs.cloud.google.com/workstations/docs/create-workstation)
 
-**Note:** Accelerators (GPU/TPU) are not required in most of the labs, but some notebooks recommend using them.
+Next, you will be asked if you want to attach a GPU (Nvidia T4) to the environment. Select `y` or `n` depending on your preference.
+
+**Note:** Accelerators (GPU/TPU) are not required in most of the notebooks, but some notebooks recommend using them.
 
 ### Step 2. Build the Environemnt
 Once your environment is running, open it. Then, run the commands below in Terminal **inside the environment** to clone this repository, and build the environemnt (venvs and jupyter kernels).
@@ -84,7 +86,7 @@ When running a command from the terminal, make sure to activate a venv for a spe
 E.g. (under asl-ml-immersion directory),
 ```bash
 source ./asl_genai/.venv/bin/activate
-adk web ./asl_genai/notebooks/vertex_genai/solutions/adk_agents
+adk web ./asl_genai/notebooks/building_agents/solutions/adk_agents
 ```
 
 ## Contributions

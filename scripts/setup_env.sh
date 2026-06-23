@@ -16,11 +16,23 @@
 
 # Ask user for development environment preference
 echo "Which development environment would you like to set up?"
-echo "1) Vertex AI Workbench"
+echo "1) Agent Platform Workbench"
 echo "2) Cloud Workstations"
 echo "3) Setup both"
 echo "4) Skip (Setup environment manually)"
 read -p "Enter your choice (1, 2, 3 or 4): " DEV_ENV_CHOICE
+
+if [[ "$DEV_ENV_CHOICE" != "4" ]]; then
+    # Ask user for GPU preference
+    echo "Do you want to attach a GPU (T4) to the environment? (y/n)"
+    read -p "Enter your choice: " GPU_CHOICE
+
+    if [[ "$GPU_CHOICE" == "y" || "$GPU_CHOICE" == "Y" ]]; then
+        export ENABLE_GPU="true"
+    else
+        export ENABLE_GPU="false"
+    fi
+fi
 
 export PROJECT_ID=$(gcloud config get-value project)
 export PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format="value(projectNumber)")
@@ -50,7 +62,9 @@ gcloud services enable \
   cloudbuild.googleapis.com \
   container.googleapis.com \
   dataflow.googleapis.com \
-  run.googleapis.com
+  run.googleapis.com \
+  telemetry.googleapis.com \
+  modelarmor.googleapis.com
 
 
 # Setup Artifact Registry

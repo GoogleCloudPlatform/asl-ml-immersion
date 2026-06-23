@@ -52,7 +52,7 @@ MODEL_DISPLAY_NAME = os.getenv("MODEL_DISPLAY_NAME", PIPELINE_NAME)
 
 @dsl.pipeline(
     name=f"{PIPELINE_NAME}-kfp-pipeline",
-    description="Kubeflow pipeline that tunes, trains, and deploys on Vertex",
+    description="Kubeflow pipeline that tunes, trains, and deploys",
     pipeline_root=PIPELINE_ROOT,
 )
 def create_pipeline():

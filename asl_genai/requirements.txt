@@ -11,16 +11,17 @@ google-adk==1.33.0
 google-auth==2.52.0
 
 # Langchain dependencies
-langchain==0.3.14
-langsmith==0.1.129
-langgraph==0.2.61
-langchain-chroma==0.1.4
-chroma-hnswlib==0.7.3
-chromadb==0.4.14
-langchain-community==0.3.14
-langchain-core==0.3.47
-langchain-google-vertexai==2.0.15
-langchain-text-splitters==0.3.5
+langchain==1.3.11
+langsmith==0.9.0
+langgraph==1.2.6
+langchain-chroma==1.1.0
+chroma-hnswlib==0.7.6
+chromadb==1.5.9
+langchain-community==0.4.2
+langchain-core==1.4.8
+langchain-google-genai==4.2.5
+langchain-text-splitters==1.1.2
+
 
 # Utilities
 pyyaml==6.0.2

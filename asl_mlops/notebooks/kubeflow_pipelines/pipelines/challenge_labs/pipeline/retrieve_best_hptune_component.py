@@ -89,6 +89,6 @@ def retrieve_best_hptune_result(
     for k, v in best_parameters.items():
         best_worker_pool_spec[0]["container_spec"]["args"].append(f"--{k}={v}")
 
-    # TODO 1: Add metrics reporting for AI-ML Experiments
+    # TODO 1: Add metrics reporting for Agent Platform Experiments
 
     return best_parameters, best_metrics, best_worker_pool_spec

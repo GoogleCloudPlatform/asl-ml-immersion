@@ -11,17 +11,18 @@
 # BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
+# pylint: disable=line-too-long
 
 """Kubeflow Covertype Pipeline."""
 import os
 
-from extract_bq import extract_bq_op
 from google.cloud.aiplatform import hyperparameter_tuning as hpt
 from google_cloud_pipeline_components.types import artifact_types
 from google_cloud_pipeline_components.v1.batch_predict_job import (
     ModelBatchPredictOp,
 )
-from google_cloud_pipeline_components.v1.bigquery import BigqueryQueryJobOp
+
+# TODO 3: Import a predefined componet for BigQuery query job
 from google_cloud_pipeline_components.v1.custom_job import CustomTrainingJobOp
 from google_cloud_pipeline_components.v1.endpoint import (
     EndpointCreateOp,
@@ -35,6 +36,8 @@ from google_cloud_pipeline_components.v1.hyperparameter_tuning_job import (
 from google_cloud_pipeline_components.v1.model import ModelUploadOp
 from kfp import dsl
 from retrieve_best_hptune_component import retrieve_best_hptune_result
+
+# TODO 3: Import extract bq_op
 
 PIPELINE_ROOT = os.getenv("PIPELINE_ROOT")
 PROJECT_ID = os.getenv("PROJECT_ID")
@@ -59,40 +62,12 @@ TIMESTAMP = os.getenv("TIMESTAMP")
 
 @dsl.pipeline(
     name=f"{PIPELINE_NAME}-kfp-pipeline",
-    description="Kubeflow pipeline that tunes, trains, and deploys on Vertex",
+    description="Kubeflow pipeline that tunes, trains, and deploys on Agent Platform",
     pipeline_root=PIPELINE_ROOT,
 )
 def create_pipeline():
-    def construct_query(mode, split):
-        query = f"CREATE OR REPLACE TABLE \
-        `{PROJECT_ID}.covertype_dataset.{mode}` \
-        AS (SELECT * \
-        FROM `covertype_dataset.covertype` AS table \
-        WHERE \
-        MOD(ABS(FARM_FINGERPRINT(TO_JSON_STRING(table))), 10) IN {split})"
-        return query
 
-    bq_train_split_task = BigqueryQueryJobOp(
-        project=PROJECT_ID,
-        location="US",
-        query=construct_query("training", "(1, 2, 3, 4)"),
-    ).set_display_name("Training Data Split")
-
-    bq_valid_split_task = BigqueryQueryJobOp(
-        project=PROJECT_ID,
-        location="US",
-        query=construct_query("validation", "(8)"),
-    ).set_display_name("Validation Data Split")
-
-    train_extract = extract_bq_op(
-        bq_table=bq_train_split_task.outputs["destination_table"],
-        destination_uri=TRAINING_FILE_PATH,
-    ).set_display_name("Training Data Extract")
-
-    valid_extract = extract_bq_op(
-        bq_table=bq_valid_split_task.outputs["destination_table"],
-        destination_uri=VALIDATION_FILE_PATH,
-    ).set_display_name("Validation Data Extract")
+    # TODO 3: Insert Data tasks here
 
     worker_pool_specs = [
         {
@@ -136,7 +111,7 @@ def create_pipeline():
         max_trial_count=MAX_TRIAL_COUNT,
         parallel_trial_count=PARALLEL_TRIAL_COUNT,
         base_output_directory=PIPELINE_ROOT,
-    ).after(train_extract, valid_extract)
+    )  # TODO 3: Define dependencies for preceding tasks.
 
     best_retrieval_task = retrieve_best_hptune_result(
         project=PROJECT_ID,

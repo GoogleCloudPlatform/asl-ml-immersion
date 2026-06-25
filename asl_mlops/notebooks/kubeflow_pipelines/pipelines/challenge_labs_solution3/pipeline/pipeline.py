@@ -1,4 +1,4 @@
-# Copyright 2021 Google LLC
+# Copyright 2024 Google LLC
 
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not
 # use this file except in compliance with the License. You may obtain a copy of
@@ -11,15 +11,18 @@
 # BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
+# pylint: disable=line-too-long
 
 """Kubeflow Covertype Pipeline."""
 import os
 
+from extract_bq import extract_bq_op
 from google.cloud.aiplatform import hyperparameter_tuning as hpt
 from google_cloud_pipeline_components.types import artifact_types
-
-# TODO 2: Import a predefined componet for Batch Prediction
-# TODO 3: Import a predefined componet for BigQuery query job
+from google_cloud_pipeline_components.v1.batch_predict_job import (
+    ModelBatchPredictOp,
+)
+from google_cloud_pipeline_components.v1.bigquery import BigqueryQueryJobOp
 from google_cloud_pipeline_components.v1.custom_job import CustomTrainingJobOp
 from google_cloud_pipeline_components.v1.endpoint import (
     EndpointCreateOp,
@@ -33,8 +36,6 @@ from google_cloud_pipeline_components.v1.hyperparameter_tuning_job import (
 from google_cloud_pipeline_components.v1.model import ModelUploadOp
 from kfp import dsl
 from retrieve_best_hptune_component import retrieve_best_hptune_result
-
-# TODO 3: Import extract bq_op
 
 PIPELINE_ROOT = os.getenv("PIPELINE_ROOT")
 PROJECT_ID = os.getenv("PROJECT_ID")
@@ -59,12 +60,40 @@ TIMESTAMP = os.getenv("TIMESTAMP")
 
 @dsl.pipeline(
     name=f"{PIPELINE_NAME}-kfp-pipeline",
-    description="Kubeflow pipeline that tunes, trains, and deploys on Vertex",
+    description="Kubeflow pipeline that tunes, trains, and deploys on Agent Platform",
     pipeline_root=PIPELINE_ROOT,
 )
 def create_pipeline():
+    def construct_query(mode, split):
+        query = f"CREATE OR REPLACE TABLE \
+        `{PROJECT_ID}.covertype_dataset.{mode}` \
+        AS (SELECT * \
+        FROM `covertype_dataset.covertype` AS table \
+        WHERE \
+        MOD(ABS(FARM_FINGERPRINT(TO_JSON_STRING(table))), 10) IN {split})"
+        return query
 
-    # TODO 3: Insert Data tasks here
+    bq_train_split_task = BigqueryQueryJobOp(
+        project=PROJECT_ID,
+        location="US",
+        query=construct_query("training", "(1, 2, 3, 4)"),
+    ).set_display_name("Training Data Split")
+
+    bq_valid_split_task = BigqueryQueryJobOp(
+        project=PROJECT_ID,
+        location="US",
+        query=construct_query("validation", "(8)"),
+    ).set_display_name("Validation Data Split")
+
+    train_extract = extract_bq_op(
+        bq_table=bq_train_split_task.outputs["destination_table"],
+        destination_uri=TRAINING_FILE_PATH,
+    ).set_display_name("Training Data Extract")
+
+    valid_extract = extract_bq_op(
+        bq_table=bq_valid_split_task.outputs["destination_table"],
+        destination_uri=VALIDATION_FILE_PATH,
+    ).set_display_name("Validation Data Extract")
 
     worker_pool_specs = [
         {
@@ -108,7 +137,7 @@ def create_pipeline():
         max_trial_count=MAX_TRIAL_COUNT,
         parallel_trial_count=PARALLEL_TRIAL_COUNT,
         base_output_directory=PIPELINE_ROOT,
-    )  # TODO 3: Define dependencies for preceding tasks.
+    ).after(train_extract, valid_extract)
 
     best_retrieval_task = retrieve_best_hptune_result(
         project=PROJECT_ID,
@@ -155,4 +184,20 @@ def create_pipeline():
         dedicated_resources_max_replica_count=1,
     )
 
-    # TODO 2: Add Batch Prediction task
+    bq_source_uri = f"bq://{PROJECT_ID}.covertype_dataset.validation"
+    bq_destination = f"bq://{PROJECT_ID}.covertype_dataset.batch_predict"
+
+    batch_predict_op = ModelBatchPredictOp(  # pylint: disable=unused-variable
+        project=PROJECT_ID,
+        location=REGION,
+        model=model_upload_task.outputs["model"],
+        job_display_name=f"batch_ptrediction-{PIPELINE_NAME}",
+        bigquery_source_input_uri=bq_source_uri,
+        instances_format="bigquery",
+        predictions_format="bigquery",
+        bigquery_destination_output_uri=bq_destination,
+        excluded_fields=["Cover_Type"],
+        machine_type="n1-standard-8",
+        starting_replica_count=2,
+        max_replica_count=10,
+    ).set_display_name("Batch Prediction")

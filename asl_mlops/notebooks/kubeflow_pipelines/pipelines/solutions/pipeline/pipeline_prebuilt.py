@@ -11,15 +11,11 @@
 # BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
-
 """Kubeflow Covertype Pipeline."""
 import os
 
 from google.cloud.aiplatform import hyperparameter_tuning as hpt
 from google_cloud_pipeline_components.types import artifact_types
-
-# TODO 2: Import a predefined componet for Batch Prediction
-# TODO 3: Import a predefined componet for BigQuery query job
 from google_cloud_pipeline_components.v1.custom_job import CustomTrainingJobOp
 from google_cloud_pipeline_components.v1.endpoint import (
     EndpointCreateOp,
@@ -33,8 +29,6 @@ from google_cloud_pipeline_components.v1.hyperparameter_tuning_job import (
 from google_cloud_pipeline_components.v1.model import ModelUploadOp
 from kfp import dsl
 from retrieve_best_hptune_component import retrieve_best_hptune_result
-
-# TODO 3: Import extract bq_op
 
 PIPELINE_ROOT = os.getenv("PIPELINE_ROOT")
 PROJECT_ID = os.getenv("PROJECT_ID")
@@ -54,24 +48,20 @@ THRESHOLD = float(os.getenv("THRESHOLD", "0.6"))
 PIPELINE_NAME = os.getenv("PIPELINE_NAME", "covertype")
 BASE_OUTPUT_DIR = os.getenv("BASE_OUTPUT_DIR", PIPELINE_ROOT)
 MODEL_DISPLAY_NAME = os.getenv("MODEL_DISPLAY_NAME", PIPELINE_NAME)
-TIMESTAMP = os.getenv("TIMESTAMP")
 
 
 @dsl.pipeline(
     name=f"{PIPELINE_NAME}-kfp-pipeline",
-    description="Kubeflow pipeline that tunes, trains, and deploys on Vertex",
+    description="Kubeflow pipeline that tunes, trains, and deploys",
     pipeline_root=PIPELINE_ROOT,
 )
 def create_pipeline():
-
-    # TODO 3: Insert Data tasks here
-
     worker_pool_specs = [
         {
             "machine_spec": {
                 "machine_type": "n1-standard-4",
-                # "accelerator_type": "NVIDIA_TESLA_T4",
-                # "accelerator_count": 1,
+                "accelerator_type": "NVIDIA_TESLA_T4",
+                "accelerator_count": 1,
             },
             "replica_count": 1,
             "container_spec": {
@@ -108,7 +98,7 @@ def create_pipeline():
         max_trial_count=MAX_TRIAL_COUNT,
         parallel_trial_count=PARALLEL_TRIAL_COUNT,
         base_output_directory=PIPELINE_ROOT,
-    )  # TODO 3: Define dependencies for preceding tasks.
+    )
 
     best_retrieval_task = retrieve_best_hptune_result(
         project=PROJECT_ID,
@@ -154,5 +144,3 @@ def create_pipeline():
         dedicated_resources_min_replica_count=1,
         dedicated_resources_max_replica_count=1,
     )
-
-    # TODO 2: Add Batch Prediction task

@@ -36,8 +36,8 @@ SERVING_MACHINE_TYPE = os.getenv("SERVING_MACHINE_TYPE", "n1-standard-16")
 
 
 @dsl.pipeline(
-    name=f"{PIPELINE_NAME}-vertex-automl-pipeline",
-    description=f"AutoML Vertex Pipeline for {PIPELINE_NAME}",
+    name=f"{PIPELINE_NAME}-automl-pipeline",
+    description=f"AutoML Pipeline for {PIPELINE_NAME}",
     pipeline_root=PIPELINE_ROOT,
 )
 def create_pipeline():

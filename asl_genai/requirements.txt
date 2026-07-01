@@ -34,6 +34,7 @@ wikipedia==1.4.0
 litellm==1.72.6
 evaluate==0.4.0
 rouge-score==0.1.2
+wikipedia-api==0.15.0
 
 setuptools<82
 ipykernel

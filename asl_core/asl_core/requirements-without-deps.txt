@@ -1,0 +1,11 @@
+# Frameworks to evaluate text generation
+# as well as their dependencies
+evaluate==0.4.0
+rouge-score==0.1.2
+nltk==3.8.1
+rouge-score==0.1.2
+datasets==2.14.5
+huggingface-hub==0.17.2
+multiprocess==0.70.15
+responses==0.18.0
+xxhash==3.3.0

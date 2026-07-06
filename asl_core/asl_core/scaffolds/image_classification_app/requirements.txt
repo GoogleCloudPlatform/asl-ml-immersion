@@ -1,0 +1,6 @@
+numpy==1.26.4
+streamlit==1.56.0
+tensorflow[and-cuda]==2.18.1
+keras==3.12.0
+tf_keras==2.18.0
+keras_hub==0.21.1

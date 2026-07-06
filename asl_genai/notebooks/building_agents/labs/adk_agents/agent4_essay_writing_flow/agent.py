@@ -29,13 +29,10 @@ Plan:
 """
 
 
-WRITER_PROMPT = (
-    INITIAL_WRITER_PROMPT
-    + """
+WRITER_PROMPT = INITIAL_WRITER_PROMPT + """
 Critique:
 {critique}
 """
-)
 
 REFLECTION_PROMPT = """You are a professor grading an essay submission.
 Read the essay provided by the user and generate critique and recommendations for it.

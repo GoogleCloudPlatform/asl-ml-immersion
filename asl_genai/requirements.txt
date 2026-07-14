@@ -3,11 +3,11 @@
 # Google & Google Cloud Libraries
 google-api-core
 google-cloud-storage
-google-cloud-aiplatform==1.151.0
+google-cloud-aiplatform==1.160.0
 google-cloud-bigquery
 google-cloud-modelarmor
-google-genai==1.75.0
-google-adk==1.33.0
+google-genai==2.11.0
+google-adk==2.4.0
 google-auth==2.52.0
 
 # Langchain dependencies
@@ -25,13 +25,13 @@ langchain-docling==2.0.0
 
 # Utilities
 pyyaml==6.0.2
-pydantic==2.12.0
+pydantic==2.12.5
 pypdf==4.3.1
 faiss-cpu==1.13.2
 unstructured==0.14.4
 unstructured-client==0.22.0
 wikipedia==1.4.0
-litellm==1.72.6
+litellm==1.92.0
 evaluate==0.4.0
 rouge-score==0.1.2
 wikipedia-api==0.15.0

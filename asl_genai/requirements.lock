@@ -2,21 +2,25 @@
 #    uv pip compile asl_genai/pyproject.toml --output-file=asl_genai/requirements.lock
 absl-py==2.4.0
     # via rouge-score
-aiohappyeyeballs==2.6.1
-    # via aiohttp
-aiohttp==3.13.5
+accelerate==1.14.0
     # via
+    #   docling-ibm-models
+    #   docling-slim
+aiohappyeyeballs==2.6.2
+    # via aiohttp
+aiohttp==3.14.1
+    # via
+    #   datasets
     #   fsspec
     #   gcsfs
     #   google-cloud-aiplatform
-    #   langchain
-    #   langchain-community
+    #   kubernetes
     #   litellm
 aiosignal==1.4.0
     # via aiohttp
 aiosqlite==0.22.1
     # via google-adk
-alembic==1.18.4
+alembic==1.18.5
     # via sqlalchemy-spanner
 annotated-doc==0.0.4
     # via
@@ -24,7 +28,9 @@ annotated-doc==0.0.4
     #   typer
 annotated-types==0.7.0
     # via pydantic
-anyio==4.13.0
+antlr4-python3-runtime==4.9.3
+    # via omegaconf
+anyio==4.14.1
     # via
     #   google-adk
     #   google-genai
@@ -39,25 +45,30 @@ asttokens==3.0.1
 attrs==26.1.0
     # via
     #   aiohttp
+    #   jsonlines
     #   jsonschema
     #   referencing
 authlib==1.7.2
     # via google-adk
 backoff==2.2.1
-    # via
-    #   posthog
-    #   unstructured
+    # via unstructured
 bcrypt==5.0.0
     # via chromadb
-beautifulsoup4==4.14.3
+beautifulsoup4==4.15.0
     # via
+    #   docling-slim
     #   unstructured
     #   wikipedia
-certifi==2026.4.22
+build==1.5.0
+    # via chromadb
+cachebox==5.2.3
+    # via deepdiff
+certifi==2026.6.17
     # via
+    #   docling-slim
     #   httpcore
     #   httpx
-    #   pulsar-client
+    #   kubernetes
     #   requests
     #   unstructured-client
 cffi==2.0.0
@@ -68,52 +79,62 @@ charset-normalizer==3.4.7
     # via
     #   requests
     #   unstructured-client
-chroma-hnswlib==0.7.3
-    # via
-    #   asl-genai (asl_genai/pyproject.toml)
-    #   chromadb
-chromadb==0.4.14
+chroma-hnswlib==0.7.6
+    # via asl-genai (asl_genai/pyproject.toml)
+chromadb==1.5.9
     # via
     #   asl-genai (asl_genai/pyproject.toml)
     #   langchain-chroma
-click==8.3.3
+click==8.4.1
     # via
     #   google-adk
     #   litellm
     #   nltk
     #   typer
     #   uvicorn
+    #   wikipedia-api
 cloudpickle==3.1.2
     # via google-cloud-aiplatform
+colorlog==6.10.1
+    # via rapidocr
 comm==0.2.3
     # via
     #   ipykernel
     #   ipywidgets
-cryptography==48.0.0
+cryptography==49.0.0
     # via
     #   authlib
     #   google-auth
     #   joserfc
     #   pyjwt
     #   pyopenssl
+cuda-bindings==13.3.1
+    # via torch
+cuda-pathfinder==1.5.6
+    # via cuda-bindings
+cuda-toolkit==13.0.2
+    # via torch
 dataclasses-json==0.6.7
     # via
-    #   langchain-community
     #   unstructured
     #   unstructured-client
-datasets==4.8.5
+datasets==2.14.4
     # via evaluate
-db-dtypes==1.6.0
+db-dtypes==1.7.0
     # via asl-genai (asl_genai/pyproject.toml)
-debugpy==1.8.20
+debugpy==1.8.21
     # via ipykernel
-decorator==5.2.1
+decorator==5.3.1
     # via
     #   gcsfs
     #   ipython
-deepdiff==9.0.0
+deepdiff==9.1.0
     # via unstructured-client
-dill==0.4.1
+defusedxml==0.7.1
+    # via
+    #   docling-core
+    #   docling-slim
+dill==0.3.7
     # via
     #   datasets
     #   evaluate
@@ -122,31 +143,53 @@ distro==1.9.0
     # via
     #   google-genai
     #   openai
-    #   posthog
+doclang==0.7.0
+    # via docling-core
+docling==2.107.0
+    # via langchain-docling
+docling-core==2.85.0
+    # via
+    #   docling-ibm-models
+    #   docling-parse
+    #   docling-slim
+docling-ibm-models==3.13.3
+    # via docling-slim
+docling-parse==7.4.0
+    # via docling-slim
+docling-slim==2.107.0
+    # via docling
 docstring-parser==0.18.0
     # via google-cloud-aiplatform
+durationpy==0.10
+    # via kubernetes
 emoji==2.15.0
     # via unstructured
+et-xmlfile==2.0.0
+    # via openpyxl
 evaluate==0.4.0
     # via asl-genai (asl_genai/pyproject.toml)
 executing==2.2.1
     # via stack-data
 faiss-cpu==1.13.2
     # via asl-genai (asl_genai/pyproject.toml)
-fastapi==0.136.1
+faker==40.27.0
+    # via polyfactory
+fastapi==0.138.2
     # via
     #   asl-genai (asl_genai/pyproject.toml)
-    #   chromadb
     #   google-adk
-    #   langchain-chroma
 fastjsonschema==2.21.2
     # via nbformat
-filelock==3.29.0
+filelock==3.29.4
     # via
-    #   datasets
     #   huggingface-hub
+    #   torch
+    #   transformers
 filetype==1.2.0
-    # via unstructured
+    # via
+    #   docling-slim
+    #   langchain-google-genai
+    #   unstructured
 fire==0.7.1
     # via asl-genai (asl_genai/pyproject.toml)
 flatbuffers==25.12.19
@@ -155,18 +198,19 @@ frozenlist==1.8.0
     # via
     #   aiohttp
     #   aiosignal
-fsspec==2025.12.0
+fsspec==2026.6.0
     # via
     #   asl-genai (asl_genai/pyproject.toml)
     #   datasets
     #   evaluate
     #   gcsfs
     #   huggingface-hub
-gcsfs==2025.12.0
+    #   torch
+gcsfs==2026.6.0
     # via asl-genai (asl_genai/pyproject.toml)
 google-adk==1.33.0
     # via asl-genai (asl_genai/pyproject.toml)
-google-api-core==2.30.3
+google-api-core==2.31.0
     # via
     #   asl-genai (asl_genai/pyproject.toml)
     #   google-api-python-client
@@ -190,7 +234,7 @@ google-api-core==2.30.3
     #   google-cloud-storage
     #   google-cloud-storage-control
     #   google-cloud-trace
-google-api-python-client==2.196.0
+google-api-python-client==2.198.0
     # via google-adk
 google-auth==2.52.0
     # via
@@ -216,6 +260,7 @@ google-auth==2.52.0
     #   google-cloud-pubsub
     #   google-cloud-resource-manager
     #   google-cloud-secret-manager
+    #   google-cloud-spanner
     #   google-cloud-speech
     #   google-cloud-storage
     #   google-cloud-storage-control
@@ -229,19 +274,18 @@ google-cloud-aiplatform==1.151.0
     # via
     #   asl-genai (asl_genai/pyproject.toml)
     #   google-adk
-    #   langchain-google-vertexai
-google-cloud-appengine-logging==1.9.0
+google-cloud-appengine-logging==1.10.0
     # via google-cloud-logging
-google-cloud-audit-log==0.5.0
+google-cloud-audit-log==0.6.0
     # via google-cloud-logging
-google-cloud-bigquery==3.41.0
+google-cloud-bigquery==3.42.1
     # via
     #   asl-genai (asl_genai/pyproject.toml)
     #   google-adk
     #   google-cloud-aiplatform
-google-cloud-bigquery-storage==2.38.0
+google-cloud-bigquery-storage==2.39.0
     # via google-adk
-google-cloud-bigtable==2.38.0
+google-cloud-bigtable==2.40.0
     # via google-adk
 google-cloud-core==2.6.0
     # via
@@ -250,44 +294,43 @@ google-cloud-core==2.6.0
     #   google-cloud-logging
     #   google-cloud-spanner
     #   google-cloud-storage
-google-cloud-dataplex==2.19.0
+google-cloud-dataplex==2.20.0
     # via google-adk
 google-cloud-discoveryengine==0.13.12
     # via google-adk
-google-cloud-iam==2.23.0
+google-cloud-iam==2.24.0
     # via google-cloud-aiplatform
-google-cloud-logging==3.15.0
+google-cloud-logging==3.16.0
     # via
     #   google-cloud-aiplatform
     #   opentelemetry-exporter-gcp-logging
-google-cloud-modelarmor==0.6.0
+google-cloud-modelarmor==0.7.0
     # via asl-genai (asl_genai/pyproject.toml)
-google-cloud-monitoring==2.30.0
+google-cloud-monitoring==2.31.0
     # via
     #   google-cloud-spanner
     #   opentelemetry-exporter-gcp-monitoring
-google-cloud-pubsub==2.38.0
+google-cloud-pubsub==2.39.0
     # via google-adk
-google-cloud-resource-manager==1.17.0
+google-cloud-resource-manager==1.18.0
     # via google-cloud-aiplatform
-google-cloud-secret-manager==2.28.0
+google-cloud-secret-manager==2.29.0
     # via google-adk
-google-cloud-spanner==3.66.0
+google-cloud-spanner==3.69.0
     # via
     #   google-adk
     #   sqlalchemy-spanner
-google-cloud-speech==2.39.0
+google-cloud-speech==2.40.0
     # via google-adk
-google-cloud-storage==2.19.0
+google-cloud-storage==3.12.0
     # via
     #   asl-genai (asl_genai/pyproject.toml)
     #   gcsfs
     #   google-adk
     #   google-cloud-aiplatform
-    #   langchain-google-vertexai
-google-cloud-storage-control==1.11.0
+google-cloud-storage-control==1.12.0
     # via gcsfs
-google-cloud-trace==1.19.0
+google-cloud-trace==1.20.0
     # via
     #   google-cloud-aiplatform
     #   opentelemetry-exporter-gcp-trace
@@ -301,7 +344,8 @@ google-genai==1.75.0
     #   asl-genai (asl_genai/pyproject.toml)
     #   google-adk
     #   google-cloud-aiplatform
-google-resumable-media==2.9.0
+    #   langchain-google-genai
+google-resumable-media==2.10.0
     # via
     #   google-cloud-bigquery
     #   google-cloud-storage
@@ -311,10 +355,11 @@ googleapis-common-protos==1.75.0
     #   google-cloud-audit-log
     #   grpc-google-iam-v1
     #   grpcio-status
+    #   opentelemetry-exporter-otlp-proto-grpc
     #   opentelemetry-exporter-otlp-proto-http
 graphviz==0.21
     # via google-adk
-greenlet==3.5.0
+greenlet==3.5.3
     # via sqlalchemy
 grpc-google-iam-v1==0.14.4
     # via
@@ -329,7 +374,7 @@ grpc-google-iam-v1==0.14.4
     #   google-cloud-storage-control
 grpc-interceptor==0.15.4
     # via google-cloud-spanner
-grpcio==1.80.0
+grpcio==1.81.1
     # via
     #   chromadb
     #   google-api-core
@@ -344,6 +389,7 @@ grpcio==1.80.0
     #   google-cloud-pubsub
     #   google-cloud-resource-manager
     #   google-cloud-secret-manager
+    #   google-cloud-spanner
     #   google-cloud-speech
     #   google-cloud-storage-control
     #   google-cloud-trace
@@ -351,7 +397,8 @@ grpcio==1.80.0
     #   grpc-google-iam-v1
     #   grpc-interceptor
     #   grpcio-status
-grpcio-status==1.80.0
+    #   opentelemetry-exporter-otlp-proto-grpc
+grpcio-status==1.81.1
     # via
     #   google-api-core
     #   google-cloud-pubsub
@@ -359,39 +406,40 @@ h11==0.16.0
     # via
     #   httpcore
     #   uvicorn
-hf-xet==1.5.0
+hf-xet==1.5.1
     # via huggingface-hub
 httpcore==1.0.9
     # via httpx
-httplib2==0.31.2
+httplib2==0.32.0
     # via
     #   google-api-python-client
     #   google-auth-httplib2
-httptools==0.7.1
+httptools==0.8.0
     # via uvicorn
 httpx==0.28.1
     # via
-    #   datasets
+    #   chromadb
+    #   docling-slim
     #   google-adk
     #   google-genai
-    #   huggingface-hub
-    #   langchain-google-vertexai
     #   langgraph-sdk
     #   langsmith
     #   litellm
     #   mcp
     #   openai
+    #   wikipedia-api
 httpx-sse==0.4.3
+    # via mcp
+huggingface-hub==0.36.2
     # via
-    #   langchain-community
-    #   langchain-google-vertexai
-    #   mcp
-huggingface-hub==1.15.0
-    # via
+    #   accelerate
     #   datasets
+    #   docling-ibm-models
+    #   docling-slim
     #   evaluate
     #   tokenizers
-idna==3.15
+    #   transformers
+idna==3.18
     # via
     #   anyio
     #   httpx
@@ -404,9 +452,9 @@ importlib-metadata==8.7.1
     #   opentelemetry-api
 importlib-resources==7.1.0
     # via chromadb
-ipykernel==7.2.0
+ipykernel==7.3.0
     # via asl-genai (asl_genai/pyproject.toml)
-ipython==9.13.0
+ipython==9.15.0
     # via
     #   ipykernel
     #   ipywidgets
@@ -417,30 +465,38 @@ ipywidgets==8.1.8
 jedi==0.20.0
     # via ipython
 jinja2==3.1.6
-    # via litellm
-jiter==0.14.0
+    # via
+    #   litellm
+    #   torch
+jiter==0.16.0
     # via openai
 joblib==1.5.3
     # via
     #   nltk
     #   scikit-learn
-joserfc==1.6.5
+joserfc==1.7.2
     # via authlib
+jsonlines==4.0.0
+    # via docling-ibm-models
 jsonpatch==1.33
     # via langchain-core
 jsonpath-python==1.1.6
     # via unstructured-client
 jsonpointer==3.1.1
     # via jsonpatch
+jsonref==1.1.0
+    # via docling-core
 jsonschema==4.26.0
     # via
+    #   chromadb
+    #   docling-core
     #   google-adk
     #   litellm
     #   mcp
     #   nbformat
 jsonschema-specifications==2025.9.1
     # via jsonschema
-jupyter-client==8.8.0
+jupyter-client==8.9.1
     # via ipykernel
 jupyter-core==5.9.1
     # via
@@ -449,52 +505,77 @@ jupyter-core==5.9.1
     #   nbformat
 jupyterlab-widgets==3.0.16
     # via ipywidgets
-langchain==0.3.14
-    # via
-    #   asl-genai (asl_genai/pyproject.toml)
-    #   langchain-community
-langchain-chroma==0.1.4
+kubernetes==36.0.0
+    # via chromadb
+langchain==1.3.11
     # via asl-genai (asl_genai/pyproject.toml)
-langchain-community==0.3.14
+langchain-chroma==1.1.0
     # via asl-genai (asl_genai/pyproject.toml)
-langchain-core==0.3.47
+langchain-classic==1.0.8
+    # via asl-genai (asl_genai/pyproject.toml)
+langchain-core==1.4.8
     # via
     #   asl-genai (asl_genai/pyproject.toml)
     #   langchain
     #   langchain-chroma
-    #   langchain-community
-    #   langchain-google-vertexai
+    #   langchain-classic
+    #   langchain-docling
+    #   langchain-google-genai
     #   langchain-text-splitters
     #   langgraph
     #   langgraph-checkpoint
-langchain-google-vertexai==2.0.15
+    #   langgraph-prebuilt
+    #   langgraph-sdk
+langchain-docling==2.0.0
     # via asl-genai (asl_genai/pyproject.toml)
-langchain-text-splitters==0.3.5
+langchain-google-genai==4.2.5
+    # via asl-genai (asl_genai/pyproject.toml)
+langchain-protocol==0.0.18
+    # via
+    #   langchain-core
+    #   langgraph-sdk
+langchain-text-splitters==1.1.2
     # via
     #   asl-genai (asl_genai/pyproject.toml)
-    #   langchain
+    #   langchain-classic
 langdetect==1.0.9
     # via unstructured
-langgraph==0.2.61
-    # via asl-genai (asl_genai/pyproject.toml)
-langgraph-checkpoint==2.1.2
-    # via langgraph
-langgraph-sdk==0.1.74
-    # via langgraph
-langsmith==0.1.129
+langgraph==1.2.6
     # via
     #   asl-genai (asl_genai/pyproject.toml)
     #   langchain
-    #   langchain-community
+langgraph-checkpoint==4.1.1
+    # via
+    #   langgraph
+    #   langgraph-prebuilt
+langgraph-prebuilt==1.1.0
+    # via langgraph
+langgraph-sdk==0.4.2
+    # via langgraph
+langsmith==0.9.0
+    # via
+    #   asl-genai (asl_genai/pyproject.toml)
+    #   langchain-classic
     #   langchain-core
+latex2mathml==3.81.0
+    # via docling-core
 litellm==1.72.6
     # via asl-genai (asl_genai/pyproject.toml)
-lxml==6.1.0
-    # via unstructured
+lxml==6.1.1
+    # via
+    #   doclang
+    #   docling-slim
+    #   python-docx
+    #   python-pptx
+    #   unstructured
+mail-parser==4.4.0
+    # via docling-slim
 mako==1.3.12
     # via alembic
 markdown-it-py==4.2.0
     # via rich
+marko==2.2.3
+    # via docling-slim
 markupsafe==3.0.3
     # via
     #   jinja2
@@ -507,59 +588,125 @@ matplotlib-inline==0.2.2
     # via
     #   ipykernel
     #   ipython
-mcp==1.27.1
+mcp==1.28.1
     # via google-adk
 mdurl==0.1.2
     # via markdown-it-py
 mmh3==5.2.1
-    # via google-cloud-spanner
+    # via
+    #   chromadb
+    #   google-cloud-spanner
+mpire==2.10.2
+    # via semchunk
+mpmath==1.3.0
+    # via sympy
 multidict==6.7.1
     # via
     #   aiohttp
     #   yarl
-multiprocess==0.70.19
+multiprocess==0.70.15
     # via
     #   datasets
     #   evaluate
+    #   mpire
 mypy-extensions==1.1.0
     # via
     #   typing-inspect
     #   unstructured-client
-narwhals==2.21.0
-    # via plotly
+narwhals==2.22.1
+    # via
+    #   plotly
+    #   scikit-learn
 nbformat==5.10.4
     # via asl-genai (asl_genai/pyproject.toml)
-nest-asyncio==1.6.0
+nest-asyncio2==1.7.2
     # via ipykernel
+networkx==3.6.1
+    # via torch
 nltk==3.9.4
     # via
     #   rouge-score
     #   unstructured
-numpy==1.26.4
+numpy==2.5.0
     # via
+    #   accelerate
     #   chroma-hnswlib
     #   chromadb
     #   datasets
     #   db-dtypes
+    #   docling-ibm-models
+    #   docling-slim
     #   evaluate
     #   faiss-cpu
-    #   langchain
     #   langchain-chroma
-    #   langchain-community
     #   onnxruntime
+    #   opencv-python
     #   pandas
+    #   rapidocr
     #   rouge-score
+    #   safetensors
     #   scikit-learn
     #   scipy
+    #   shapely
+    #   torchvision
+    #   transformers
     #   unstructured
+nvidia-cublas==13.1.1.3
+    # via
+    #   nvidia-cudnn-cu13
+    #   nvidia-cusolver
+    #   torch
+nvidia-cuda-cupti==13.0.85
+    # via cuda-toolkit
+nvidia-cuda-nvrtc==13.0.88
+    # via
+    #   cuda-toolkit
+    #   nvidia-cublas
+nvidia-cuda-runtime==13.0.96
+    # via cuda-toolkit
+nvidia-cudnn-cu13==9.20.0.48
+    # via torch
+nvidia-cufft==12.0.0.61
+    # via cuda-toolkit
+nvidia-cufile==1.15.1.6
+    # via cuda-toolkit
+nvidia-curand==10.4.0.35
+    # via cuda-toolkit
+nvidia-cusolver==12.0.4.66
+    # via cuda-toolkit
+nvidia-cusparse==12.6.3.3
+    # via
+    #   cuda-toolkit
+    #   nvidia-cusolver
+nvidia-cusparselt-cu13==0.8.1
+    # via torch
+nvidia-nccl-cu13==2.29.7
+    # via torch
+nvidia-nvjitlink==13.0.88
+    # via
+    #   cuda-toolkit
+    #   nvidia-cufft
+    #   nvidia-cusolver
+    #   nvidia-cusparse
+nvidia-nvshmem-cu13==3.4.5
+    # via torch
+nvidia-nvtx==13.0.85
+    # via cuda-toolkit
 oauthlib==3.3.1
     # via requests-oauthlib
-onnxruntime==1.26.0
+omegaconf==2.3.1
+    # via rapidocr
+onnxruntime==1.27.0
     # via chromadb
-openai==2.36.0
+openai==2.44.0
     # via litellm
+opencv-python==4.13.0.92
+    # via rapidocr
+openpyxl==3.1.5
+    # via docling-slim
 opentelemetry-api==1.41.1
     # via
+    #   chromadb
     #   google-adk
     #   google-cloud-logging
     #   google-cloud-pubsub
@@ -567,6 +714,7 @@ opentelemetry-api==1.41.1
     #   opentelemetry-exporter-gcp-logging
     #   opentelemetry-exporter-gcp-monitoring
     #   opentelemetry-exporter-gcp-trace
+    #   opentelemetry-exporter-otlp-proto-grpc
     #   opentelemetry-exporter-otlp-proto-http
     #   opentelemetry-resourcedetector-gcp
     #   opentelemetry-sdk
@@ -582,7 +730,11 @@ opentelemetry-exporter-gcp-trace==1.12.0
     #   google-adk
     #   google-cloud-aiplatform
 opentelemetry-exporter-otlp-proto-common==1.41.1
-    # via opentelemetry-exporter-otlp-proto-http
+    # via
+    #   opentelemetry-exporter-otlp-proto-grpc
+    #   opentelemetry-exporter-otlp-proto-http
+opentelemetry-exporter-otlp-proto-grpc==1.41.1
+    # via chromadb
 opentelemetry-exporter-otlp-proto-http==1.41.1
     # via
     #   google-adk
@@ -590,6 +742,7 @@ opentelemetry-exporter-otlp-proto-http==1.41.1
 opentelemetry-proto==1.41.1
     # via
     #   opentelemetry-exporter-otlp-proto-common
+    #   opentelemetry-exporter-otlp-proto-grpc
     #   opentelemetry-exporter-otlp-proto-http
 opentelemetry-resourcedetector-gcp==1.12.0a0
     # via
@@ -600,6 +753,7 @@ opentelemetry-resourcedetector-gcp==1.12.0a0
     #   opentelemetry-exporter-gcp-trace
 opentelemetry-sdk==1.41.1
     # via
+    #   chromadb
     #   google-adk
     #   google-cloud-aiplatform
     #   google-cloud-pubsub
@@ -607,6 +761,7 @@ opentelemetry-sdk==1.41.1
     #   opentelemetry-exporter-gcp-logging
     #   opentelemetry-exporter-gcp-monitoring
     #   opentelemetry-exporter-gcp-trace
+    #   opentelemetry-exporter-otlp-proto-grpc
     #   opentelemetry-exporter-otlp-proto-http
     #   opentelemetry-resourcedetector-gcp
 opentelemetry-semantic-conventions==0.62b1
@@ -617,14 +772,17 @@ orderly-set==5.5.0
     # via deepdiff
 orjson==3.11.9
     # via
+    #   chromadb
     #   langgraph-sdk
     #   langsmith
 ormsgpack==1.12.2
     # via langgraph-checkpoint
 overrides==7.7.0
     # via chromadb
-packaging==24.2
+packaging==26.2
     # via
+    #   accelerate
+    #   build
     #   datasets
     #   db-dtypes
     #   evaluate
@@ -634,27 +792,40 @@ packaging==24.2
     #   huggingface-hub
     #   ipykernel
     #   langchain-core
+    #   langsmith
     #   marshmallow
     #   onnxruntime
     #   plotly
+    #   transformers
     #   unstructured-client
-pandas==2.3.3
+pandas==3.0.3
     # via
     #   datasets
     #   db-dtypes
+    #   docling-core
     #   evaluate
 parso==0.8.7
     # via jedi
 pexpect==4.9.0
     # via ipython
 pillow==12.2.0
-    # via asl-genai (asl_genai/pyproject.toml)
-platformdirs==4.9.6
+    # via
+    #   asl-genai (asl_genai/pyproject.toml)
+    #   docling-core
+    #   docling-ibm-models
+    #   docling-parse
+    #   docling-slim
+    #   python-pptx
+    #   rapidocr
+    #   torchvision
+platformdirs==4.10.0
     # via jupyter-core
-plotly==6.7.0
+plotly==6.8.0
     # via asl-genai (asl_genai/pyproject.toml)
-posthog==7.14.2
-    # via chromadb
+pluggy==1.6.0
+    # via docling-slim
+polyfactory==3.3.0
+    # via docling-slim
 prompt-toolkit==3.0.52
     # via ipython
 propcache==0.5.2
@@ -710,12 +881,11 @@ protobuf==6.33.6
     #   proto-plus
 psutil==7.2.2
     # via
+    #   accelerate
     #   ipykernel
     #   ipython
 ptyprocess==0.7.0
     # via pexpect
-pulsar-client==3.11.0
-    # via chromadb
 pure-eval==0.2.3
     # via stack-data
 pyarrow==24.0.0
@@ -727,19 +897,29 @@ pyasn1==0.6.3
     # via pyasn1-modules
 pyasn1-modules==0.4.2
     # via google-auth
+pybase64==1.4.3
+    # via chromadb
+pyclipper==1.4.0
+    # via rapidocr
 pycparser==3.0
     # via cffi
 pydantic==2.12.0
     # via
     #   asl-genai (asl_genai/pyproject.toml)
     #   chromadb
+    #   docling-core
+    #   docling-ibm-models
+    #   docling-parse
+    #   docling-slim
     #   fastapi
     #   google-adk
     #   google-cloud-aiplatform
     #   google-genai
     #   langchain
+    #   langchain-classic
     #   langchain-core
-    #   langchain-google-vertexai
+    #   langchain-google-genai
+    #   langgraph
     #   langsmith
     #   litellm
     #   mcp
@@ -747,18 +927,23 @@ pydantic==2.12.0
     #   pydantic-settings
 pydantic-core==2.41.1
     # via pydantic
-pydantic-settings==2.14.1
+pydantic-settings==2.14.2
     # via
-    #   langchain-community
+    #   chromadb
+    #   docling-core
+    #   docling-slim
     #   mcp
 pygments==2.20.0
     # via
     #   ipython
     #   ipython-pygments-lexers
+    #   mpire
     #   rich
-pyjwt==2.12.1
+pyjwt==2.13.0
     # via mcp
-pyopenssl==26.2.0
+pylatexenc==2.10
+    # via docling-slim
+pyopenssl==26.3.0
     # via google-auth
 pyparsing==3.3.2
     # via httplib2
@@ -766,17 +951,25 @@ pypdf==4.3.1
     # via
     #   asl-genai (asl_genai/pyproject.toml)
     #   unstructured-client
+pypdfium2==5.11.0
+    # via docling-slim
 pypika==0.51.1
     # via chromadb
+pyproject-hooks==1.2.0
+    # via build
 python-dateutil==2.9.0.post0
     # via
     #   google-adk
     #   google-cloud-bigquery
     #   jupyter-client
+    #   kubernetes
     #   pandas
     #   unstructured-client
+python-docx==1.2.0
+    # via docling-slim
 python-dotenv==1.2.2
     # via
+    #   docling-slim
     #   google-adk
     #   litellm
     #   pydantic-settings
@@ -785,19 +978,25 @@ python-iso639==2026.4.20
     # via unstructured
 python-magic==0.4.27
     # via unstructured
-python-multipart==0.0.28
+python-multipart==0.0.32
     # via mcp
-pytz==2026.2
-    # via pandas
+python-pptx==1.0.2
+    # via docling-slim
 pyyaml==6.0.2
     # via
     #   asl-genai (asl_genai/pyproject.toml)
+    #   accelerate
+    #   chromadb
     #   datasets
+    #   docling-core
     #   google-adk
     #   huggingface-hub
-    #   langchain
-    #   langchain-community
+    #   kubernetes
+    #   langchain-classic
     #   langchain-core
+    #   omegaconf
+    #   rapidocr
+    #   transformers
     #   uvicorn
 pyzmq==27.1.0
     # via
@@ -805,18 +1004,21 @@ pyzmq==27.1.0
     #   jupyter-client
 rapidfuzz==3.14.5
     # via unstructured
+rapidocr==3.9.0
+    # via docling-slim
 referencing==0.37.0
     # via
     #   jsonschema
     #   jsonschema-specifications
-regex==2026.5.9
+regex==2026.6.28
     # via
     #   nltk
     #   tiktoken
+    #   transformers
 requests==2.34.2
     # via
-    #   chromadb
     #   datasets
+    #   docling-slim
     #   evaluate
     #   gcsfs
     #   google-adk
@@ -825,64 +1027,93 @@ requests==2.34.2
     #   google-cloud-bigquery
     #   google-cloud-storage
     #   google-genai
-    #   langchain
-    #   langchain-community
+    #   huggingface-hub
+    #   kubernetes
+    #   langchain-classic
     #   langsmith
     #   opentelemetry-exporter-otlp-proto-http
     #   opentelemetry-resourcedetector-gcp
-    #   posthog
+    #   rapidocr
     #   requests-oauthlib
+    #   requests-toolbelt
     #   responses
     #   tiktoken
+    #   transformers
     #   unstructured
     #   unstructured-client
     #   wikipedia
 requests-oauthlib==2.0.0
-    # via google-auth-oauthlib
+    # via
+    #   google-auth-oauthlib
+    #   kubernetes
+requests-toolbelt==1.0.0
+    # via langsmith
 responses==0.18.0
     # via evaluate
 rich==15.0.0
-    # via typer
+    # via
+    #   chromadb
+    #   docling-slim
+    #   typer
 rouge-score==0.1.2
     # via asl-genai (asl_genai/pyproject.toml)
-rpds-py==0.30.0
+rpds-py==2026.6.3
     # via
     #   jsonschema
     #   referencing
-scikit-learn==1.8.0
+rtree==1.4.1
+    # via
+    #   docling-ibm-models
+    #   docling-slim
+safetensors==0.8.0
+    # via
+    #   accelerate
+    #   docling-ibm-models
+    #   transformers
+saxonche==13.0.0
+    # via doclang
+scikit-learn==1.9.0
     # via asl-genai (asl_genai/pyproject.toml)
-scipy==1.17.1
+scipy==1.18.0
     # via
     #   asl-genai (asl_genai/pyproject.toml)
+    #   docling-slim
     #   scikit-learn
+semchunk==3.2.5
+    # via docling-core
 setuptools==81.0.0
-    # via asl-genai (asl_genai/pyproject.toml)
+    # via
+    #   asl-genai (asl_genai/pyproject.toml)
+    #   torch
+shapely==2.1.2
+    # via rapidocr
 shellingham==1.5.4
     # via typer
 six==1.17.0
     # via
+    #   kubernetes
     #   langdetect
     #   python-dateutil
+    #   rapidocr
     #   rouge-score
     #   unstructured-client
 sniffio==1.3.1
     # via
     #   google-genai
     #   openai
-soupsieve==2.8.3
+soupsieve==2.8.4
     # via beautifulsoup4
-sqlalchemy==2.0.49
+sqlalchemy==2.0.51
     # via
     #   alembic
     #   google-adk
-    #   langchain
-    #   langchain-community
+    #   langchain-classic
     #   sqlalchemy-spanner
-sqlalchemy-spanner==1.18.0
+sqlalchemy-spanner==1.19.0
     # via google-adk
 sqlparse==0.5.5
     # via google-cloud-spanner
-sse-starlette==3.4.4
+sse-starlette==3.4.5
     # via mcp
 stack-data==0.6.3
     # via ipython
@@ -892,38 +1123,60 @@ starlette==0.52.1
     #   google-adk
     #   mcp
     #   sse-starlette
+sympy==1.14.0
+    # via torch
 tabulate==0.10.0
-    # via unstructured
+    # via
+    #   docling-core
+    #   unstructured
 tenacity==9.1.4
     # via
+    #   chromadb
     #   google-adk
     #   google-genai
-    #   langchain
-    #   langchain-community
     #   langchain-core
+    #   wikipedia-api
 termcolor==3.3.0
     # via fire
 threadpoolctl==3.6.0
     # via scikit-learn
 tiktoken==0.13.0
     # via litellm
-tokenizers==0.23.1
+tokenizers==0.22.2
     # via
     #   chromadb
     #   litellm
-tornado==6.5.5
+    #   transformers
+torch==2.12.1
+    # via
+    #   accelerate
+    #   docling-ibm-models
+    #   docling-slim
+    #   safetensors
+    #   torchvision
+torchvision==0.27.1
+    # via
+    #   docling-ibm-models
+    #   docling-slim
+tornado==6.5.7
     # via
     #   ipykernel
     #   jupyter-client
-tqdm==4.67.3
+tqdm==4.68.3
     # via
     #   chromadb
     #   datasets
+    #   docling-ibm-models
+    #   docling-slim
     #   evaluate
     #   huggingface-hub
+    #   mpire
     #   nltk
     #   openai
-traitlets==5.15.0
+    #   rapidocr
+    #   semchunk
+    #   transformers
+traitlets==5.15.1
     # via
     #   ipykernel
     #   ipython
@@ -932,38 +1185,64 @@ traitlets==5.15.0
     #   jupyter-core
     #   matplotlib-inline
     #   nbformat
-typer==0.25.1
+transformers==4.57.6
+    # via
+    #   docling-core
+    #   docling-ibm-models
+tree-sitter==0.26.0
+    # via docling-core
+tree-sitter-c==0.24.2
+    # via docling-core
+tree-sitter-javascript==0.25.0
+    # via docling-core
+tree-sitter-python==0.25.0
+    # via docling-core
+tree-sitter-typescript==0.23.2
+    # via docling-core
+triton==3.7.1
+    # via torch
+typer==0.24.2
     # via
     #   chromadb
-    #   huggingface-hub
+    #   doclang
+    #   docling-core
+    #   docling-slim
 typing-extensions==4.15.0
     # via
+    #   aiohttp
     #   aiosignal
     #   alembic
     #   anyio
     #   beautifulsoup4
     #   chromadb
+    #   docling-core
     #   fastapi
     #   google-adk
     #   google-cloud-aiplatform
     #   google-genai
     #   grpcio
     #   huggingface-hub
+    #   jupyter-client
     #   langchain-core
+    #   langchain-protocol
     #   mcp
     #   openai
     #   opentelemetry-api
+    #   opentelemetry-exporter-otlp-proto-grpc
     #   opentelemetry-exporter-otlp-proto-http
     #   opentelemetry-resourcedetector-gcp
     #   opentelemetry-sdk
     #   opentelemetry-semantic-conventions
-    #   posthog
+    #   polyfactory
     #   pydantic
     #   pydantic-core
     #   pyopenssl
+    #   python-docx
+    #   python-pptx
     #   referencing
     #   sqlalchemy
     #   starlette
+    #   torch
     #   typing-inspect
     #   typing-inspection
     #   unstructured
@@ -978,9 +1257,7 @@ typing-inspection==0.4.2
     #   mcp
     #   pydantic
     #   pydantic-settings
-tzdata==2026.2
-    # via pandas
-tzlocal==5.3.1
+tzlocal==5.4.4
     # via google-adk
 unstructured==0.14.4
     # via asl-genai (asl_genai/pyproject.toml)
@@ -992,10 +1269,15 @@ uritemplate==4.2.0
     # via google-api-python-client
 urllib3==2.7.0
     # via
+    #   kubernetes
     #   requests
     #   responses
     #   unstructured-client
-uvicorn==0.47.0
+uuid-utils==0.16.2
+    # via
+    #   langchain-core
+    #   langsmith
+uvicorn==0.49.0
     # via
     #   chromadb
     #   google-adk
@@ -1004,26 +1286,39 @@ uvloop==0.22.1
     # via uvicorn
 watchdog==6.0.0
     # via google-adk
-watchfiles==1.1.1
+watchfiles==1.2.0
     # via uvicorn
-wcwidth==0.7.0
+wcwidth==0.8.2
     # via prompt-toolkit
+websocket-client==1.9.0
+    # via kubernetes
 websockets==15.0.1
     # via
+    #   docling-slim
     #   google-adk
     #   google-genai
+    #   langgraph-sdk
+    #   langsmith
     #   uvicorn
 widgetsnbextension==4.0.15
     # via ipywidgets
 wikipedia==1.4.0
     # via asl-genai (asl_genai/pyproject.toml)
-wrapt==2.1.2
+wikipedia-api==0.15.0
+    # via asl-genai (asl_genai/pyproject.toml)
+wrapt==2.2.2
     # via unstructured
-xxhash==3.7.0
+xlsxwriter==3.2.9
+    # via python-pptx
+xxhash==3.8.0
     # via
     #   datasets
     #   evaluate
-yarl==1.23.0
+    #   langgraph
+    #   langsmith
+yarl==1.24.2
     # via aiohttp
-zipp==3.23.1
+zipp==4.1.0
     # via importlib-metadata
+zstandard==0.25.0
+    # via langsmith

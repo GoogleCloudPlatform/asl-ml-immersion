@@ -12,6 +12,7 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 """Lightweight component tuning function."""
+
 from typing import Dict, List, NamedTuple
 
 from kfp.dsl import component

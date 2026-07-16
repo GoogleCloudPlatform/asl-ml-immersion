@@ -18,75 +18,61 @@ from google.adk import Event
 from google.adk import Workflow
 from pydantic import BaseModel
 from pydantic import Field
-from google.adk import Agent
-from google.adk import Event
-from google.adk import Workflow
-from google.adk.events import RequestInput
 
 MODEL = "gemini-2.5-flash"
 
-def process_input(node_input: str):
- """Takes the initial customer complaint as input and sets it in the state."""
- yield Event(state={"complaint": node_input, "feedback": ""})
-
-
-draft_email = Agent(
-   name="draft_email",
-   model = MODEL,
-   instruction="""
-   Please write a polite, helpful response email to the following customer complaint: "{complaint}"
-
-   If there is any feedback from the manager to revise the draft, please incorporate it: "{feedback?}"
-   """,
-   output_key="draft",
-)
-
-
-def request_human_review(draft: str):
- yield RequestInput(
-     message=(
-         f"""Please review the following draft "
-         email and provide 'approve',
-         'reject', or feedback to revise.
-         \n\n---\n{draft}\n---"""
+class Feedback(BaseModel):
+ grade: Literal["tech-related", "unrelated"] = Field(
+     description=(
+         "Decide if the headline is related to technology or software"
+         " engineering."
+     ),
+ )
+ feedback: str = Field(
+     description=(
+         "If the headline is unrelated to technology, provide feedback on how"
+         " to make it more tech-focused."
      ),
  )
 
 
-def handle_human_review(node_input: str):
- if node_input == "reject":
-   yield Event(route="rejected")
- elif node_input == "approve":
-   yield Event(route="approved")
- else:
-   yield Event(state={"feedback": node_input}, route="revise")
+def process_input(node_input: str):
+ """Puts user input in the state."""
+ return Event(state={"topic": node_input})
 
+generate_headline = Agent(
+   name="generate_headline",
+   model=MODEL,
+   instruction="""
+   Write a headline about the topic "{topic}".
+   If feedback is provided, take it into account.
+   The feedback: {feedback?}
+   """,
+)
 
-def reject_email():
- yield Event(message="Draft rejected.")
+evaluate_headline = Agent(
+   name="evaluate_headline",
+   model=MODEL,
+   instruction="""
+   Grade whether the headline is related to technology or software engineering.
+   """,
+   output_schema=Feedback,
+   output_key="feedback",
+)
 
-
-def send_email(draft: str):
- yield Event(message="Draft approved and sent successfully.")
-
+def route_headline(node_input: Feedback):
+ return Event(route=node_input.grade)
 
 root_agent = Workflow(
-   name="request_input",
+   name="root_agent",
    edges=[
        (
            "START",
            process_input,
-           draft_email,
-           request_human_review,
-           handle_human_review,
+           generate_headline,
+           evaluate_headline,
+           route_headline,
        ),
-       (
-           handle_human_review,
-           {
-               "revise": draft_email,
-               "approved": send_email,
-               "rejected": reject_email,
-           },
-       ),
+       (route_headline, {"unrelated": generate_headline}),
    ],
 )

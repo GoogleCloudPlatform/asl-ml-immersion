@@ -169,7 +169,48 @@ You Should see installation messages similar to the following:
 
 This section provides a quick description, main learning ADK learning objectives, and expected results for each agent folder in this directory.
 
-### [agent_01_tool_func](file:///asl-ml-immersion/scaffolds/adk_ide/agent_01_tool_func)
-- **Description**: A simple agent that uses a single tool function (e.g., weather).
-- **Learning Objectives**: Understand how to define an agent and register a Python function as a tool.
-- **Expected Results**: The agent correctly identifies when to use the tool and returns the tool's output to the user.
+### [agent_01_antipattern](file:///Users/osaienko/development/asl2026/mlops/asl-ml-immersion/scaffolds/adk2_workflows/agent_01_antipattern)
+- **Description**: Demonstrates the monolithic "God Agent" anti-pattern, where a single agent tries to orchestrate a complex operational workflow (classification, retrieval, evaluation, human confirmation, retry policy, and error logging) entirely through its unstructured natural language instruction and a flat list of tools.
+- **Learning Objectives**: Understand why relying solely on natural language agent instructions for multi-step state transitions, error handling, retries, and human-in-the-loop triggers is fragile, hard to test, and prone to instruction-following failures or hallucinations.
+- **Expected Results**: Recognize the limitations of a monolithic agent when trying to execute sequenced, conditional workflows, highlighting the need for structured graphs/workflows.
+
+### [agent_adk2_01_graph_router](file:///Users/osaienko/development/asl2026/mlops/asl-ml-immersion/scaffolds/adk2_workflows/agent_adk2_01_graph_router)
+- **Description**: A basic workflow routing system using ADK2's `Workflow` class. It classifies a message (using the `process_message` agent) and then uses a Python router function (`router`) to dynamically route to one or more execution nodes (`response_1_bug`, `response_2_support`, `response_3_logistics`) based on the returned route event keys.
+- **Learning Objectives**:
+  - Understand how to structure a multi-node workflow using the `Workflow` class.
+  - Learn how to define edges, nodes, and routing conditions.
+  - See how to use structured outputs in conjunction with programmatic routers (`Event(route=[...])`).
+- **Expected Results**: The workflow starts, passes the user's message to the classification agent. Based on the classification, the router returns a route event that triggers the correct response node (e.g., if the category is "BUG", it runs `response_1_bug` and returns "Handling bug...").
+
+### [agent_adk2_02_graph_loop](file:///Users/osaienko/development/asl2026/mlops/asl-ml-immersion/scaffolds/adk2_workflows/agent_adk2_02_graph_loop)
+- **Description**: Demonstrates an evaluation loop (cycle/feedback loop) using ADK2. An agent `generate_headline` generates a headline for a given topic. An evaluator agent `evaluate_headline` scores the headline using a Pydantic schema (`Feedback`) indicating whether it's related to technology or software engineering. If not (`unrelated`), the workflow routes back to `generate_headline` with the evaluator's feedback until a satisfying headline is generated.
+- **Learning Objectives**:
+  - Understand how to structure iterative refinement loops in ADK2 workflows.
+  - Learn to pass feedback/state back to earlier steps in a workflow (via `{feedback?}` or state mapping).
+  - Use structured outputs (`BaseModel` / `Feedback`) to control execution routing.
+- **Expected Results**: Given a topic (e.g. "cooking"), the generator produces a headline, the evaluator flags it as "unrelated", providing feedback to make it tech-focused. The workflow routes back to the generator, which reads the feedback and regenerates a tech-related headline. The evaluator then grades it as "tech-related", and the workflow completes successfully.
+
+### [agent_adk2_03_graph_hitl](file:///Users/osaienko/development/asl2026/mlops/asl-ml-immersion/scaffolds/adk2_workflows/agent_adk2_03_graph_hitl)
+- **Description**: Demonstrates a Human-in-the-Loop (HITL) pattern using ADK2's `RequestInput` class. The workflow drafts an email response to a customer complaint using the `draft_email` agent. It then pauses execution using `RequestInput` to solicit feedback or approval from a human reviewer. Based on the human input ("approve", "reject", or revisions/feedback), the workflow either sends the email, rejects it, or routes back to `draft_email` with the feedback to draft a revision.
+- **Learning Objectives**:
+  - Understand how to pause workflow execution and request external input/interaction from a human using `RequestInput`.
+  - Handle human input programmatically (`handle_human_review`) to transition states or route execution (e.g., revise, approve, reject).
+  - Manage state updates (`feedback`) during human-in-the-loop interactions.
+- **Expected Results**: The workflow starts, drafts an email response, and stops at `request_human_review`, returning a request for input containing the draft. When the user sends "approve", the workflow proceeds to `send_email` and finishes. When the user sends feedback, it routes back to `draft_email`, regenerates the draft, and requests review again.
+
+### [agent_adk2_04_dynamic_workflow](file:///Users/osaienko/development/asl2026/mlops/asl-ml-immersion/scaffolds/adk2_workflows/agent_adk2_04_dynamic_workflow)
+- **Description**: Demonstrates dynamic workflows using programmatic orchestrator nodes in ADK2. Instead of defining static transitions (edges) upfront, a custom `@node` function orchestrates the flow dynamically in standard Python code using `ctx.run_node` inside loops, conditionals, etc.
+- **Learning Objectives**:
+  - Understand the difference between static workflows and dynamic workflows in ADK2.
+  - Learn to use `Context` to programmatically run nodes (`await ctx.run_node`) from within another node.
+  - Understand the role of `@node(rerun_on_resume=True)` when implementing stateful loops.
+- **Expected Results**: The workflow runs the `orchestrate` node, which sequentially triggers `generate_headline` and `evaluate_headline` inside a Python `while` loop until a "tech-related" grade is returned. The workflow is highly dynamic and flexible, using standard Python control structures rather than static configuration.
+
+### [agent_adk2_05_task_mode](file:///Users/osaienko/development/asl2026/mlops/asl-ml-immersion/scaffolds/adk2_workflows/agent_adk2_05_task_mode)
+- **Description**: Demonstrates how to use different execution modes (`mode="single_turn"` vs. `mode="task"`) in ADK2 sub-agents, coordinated by a root/coordinator agent. The root coordinator `travel_planner` delegates to `weather_checker` (running in `single_turn` mode, which runs as a fire-and-forget autonomous task) and `flight_booker` (running in `task` mode, which runs interactively and can ask the user clarifying questions or interact).
+- **Learning Objectives**:
+  - Understand different agent execution modes: `single_turn` (default, autonomous execution without user interaction) and `task` (interactive session where the agent can interact back-and-forth with the user to accomplish a goal).
+  - Understand how a coordinator agent can delegate sub-tasks using auto-generated tools (e.g., `request_task_<sub_agent_name>`).
+  - Learn to specify `input_schema` and `output_schema` on sub-agents to enforce structured context passing and tool definitions.
+- **Expected Results**: The root agent coordinates the travel plan. It first invokes the `weather_checker` sub-agent autonomously. Then, it invokes `flight_booker` in `task` mode. The `flight_booker` can prompt the user for input/confirmation before executing the final `book_flight` action, and returns a structured `FlightResult`.
+

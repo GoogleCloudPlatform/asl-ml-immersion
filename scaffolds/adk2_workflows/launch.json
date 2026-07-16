@@ -1,0 +1,66 @@
+{
+    "version": "0.3.0",
+    "configurations": [
+        {
+            "name": "ADK Web UI",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scaffolds/adk2_workflows/.venv/bin/adk",
+            "python": "${workspaceFolder}/scaffolds/adk2_workflows/.venv/bin/python",
+            "args": [
+                "web",
+                "${workspaceFolder}/scaffolds/adk2_workflows",
+                "--port",
+                "8501",
+                "--reload_agents",
+                "--allow_origins",
+                "*"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "ADK API Server",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scaffolds/adk2_workflows/.venv/bin/adk",
+            "python": "${workspaceFolder}/scaffolds/adk2_workflows/.venv/bin/python",
+            "args": [
+                "api_server",
+                "${workspaceFolder}/scaffolds/adk2_workflows",
+                "--port",
+                "8502",
+                "--reload_agents",
+                "--allow_origins",
+                "*"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Python Debugger: Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "python": "${workspaceFolder}/scaffolds/adk2_workflows/.venv/bin/python",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Python: Debug Remote A2A Agent Example",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scaffolds/adk2_workflows/.venv/bin/uvicorn",
+            "args": [
+                "agent_20_remote_sub_agent_a2a.remote_weather_agent:a2a_app",
+                "--host",
+                "localhost",
+                "--port",
+                "10020"
+            ],
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/scaffolds/adk2_workflows/"
+            },
+            "console": "integratedTerminal"
+        }
+    ]
+}

@@ -22,18 +22,3 @@ playground:
 	@echo "| 🚀 Starting your Agent                                                      |"
 	@echo "==============================================================================="
 	uv run adk web . --port 8501 --reload_agents
-
-# Deploy the agent remotely
-# Usage: make backend [PORT=8080] - Set IAP=true to enable Identity-Aware Proxy, PORT to specify container port
-backend:
-	PROJECT_ID=$$(gcloud config get-value project) && \
-	gcloud beta run deploy adkagent \
-		--source . \
-		--memory "4Gi" \
-		--project $$PROJECT_ID \
-		--region "us-central1" \
-		--no-cpu-throttling \
-		--labels "created-by=adk" \
-		--allow-unauthenticated \
-		--env-vars-file .env \
-		$(if $(PORT),--port=$(PORT))

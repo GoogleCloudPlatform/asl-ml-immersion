@@ -1,7 +1,6 @@
 #!/bin/bash
 
 export PATH=$PATH:~/.local/bin
-#cd scaffolds/adk_ide
 make install
 export PATH=$PATH:~/.local/bin
 make install
@@ -18,9 +17,9 @@ sed -i "s/^# GOOGLE_CLOUD_PROJECT=.*/GOOGLE_CLOUD_PROJECT=$PROJECT_ID/" .env
 cd ..
 cd ..
 mkdir .vscode
-cp scaffolds/adk_ide/launch.json .vscode/
-cp scaffolds/adk_ide/settings.json .vscode/
-cd scaffolds/adk_ide
+cp scaffolds/adk2_workflows/launch.json .vscode/
+cp scaffolds/adk2_workflows/settings.json .vscode/
+cd scaffolds/adk2_workflows
 
 echo "⚙️  Detecting environment and configuring IDE extensions..."
 
@@ -56,8 +55,8 @@ else
     if [ "$IS_LOCAL" = true ]; then
         echo "📦 Installing Dev Containers extension..."
         mkdir -p .devcontainer
-        cp scaffolds/adk_ide/devcontainer_template/Dockerfile .devcontainer/
-        cp scaffolds/adk_ide/devcontainer_template/devcontainer.json .devcontainer/
+        cp scaffolds/adk2_workflows/devcontainer_template/Dockerfile .devcontainer/
+        cp scaffolds/adk2_workflows/devcontainer_template/devcontainer.json .devcontainer/
         "$CODE_BIN" --install-extension ms-vscode-remote.remote-containers --force
     else
         echo "⏩ Skipping Dev Containers extension (Native to Cloud / Not on Open VSX)."

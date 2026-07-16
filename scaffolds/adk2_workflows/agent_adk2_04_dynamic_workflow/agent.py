@@ -11,13 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import Literal
-
 from google.adk import Agent
+from google.adk import Context
 from google.adk import Event
 from google.adk import Workflow
+from google.adk.workflow import node
 from pydantic import BaseModel
 from pydantic import Field
+from typing import Literal
 
 MODEL = "gemini-2.5-flash"
 
@@ -36,10 +37,6 @@ class Feedback(BaseModel):
  )
 
 
-def process_input(node_input: str):
- """Puts user input in the state."""
- return Event(state={"topic": node_input})
-
 generate_headline = Agent(
    name="generate_headline",
    model=MODEL,
@@ -49,6 +46,7 @@ generate_headline = Agent(
    The feedback: {feedback?}
    """,
 )
+
 
 evaluate_headline = Agent(
    name="evaluate_headline",
@@ -60,19 +58,21 @@ evaluate_headline = Agent(
    output_key="feedback",
 )
 
-def route_headline(node_input: Feedback):
- return Event(route=node_input.grade)
+
+@node(rerun_on_resume=True)
+async def orchestrate(ctx: Context, node_input: str):
+ yield Event(state={"topic": node_input})
+
+ while True:
+   headline = await ctx.run_node(generate_headline)
+   feedback = Feedback.model_validate(
+       await ctx.run_node(evaluate_headline, node_input=headline)
+   )
+   if feedback.grade == "tech-related":
+     yield headline
+     break
 
 root_agent = Workflow(
    name="root_agent",
-   edges=[
-       (
-           "START",
-           process_input,
-           generate_headline,
-           evaluate_headline,
-           route_headline,
-       ),
-       (route_headline, {"unrelated": generate_headline}),
-   ],
+   edges=[("START", orchestrate)],
 )

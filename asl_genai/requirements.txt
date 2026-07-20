@@ -7,7 +7,7 @@ google-cloud-aiplatform==1.160.0
 google-cloud-bigquery
 google-cloud-modelarmor
 google-genai==2.11.0
-google-adk==2.4.0
+google-adk==2.5.0
 google-auth==2.52.0
 
 # Langchain dependencies
@@ -33,6 +33,7 @@ unstructured-client==0.22.0
 wikipedia==1.4.0
 litellm==1.92.0
 evaluate==0.4.0
+datasets>=2.20.0
 rouge-score==0.1.2
 wikipedia-api==0.15.0
 
@@ -45,7 +46,11 @@ fastapi
 scipy
 pillow
 plotly
+matplotlib
+seaborn
 scikit-learn
 fsspec
 gcsfs
 nbformat>=4.2.0
+build==1.5.0
+

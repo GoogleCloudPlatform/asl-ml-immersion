@@ -10,7 +10,6 @@ aiohappyeyeballs==2.7.1
     # via aiohttp
 aiohttp==3.14.1
     # via
-    #   datasets
     #   fsspec
     #   gcsfs
     #   kubernetes
@@ -53,8 +52,10 @@ beautifulsoup4==4.15.0
     #   docling-slim
     #   unstructured
     #   wikipedia
-build==1.5.1
-    # via chromadb
+build==1.5.0
+    # via
+    #   asl-genai (asl_genai/pyproject.toml)
+    #   chromadb
 cachebox==5.2.3
     # via deepdiff
 certifi==2026.6.17
@@ -83,12 +84,13 @@ chromadb==1.5.9
 click==8.4.1
     # via
     #   google-adk
+    #   huggingface-hub
     #   litellm
     #   nltk
     #   typer
     #   uvicorn
     #   wikipedia-api
-colorlog==6.10.1
+colorlog==6.11.0
     # via rapidocr
 comm==0.2.3
     # via
@@ -110,7 +112,7 @@ dataclasses-json==0.6.7
     # via
     #   unstructured
     #   unstructured-client
-datasets==2.14.4
+datasets==5.0.0
     # via evaluate
 db-dtypes==1.7.1
     # via asl-genai (asl_genai/pyproject.toml)
@@ -127,7 +129,7 @@ defusedxml==0.7.1
     #   docling-core
     #   docling-slim
     #   nltk
-dill==0.3.7
+dill==0.4.1
     # via
     #   datasets
     #   evaluate
@@ -136,18 +138,18 @@ distro==1.9.0
     # via
     #   google-genai
     #   openai
-doclang==0.7.2
+doclang==0.7.3
     # via docling-core
 docling==2.113.0
     # via langchain-docling
-docling-core==2.87.0
+docling-core==2.87.1
     # via
     #   docling-ibm-models
     #   docling-parse
     #   docling-slim
 docling-ibm-models==3.13.3
     # via docling-slim
-docling-parse==7.8.0
+docling-parse==7.8.1
     # via docling-slim
 docling-slim==2.113.0
     # via docling
@@ -167,7 +169,7 @@ faiss-cpu==1.13.2
     # via asl-genai (asl_genai/pyproject.toml)
 faker==40.31.0
     # via polyfactory
-fastapi==0.139.0
+fastapi==0.139.2
     # via
     #   asl-genai (asl_genai/pyproject.toml)
     #   google-adk
@@ -175,11 +177,11 @@ fastjsonschema==2.21.2
     # via nbformat
 fastuuid==0.14.0
     # via litellm
-filelock==3.29.7
+filelock==3.31.1
     # via
+    #   datasets
     #   huggingface-hub
     #   torch
-    #   transformers
 filetype==1.2.0
     # via
     #   docling-slim
@@ -193,7 +195,7 @@ frozenlist==1.8.0
     # via
     #   aiohttp
     #   aiosignal
-fsspec==2026.6.0
+fsspec==2026.4.0
     # via
     #   asl-genai (asl_genai/pyproject.toml)
     #   datasets
@@ -201,11 +203,11 @@ fsspec==2026.6.0
     #   gcsfs
     #   huggingface-hub
     #   torch
-gcsfs==2026.7.0
+gcsfs==2026.6.0
     # via asl-genai (asl_genai/pyproject.toml)
-google-adk==2.4.0
+google-adk==2.5.0
     # via asl-genai (asl_genai/pyproject.toml)
-google-api-core==2.31.0
+google-api-core==2.32.0
     # via
     #   asl-genai (asl_genai/pyproject.toml)
     #   google-cloud-aiplatform
@@ -298,7 +300,7 @@ h11==0.16.0
     # via
     #   httpcore
     #   uvicorn
-hf-xet==1.5.1
+hf-xet==1.5.2
     # via huggingface-hub
 httpcore==1.0.9
     # via httpx
@@ -307,15 +309,17 @@ httptools==0.8.0
 httpx==0.28.1
     # via
     #   chromadb
+    #   datasets
     #   docling-slim
     #   google-adk
     #   google-genai
+    #   huggingface-hub
     #   langgraph-sdk
     #   langsmith
     #   litellm
     #   openai
     #   wikipedia-api
-huggingface-hub==0.36.2
+huggingface-hub==1.21.0
     # via
     #   accelerate
     #   datasets
@@ -357,7 +361,7 @@ joblib==1.5.3
     # via
     #   nltk
     #   scikit-learn
-joserfc==1.7.3
+joserfc==1.7.4
     # via authlib
 jsonlines==4.0.0
     # via docling-ibm-models
@@ -477,7 +481,7 @@ multidict==6.7.1
     # via
     #   aiohttp
     #   yarl
-multiprocess==0.70.15
+multiprocess==0.70.19
     # via
     #   datasets
     #   evaluate
@@ -571,7 +575,7 @@ omegaconf==2.3.1
     # via rapidocr
 onnxruntime==1.27.0
     # via chromadb
-openai==2.45.0
+openai==2.46.0
     # via litellm
 opencv-python==5.0.0.93
     # via rapidocr
@@ -650,7 +654,7 @@ pillow==12.3.0
     #   python-pptx
     #   rapidocr
     #   torchvision
-platformdirs==4.10.0
+platformdirs==4.10.1
     # via jupyter-core
 plotly==6.9.0
     # via asl-genai (asl_genai/pyproject.toml)
@@ -749,7 +753,7 @@ pypdf==4.3.1
     # via
     #   asl-genai (asl_genai/pyproject.toml)
     #   unstructured-client
-pypdfium2==5.11.0
+pypdfium2==5.12.1
     # via docling-slim
 pypika==0.51.1
     # via chromadb
@@ -807,7 +811,7 @@ referencing==0.37.0
     # via
     #   jsonschema
     #   jsonschema-specifications
-regex==2026.7.10
+regex==2026.7.19
     # via
     #   nltk
     #   tiktoken
@@ -824,7 +828,6 @@ requests==2.34.2
     #   google-cloud-bigquery
     #   google-cloud-storage
     #   google-genai
-    #   huggingface-hub
     #   kubernetes
     #   langchain-classic
     #   langsmith
@@ -833,7 +836,6 @@ requests==2.34.2
     #   requests-toolbelt
     #   responses
     #   tiktoken
-    #   transformers
     #   unstructured
     #   unstructured-client
     #   wikipedia
@@ -894,7 +896,7 @@ sniffio==1.3.1
     # via
     #   google-genai
     #   openai
-soupsieve==2.8.4
+soupsieve==2.9
     # via beautifulsoup4
 sqlalchemy==2.0.51
     # via langchain-classic
@@ -943,7 +945,7 @@ tornado==6.5.7
     # via
     #   ipykernel
     #   jupyter-client
-tqdm==4.68.4
+tqdm==4.69.0
     # via
     #   chromadb
     #   datasets
@@ -966,7 +968,7 @@ traitlets==5.15.1
     #   jupyter-core
     #   matplotlib-inline
     #   nbformat
-transformers==4.57.6
+transformers==5.14.1
     # via
     #   docling-core
     #   docling-ibm-models
@@ -988,6 +990,8 @@ typer==0.24.2
     #   doclang
     #   docling-core
     #   docling-slim
+    #   huggingface-hub
+    #   transformers
 typing-extensions==4.16.0
     # via
     #   aiohttp
@@ -1089,7 +1093,7 @@ xxhash==3.8.1
     #   evaluate
     #   langgraph
     #   langsmith
-yarl==1.24.2
+yarl==1.24.5
     # via aiohttp
 zipp==4.1.0
     # via importlib-metadata

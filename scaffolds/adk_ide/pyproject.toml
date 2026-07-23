@@ -5,24 +5,13 @@ description = "ASL ADK LABs"
 requires-python = ">=3.13,<3.14"
 
 dependencies = [
-    "google-adk[a2a,eval,extensions,otel-gcp]==2.5.0",
-    "litellm==1.92.0",
-    "google-cloud-aiplatform==1.160.0",
-    "google-genai==2.11.0",
-    "pydantic==2.12.5",
-    "uvicorn==0.44.0",
+    "google-adk==2.5.0",
+    "uvicorn>=0.51.0",
     "psycopg2-binary>=2.9.10",
-    "python-dotenv==1.1.0",
-    "fastmcp[tasks]==3.2.4",
-    "toolbox-core==0.5.10",
-    "streamlit==1.51.0",
-    "langchain==0.3.14",
-    "langsmith==0.1.129",
-    "langgraph==0.2.61",
-    "langchain-community==0.3.14",
-    "langchain-core==0.3.47",
-    "langchain-google-vertexai==2.0.15",
-    "langchain-text-splitters==0.3.5"
+    "python-dotenv==1.2.2",
+    "fastmcp[tasks]==3.4.4",
+    "toolbox-core==1.2.0",
+    "streamlit==1.59.2"
 ]
 
 [dependency-groups]

@@ -3,7 +3,7 @@
 # Google & Google Cloud Libraries
 google-api-core
 google-cloud-storage
-google-cloud-aiplatform==1.160.0
+google-cloud-aiplatform[agent_engines]==1.160.0
 google-cloud-bigquery
 google-cloud-modelarmor
 google-genai==2.11.0
@@ -11,6 +11,7 @@ google-adk==2.5.0
 google-auth==2.52.0
 google-cloud-bigquery-storage==2.39.0
 google-cloud-spanner==3.69.0
+opentelemetry-resourcedetector-gcp>=1.12.0a0
 
 # Langchain dependencies
 langchain==1.3.11

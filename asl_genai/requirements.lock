@@ -8,10 +8,11 @@ accelerate==1.14.0
     #   docling-slim
 aiohappyeyeballs==2.7.1
     # via aiohttp
-aiohttp==3.14.2
+aiohttp==3.14.3
     # via
     #   fsspec
     #   gcsfs
+    #   google-cloud-aiplatform
     #   kubernetes
     #   litellm
 aiosignal==1.4.0
@@ -52,8 +53,6 @@ beautifulsoup4==4.15.0
     #   docling-slim
     #   unstructured
     #   wikipedia
-bottleneck==1.6.0
-    # via langchain-google-vertexai
 build==1.5.0
     # via
     #   asl-genai (asl_genai/pyproject.toml)
@@ -92,7 +91,9 @@ click==8.4.1
     #   typer
     #   uvicorn
     #   wikipedia-api
-colorlog==6.11.0
+cloudpickle==3.1.2
+    # via google-cloud-aiplatform
+colorlog==6.12.0
     # via rapidocr
 comm==0.2.3
     # via
@@ -148,7 +149,7 @@ distro==1.9.0
     #   openai
 doclang==0.7.3
     # via docling-core
-docling==2.114.0
+docling==2.115.0
     # via langchain-docling
 docling-core==2.87.1
     # via
@@ -159,7 +160,7 @@ docling-ibm-models==3.13.3
     # via docling-slim
 docling-parse==7.8.1
     # via docling-slim
-docling-slim==2.114.0
+docling-slim==2.115.0
     # via docling
 docstring-parser==0.18.0
     # via google-cloud-aiplatform
@@ -175,7 +176,7 @@ executing==2.2.1
     # via stack-data
 faiss-cpu==1.13.2
     # via asl-genai (asl_genai/pyproject.toml)
-faker==40.32.0
+faker==40.35.0
     # via polyfactory
 fastapi==0.139.2
     # via
@@ -217,20 +218,23 @@ gcsfs==2026.6.0
     # via asl-genai (asl_genai/pyproject.toml)
 google-adk==2.5.0
     # via asl-genai (asl_genai/pyproject.toml)
-google-api-core==2.32.0
+google-api-core==2.33.0
     # via
     #   asl-genai (asl_genai/pyproject.toml)
     #   google-cloud-aiplatform
+    #   google-cloud-appengine-logging
     #   google-cloud-bigquery
     #   google-cloud-bigquery-storage
     #   google-cloud-core
+    #   google-cloud-iam
+    #   google-cloud-logging
     #   google-cloud-modelarmor
     #   google-cloud-monitoring
     #   google-cloud-resource-manager
     #   google-cloud-spanner
     #   google-cloud-storage
     #   google-cloud-storage-control
-    #   google-cloud-vectorsearch
+    #   google-cloud-trace
 google-auth==2.52.0
     # via
     #   asl-genai (asl_genai/pyproject.toml)
@@ -239,23 +243,28 @@ google-auth==2.52.0
     #   google-api-core
     #   google-auth-oauthlib
     #   google-cloud-aiplatform
+    #   google-cloud-appengine-logging
     #   google-cloud-bigquery
     #   google-cloud-bigquery-storage
     #   google-cloud-core
+    #   google-cloud-iam
+    #   google-cloud-logging
     #   google-cloud-modelarmor
     #   google-cloud-monitoring
     #   google-cloud-resource-manager
     #   google-cloud-spanner
     #   google-cloud-storage
     #   google-cloud-storage-control
-    #   google-cloud-vectorsearch
+    #   google-cloud-trace
     #   google-genai
 google-auth-oauthlib==1.4.0
     # via gcsfs
 google-cloud-aiplatform==1.160.0
-    # via
-    #   asl-genai (asl_genai/pyproject.toml)
-    #   langchain-google-vertexai
+    # via asl-genai (asl_genai/pyproject.toml)
+google-cloud-appengine-logging==1.10.0
+    # via google-cloud-logging
+google-cloud-audit-log==0.6.0
+    # via google-cloud-logging
 google-cloud-bigquery==3.42.2
     # via
     #   asl-genai (asl_genai/pyproject.toml)
@@ -265,8 +274,15 @@ google-cloud-bigquery-storage==2.39.0
 google-cloud-core==2.6.0
     # via
     #   google-cloud-bigquery
+    #   google-cloud-logging
     #   google-cloud-spanner
     #   google-cloud-storage
+google-cloud-iam==2.24.0
+    # via google-cloud-aiplatform
+google-cloud-logging==3.16.1
+    # via
+    #   google-cloud-aiplatform
+    #   opentelemetry-exporter-gcp-logging
 google-cloud-modelarmor==0.7.1
     # via asl-genai (asl_genai/pyproject.toml)
 google-cloud-monitoring==2.31.0
@@ -282,11 +298,12 @@ google-cloud-storage==3.13.0
     #   asl-genai (asl_genai/pyproject.toml)
     #   gcsfs
     #   google-cloud-aiplatform
-    #   langchain-google-vertexai
 google-cloud-storage-control==1.12.0
     # via gcsfs
-google-cloud-vectorsearch==0.11.1
-    # via langchain-google-vertexai
+google-cloud-trace==1.20.0
+    # via
+    #   google-cloud-aiplatform
+    #   opentelemetry-exporter-gcp-trace
 google-crc32c==1.8.0
     # via
     #   google-cloud-storage
@@ -304,37 +321,44 @@ google-resumable-media==2.10.0
 googleapis-common-protos==1.75.0
     # via
     #   google-api-core
+    #   google-cloud-audit-log
     #   grpc-google-iam-v1
     #   grpcio-status
     #   opentelemetry-exporter-otlp-proto-grpc
+    #   opentelemetry-exporter-otlp-proto-http
 graphviz==0.21
     # via google-adk
-greenlet==3.5.3
+greenlet==3.5.4
     # via sqlalchemy
 grpc-google-iam-v1==0.14.4
     # via
+    #   google-cloud-iam
+    #   google-cloud-logging
     #   google-cloud-resource-manager
     #   google-cloud-spanner
     #   google-cloud-storage-control
 grpc-interceptor==0.15.4
     # via google-cloud-spanner
-grpcio==1.82.1
+grpcio==1.83.0
     # via
     #   chromadb
     #   google-api-core
+    #   google-cloud-appengine-logging
     #   google-cloud-bigquery-storage
+    #   google-cloud-iam
+    #   google-cloud-logging
     #   google-cloud-modelarmor
     #   google-cloud-monitoring
     #   google-cloud-resource-manager
     #   google-cloud-spanner
     #   google-cloud-storage-control
-    #   google-cloud-vectorsearch
+    #   google-cloud-trace
     #   googleapis-common-protos
     #   grpc-google-iam-v1
     #   grpc-interceptor
     #   grpcio-status
     #   opentelemetry-exporter-otlp-proto-grpc
-grpcio-status==1.81.1
+grpcio-status==1.83.0
     # via google-api-core
 h11==0.16.0
     # via
@@ -354,14 +378,11 @@ httpx==0.28.1
     #   google-adk
     #   google-genai
     #   huggingface-hub
-    #   langchain-google-vertexai
     #   langgraph-sdk
     #   langsmith
     #   litellm
     #   openai
     #   wikipedia-api
-httpx-sse==0.4.3
-    # via langchain-google-vertexai
 huggingface-hub==1.21.0
     # via
     #   accelerate
@@ -457,7 +478,6 @@ langchain-core==1.4.8
     #   langchain-docling
     #   langchain-google-genai
     #   langchain-google-spanner
-    #   langchain-google-vertexai
     #   langchain-openai
     #   langchain-text-splitters
     #   langgraph
@@ -469,8 +489,6 @@ langchain-docling==2.0.0
 langchain-google-genai==4.2.5
     # via asl-genai (asl_genai/pyproject.toml)
 langchain-google-spanner==0.10.0
-    # via asl-genai (asl_genai/pyproject.toml)
-langchain-google-vertexai==3.2.4
     # via asl-genai (asl_genai/pyproject.toml)
 langchain-openai==1.3.3
     # via langchain-google-spanner
@@ -568,12 +586,9 @@ nltk==3.10.0
     # via
     #   rouge-score
     #   unstructured
-numexpr==2.14.2
-    # via langchain-google-vertexai
 numpy==2.5.1
     # via
     #   accelerate
-    #   bottleneck
     #   chroma-hnswlib
     #   chromadb
     #   contourpy
@@ -586,7 +601,6 @@ numpy==2.5.1
     #   langchain-chroma
     #   langchain-google-spanner
     #   matplotlib
-    #   numexpr
     #   onnxruntime
     #   opencv-python
     #   pandas
@@ -647,7 +661,7 @@ omegaconf==2.3.1
     # via rapidocr
 onnxruntime==1.27.0
     # via chromadb
-openai==2.46.0
+openai==2.47.0
     # via
     #   langchain-openai
     #   litellm
@@ -659,27 +673,48 @@ opentelemetry-api==1.42.1
     # via
     #   chromadb
     #   google-adk
+    #   google-cloud-logging
     #   google-cloud-spanner
+    #   opentelemetry-exporter-gcp-logging
+    #   opentelemetry-exporter-gcp-trace
     #   opentelemetry-exporter-otlp-proto-grpc
+    #   opentelemetry-exporter-otlp-proto-http
     #   opentelemetry-resourcedetector-gcp
     #   opentelemetry-sdk
     #   opentelemetry-semantic-conventions
+opentelemetry-exporter-gcp-logging==1.12.0a0
+    # via google-cloud-aiplatform
+opentelemetry-exporter-gcp-trace==1.12.0
+    # via google-cloud-aiplatform
 opentelemetry-exporter-otlp-proto-common==1.42.1
-    # via opentelemetry-exporter-otlp-proto-grpc
+    # via
+    #   opentelemetry-exporter-otlp-proto-grpc
+    #   opentelemetry-exporter-otlp-proto-http
 opentelemetry-exporter-otlp-proto-grpc==1.42.1
     # via chromadb
+opentelemetry-exporter-otlp-proto-http==1.42.1
+    # via google-cloud-aiplatform
 opentelemetry-proto==1.42.1
     # via
     #   opentelemetry-exporter-otlp-proto-common
     #   opentelemetry-exporter-otlp-proto-grpc
+    #   opentelemetry-exporter-otlp-proto-http
 opentelemetry-resourcedetector-gcp==1.12.0a0
-    # via google-cloud-spanner
+    # via
+    #   asl-genai (asl_genai/pyproject.toml)
+    #   google-cloud-spanner
+    #   opentelemetry-exporter-gcp-logging
+    #   opentelemetry-exporter-gcp-trace
 opentelemetry-sdk==1.42.1
     # via
     #   chromadb
     #   google-adk
+    #   google-cloud-aiplatform
     #   google-cloud-spanner
+    #   opentelemetry-exporter-gcp-logging
+    #   opentelemetry-exporter-gcp-trace
     #   opentelemetry-exporter-otlp-proto-grpc
+    #   opentelemetry-exporter-otlp-proto-http
     #   opentelemetry-resourcedetector-gcp
 opentelemetry-semantic-conventions==0.63b1
     # via
@@ -717,7 +752,7 @@ packaging==26.2
     #   plotly
     #   transformers
     #   unstructured-client
-pandas==3.0.3
+pandas==3.0.5
     # via
     #   datasets
     #   db-dtypes
@@ -753,28 +788,35 @@ propcache==0.5.2
     # via
     #   aiohttp
     #   yarl
-proto-plus==1.28.1
+proto-plus==1.28.2
     # via
     #   google-api-core
     #   google-cloud-aiplatform
+    #   google-cloud-appengine-logging
     #   google-cloud-bigquery-storage
+    #   google-cloud-iam
+    #   google-cloud-logging
     #   google-cloud-modelarmor
     #   google-cloud-monitoring
     #   google-cloud-resource-manager
     #   google-cloud-spanner
     #   google-cloud-storage-control
-    #   google-cloud-vectorsearch
+    #   google-cloud-trace
 protobuf==6.33.6
     # via
     #   google-api-core
     #   google-cloud-aiplatform
+    #   google-cloud-appengine-logging
+    #   google-cloud-audit-log
     #   google-cloud-bigquery-storage
+    #   google-cloud-iam
+    #   google-cloud-logging
     #   google-cloud-modelarmor
     #   google-cloud-monitoring
     #   google-cloud-resource-manager
     #   google-cloud-spanner
     #   google-cloud-storage-control
-    #   google-cloud-vectorsearch
+    #   google-cloud-trace
     #   googleapis-common-protos
     #   grpc-google-iam-v1
     #   grpcio-status
@@ -790,11 +832,10 @@ ptyprocess==0.7.0
     # via pexpect
 pure-eval==0.2.3
     # via stack-data
-pyarrow==23.0.1
+pyarrow==25.0.0
     # via
     #   datasets
     #   db-dtypes
-    #   langchain-google-vertexai
 pyasn1==0.6.4
     # via pyasn1-modules
 pyasn1-modules==0.4.2
@@ -822,7 +863,6 @@ pydantic==2.12.5
     #   langchain-core
     #   langchain-google-genai
     #   langchain-google-spanner
-    #   langchain-google-vertexai
     #   langgraph
     #   langsmith
     #   litellm
@@ -874,7 +914,7 @@ python-dotenv==1.2.2
     #   litellm
     #   pydantic-settings
     #   uvicorn
-python-iso639==2026.4.20
+python-iso639==2026.7.23
     # via unstructured
 python-magic==0.4.27
     # via unstructured
@@ -930,6 +970,7 @@ requests==2.34.2
     #   kubernetes
     #   langchain-classic
     #   langsmith
+    #   opentelemetry-exporter-otlp-proto-http
     #   opentelemetry-resourcedetector-gcp
     #   rapidocr
     #   requests-oauthlib
@@ -1118,6 +1159,7 @@ typing-extensions==4.16.0
     #   openai
     #   opentelemetry-api
     #   opentelemetry-exporter-otlp-proto-grpc
+    #   opentelemetry-exporter-otlp-proto-http
     #   opentelemetry-resourcedetector-gcp
     #   opentelemetry-sdk
     #   opentelemetry-semantic-conventions
@@ -1168,8 +1210,6 @@ uvicorn==0.51.0
     #   google-adk
 uvloop==0.22.1
     # via uvicorn
-validators==0.35.0
-    # via langchain-google-vertexai
 watchdog==6.0.0
     # via google-adk
 watchfiles==1.2.0

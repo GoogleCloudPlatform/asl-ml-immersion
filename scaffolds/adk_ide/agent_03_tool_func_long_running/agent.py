@@ -34,7 +34,7 @@ async def ask_for_approval(
     """Ask for approval for the reimbursement."""
     # create a ticket for the approval
     # Send a notification to the approver with the link of the ticket
-    return {'status': 'pending', 'approver': 'Sean Zhou', 'purpose' : purpose, 'amount': amount, 'ticket-id': 'approval-ticket-1'}
+    return {'status': 'pending', 'approver': 'Mister Demo', 'purpose' : purpose, 'amount': amount, 'ticket-id': 'approval-ticket-1'}
 
 
 def reimburse(purpose: str, amount: float) -> str:

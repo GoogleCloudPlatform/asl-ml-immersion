@@ -7,7 +7,7 @@ google-cloud-aiplatform[agent_engines]==1.160.0
 google-cloud-bigquery
 google-cloud-modelarmor
 google-genai==2.11.0
-google-adk==2.5.0
+google-adk[mcp]==2.5.0
 google-auth==2.52.0
 google-cloud-bigquery-storage==2.39.0
 google-cloud-spanner==3.69.0

@@ -2,6 +2,24 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "ADK WebUI Debugger",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scaffolds/adk_ide/.venv/bin/adk",
+            "python": "${workspaceFolder}/scaffolds/adk_ide/.venv/bin/python",
+            "args": [
+                "web",
+                "${workspaceFolder}/scaffolds/adk_ide",
+                "--port",
+                "8501",
+                "--reload_agents",
+                "--allow_origins",
+                "*"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}"
+        },
+        {
             "name": "ADK API Server",
             "type": "debugpy",
             "request": "launch",
@@ -12,24 +30,6 @@
                 "${workspaceFolder}/scaffolds/adk_ide",
                 "--port",
                 "8502",
-                "--reload_agents",
-                "--allow_origins",
-                "*"
-            ],
-            "console": "integratedTerminal",
-            "cwd": "${workspaceFolder}"
-        },
-        {
-            "name": "Python Debugger: ADK Web",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "${workspaceFolder}/scaffolds/adk_ide/.venv/bin/adk",
-            "python": "${workspaceFolder}/scaffolds/adk_ide/.venv/bin/python",
-            "args": [
-                "web",
-                "${workspaceFolder}/scaffolds/adk_ide",
-                "--port",
-                "8501",
                 "--reload_agents",
                 "--allow_origins",
                 "*"

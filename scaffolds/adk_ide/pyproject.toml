@@ -1,8 +1,8 @@
 [project]
 name = "adk-asl-labs"
-version = "0.3.0"
+version = "0.6.0"
 description = "ASL ADK LABs"
-requires-python = ">=3.13,<3.14"
+requires-python = ">=3.12,<3.14"
 
 dependencies = [
     "google-adk==2.5.0",
@@ -11,7 +11,7 @@ dependencies = [
     "python-dotenv==1.2.2",
     "fastmcp[tasks]==3.4.4",
     "toolbox-core==1.2.0",
-    "streamlit==1.59.2"
+    "streamlit==1.59.2",
 ]
 
 [dependency-groups]

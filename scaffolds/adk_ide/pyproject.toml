@@ -5,7 +5,11 @@ description = "ASL ADK LABs"
 requires-python = ">=3.13,<3.14"
 
 dependencies = [
-    "google-adk[a2a,eval,extensions,otel-gcp]==1.28.0",
+    "google-adk[a2a,eval,extensions,otel-gcp]==2.5.0",
+    "litellm==1.92.0",
+    "google-cloud-aiplatform==1.160.0",
+    "google-genai==2.11.0",
+    "pydantic==2.12.5",
     "uvicorn==0.44.0",
     "psycopg2-binary>=2.9.10",
     "python-dotenv==1.1.0",

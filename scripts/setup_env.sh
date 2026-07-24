@@ -76,14 +76,14 @@ fi
 
 
 # Create a GCS bucket
-exists=$(gsutil ls -d | grep -w gs://${BUCKET}/)
+exists=$(gcloud storage ls --buckets | grep -w gs://${BUCKET}/)
 if [ -n "$exists" ]; then
     echo -e "Bucket exists, let's not recreate it."
 else
     echo "Creating a new GCS bucket."
-    gsutil mb -l ${REGION} gs://${BUCKET}
+    gcloud storage buckets create --location=${REGION} gs://${BUCKET}
     echo "Here are your current buckets:"
-    gsutil ls
+    gcloud storage ls
 fi
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"

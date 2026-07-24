@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from google.adk import Agent, Workflow
+from google.adk import Agent, Workflow, Event
 
 MODEL = "gemini-2.5-flash"
 
@@ -19,24 +19,24 @@ MODEL = "gemini-2.5-flash"
 # 1. CORE TOOLS & ERROR POLICIES
 # ==========================================
 
-def get_weather(city: str) -> dict:
+def get_weather(node_input: str) -> dict:
     """Retrieves current weather status and wind speed for a specific city.
-    
+
     Includes deterministic retries (up to 2 times on error).
     """
     retries = 2
     for attempt in range(retries + 1):
         try:
-            if city.lower() == "miami":
+            if node_input.lower() == "miami":
                 return {"city": "Miami", "wind_speed": 65, "status": "Severe Storm"}
-            return {"city": city, "wind_speed": 12, "status": "Sunny"}
+            return {"city": node_input, "wind_speed": 12, "status": "Sunny"}
         except Exception as e:
             if attempt == retries:
                 raise RuntimeError(f"get_weather failed after {retries} retries: {e}")
 
 def send_alert_email(recipient: str, subject: str, body: str) -> str:
     """Sends a critical weather alert email to a subscriber.
-    
+
     No-retry policy: If this fails, standard exceptions propagate to trigger logging.
     """
     print(f"[Email Tool] Alert sent to {recipient}: {subject}")
@@ -46,7 +46,6 @@ def log_incident_in_crm(system: str, details: str) -> str:
     """Logs a system incident or execution failure in the CRM database."""
     print(f"[CRM Tool] Incident logged for {system}: {details}")
     return "INCIDENT_LOGGED"
-
 
 # ==========================================
 # 2. SPECIALIZED WORKER AGENTS (AI NODES)
@@ -79,32 +78,31 @@ crm_logger = Agent(
     tools=[log_incident_in_crm]
 )
 
-
 # ==========================================
 # 3. DETERMINISTIC ROUTERS (PURE CODE NODES)
 # ==========================================
 
-def evaluate_risk(weather_data: dict) -> str:
-    """Deterministically classifies weather risk based on tool output."""
-    wind_speed = weather_data.get("wind_speed", 0)
-    status = weather_data.get("status", "")
+def evaluate_risk(node_input: dict) -> Event:
+    """Deterministically classifies weather risk and routes the graph."""
+    wind_speed = node_input.get("wind_speed", 0)
+    status = node_input.get("status", "")
     
+    # We pass the original weather data downstream using output=node_input
     if wind_speed > 50 or status.lower() == "severe storm":
-        return "HIGH_RISK"
-    return "LOW_RISK"
+        return Event(route="HIGH_RISK", output=node_input)
+    return Event(route="LOW_RISK", output=node_input)
 
-def evaluate_approval(user_response: str) -> str:
-    """Deterministically evaluates the user's approval response."""
-    response = user_response.lower()
+def evaluate_approval(node_input: str) -> Event:
+    """Deterministically evaluates the user's approval response and routes."""
+    response = node_input.lower()
     if any(keyword in response for keyword in ["yes", "approve", "confirm", "send", "should"]):
-        return "APPROVED"
-    return "DENIED"
+        return Event(route="APPROVED")
+    return Event(route="DENIED")
 
-def skip_alert(input_data: str) -> str:
+def skip_alert(node_input: str) -> str:
     """Terminal node used when approval is denied."""
     print("[Workflow] Alert was denied. Exiting without sending email.")
     return "WORKFLOW_TERMINATED_NO_SEND"
-
 
 # ==========================================
 # 4. THE WORKFLOW GRAPH
@@ -113,23 +111,19 @@ def skip_alert(input_data: str) -> str:
 root_agent = Workflow(
     name="disaster_response_workflow",
     edges=[
-        # Step 1: Start at get_weather node (Input city is passed dynamically) [16]
+        # Step 1: Start at get_weather node (Input city is passed dynamically)
         ("START", get_weather),
-        
         # Step 2: Pass weather data straight into the deterministic evaluation router
         (get_weather, evaluate_risk),
-        
         # Step 3: Branch conditionally based on risk classification
         (evaluate_risk,
           {
               "HIGH_RISK": approval_agent,
               "LOW_RISK": email_alerter,
           }
-        )
-        
+        ),
         # Step 4: If HIGH_RISK, routing depends on the user response analyzed by approval evaluator
         (approval_agent, evaluate_approval),
-
         (evaluate_approval,
           {
               "APPROVED": email_alerter,

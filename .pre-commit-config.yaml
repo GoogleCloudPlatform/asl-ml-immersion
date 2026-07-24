@@ -57,15 +57,15 @@ repos:
     hooks:
       - id: pip-compile
         name: uv compile core
-        args: [asl_core/pyproject.toml, --upgrade, --output-file=asl_core/requirements.lock]
+        args: [asl_core/pyproject.toml, --upgrade, --index-url=https://pypi.org/simple, --output-file=asl_core/requirements.lock]
         files: ^asl_core/(pyproject\.toml|requirements\.txt)$
 
       - id: pip-compile
         name: uv compile mlops
-        args: [asl_mlops/pyproject.toml, --upgrade, --output-file=asl_mlops/requirements.lock]
+        args: [asl_mlops/pyproject.toml, --upgrade, --index-url=https://pypi.org/simple, --output-file=asl_mlops/requirements.lock]
         files: ^asl_mlops/(pyproject\.toml|requirements\.txt)$
 
       - id: pip-compile
         name: uv compile genai
-        args: [asl_genai/pyproject.toml, --upgrade, --output-file=asl_genai/requirements.lock]
+        args: [asl_genai/pyproject.toml, --upgrade, --index-url=https://pypi.org/simple, --output-file=asl_genai/requirements.lock]
         files: ^asl_genai/(pyproject\.toml|requirements\.txt)$

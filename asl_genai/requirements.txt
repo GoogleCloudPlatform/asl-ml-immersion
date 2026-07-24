@@ -32,7 +32,7 @@ pyyaml==6.0.2
 pydantic==2.12.5
 pypdf==4.3.1
 faiss-cpu==1.13.2
-unstructured==0.14.4
+unstructured==0.18.18
 unstructured-client==0.22.0
 wikipedia==1.4.0
 litellm==1.92.0

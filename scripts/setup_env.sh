@@ -76,7 +76,7 @@ fi
 
 
 # Create a GCS bucket
-exists=$(gcloud storage ls -d | grep -w gs://${BUCKET}/)
+exists=$(gcloud storage ls --buckets | grep -w gs://${BUCKET}/)
 if [ -n "$exists" ]; then
     echo -e "Bucket exists, let's not recreate it."
 else

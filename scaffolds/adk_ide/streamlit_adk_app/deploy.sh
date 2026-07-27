@@ -48,7 +48,7 @@ gcloud run deploy "$APP_NAME" \
   --region us-central1 \
   --no-allow-unauthenticated \
   --invoker-iam-check \
-  --update-env-vars GCP_PROJECT="$GOOGLE_CLOUD_PROJECT",GCP_REGION="$GOOGLE_CLOUD_LOCATION",AGENT_API_URL="https://us-central1-aiplatform.googleapis.com/v1/projects/qwiklabs-asl-04-3460f3cf1646/locations/us-central1/reasoningEngines/3620579090324520960"
+  --update-env-vars GCP_PROJECT="$GOOGLE_CLOUD_PROJECT",GCP_REGION="$GOOGLE_CLOUD_LOCATION",AGENT_API_URL="AGENT_ID"
 
 echo 'Deployment Done.'
 

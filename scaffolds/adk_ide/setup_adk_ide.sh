@@ -21,6 +21,11 @@ mkdir .vscode
 cp scaffolds/adk_ide/launch.json .vscode/
 cp scaffolds/adk_ide/settings.json .vscode/
 cd scaffolds/adk_ide
+chmod +x adk_deploy_cloudrun.sh
+chmod +x setup_mcp_toolbox.sh
+chmod +x setup_mcp_toolbox.sh
+chmod +x streamlit_adk_app/deploy.sh
+chmod +x streamlit_adk_app/run_streamlit_app.sh
 
 echo "⚙️  Detecting environment and configuring IDE extensions..."
 

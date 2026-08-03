@@ -14,12 +14,11 @@ st.title("Chat with Gemini")
 st.markdown("Welcome to this simple web application to chat with Gemini")
 
 PROJECT_ID = os.environ.get("GCP_PROJECT")
-LOCATION = os.environ.get("GCP_REGION")
 
-client = genai.Client(project=PROJECT_ID, vertexai=True, location=LOCATION)
+client = genai.Client(project=PROJECT_ID, vertexai=True, location="global")
 
 if "gemini_model" not in st.session_state:
-    st.session_state["gemini_model"] = "gemini-2.5-flash"
+    st.session_state["gemini_model"] = "gemini-3.5-flash"
 
 # Initialize chat history
 if "messages" not in st.session_state:

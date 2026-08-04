@@ -10,4 +10,4 @@ COPY . /app
 ENV PORT=8080
 EXPOSE 8080
 
-CMD ["python", "mcp_demo_server.py"]
+CMD ["python", "mcp_server.py"]

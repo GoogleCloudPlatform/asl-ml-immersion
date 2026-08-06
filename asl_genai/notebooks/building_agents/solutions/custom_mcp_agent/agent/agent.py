@@ -17,6 +17,7 @@
 import os
 
 from google.adk.agents import LlmAgent
+from google.adk.models.google_llm import Gemini
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 from google.adk.tools.mcp_tool.mcp_toolset import McpToolset
 
@@ -29,7 +30,10 @@ MCP_SERVER_URL = os.environ.get(
 )
 
 root_agent = LlmAgent(
-    model=MODEL,
+    model=Gemini(
+        model=MODEL,
+        client_kwargs={"vertexai": True, "location": "global"},
+    ),
     name="inventory_assistant",
     description="You are a specialized assistant for inventory management.",
     instruction=(

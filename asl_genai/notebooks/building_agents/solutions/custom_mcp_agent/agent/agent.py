@@ -16,10 +16,20 @@
 
 import os
 
+from dotenv import load_dotenv
 from google.adk.agents import LlmAgent
 from google.adk.models.google_llm import Gemini
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 from google.adk.tools.mcp_tool.mcp_toolset import McpToolset
+
+# Load environment variables from .env file
+env_path = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", ".env")
+)
+if os.path.exists(env_path):
+    load_dotenv(env_path, override=True)
+else:
+    load_dotenv(override=True)
 
 MODEL = "gemini-3.5-flash"
 

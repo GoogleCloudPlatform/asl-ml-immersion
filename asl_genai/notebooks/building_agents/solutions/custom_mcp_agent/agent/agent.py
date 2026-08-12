@@ -16,6 +16,8 @@
 
 import os
 
+import google.auth.transport.requests
+import google.oauth2.id_token
 from dotenv import load_dotenv
 from google.adk.agents import LlmAgent
 from google.adk.models.google_llm import Gemini
@@ -39,6 +41,22 @@ MCP_SERVER_URL = os.environ.get(
     "https://inventory-mcp-server-xxxxxxxx-uc.a.run.app/sse",
 )
 
+# Fetch OIDC ID Token for Cloud Run IAM authentication if accessing over HTTPS
+headers = {}
+if MCP_SERVER_URL.startswith("https://"):
+    try:
+        audience = MCP_SERVER_URL.split("/sse")[0].rstrip("/")
+        auth_req = google.auth.transport.requests.Request()
+        token = google.oauth2.id_token.fetch_id_token(
+            auth_req, audience=audience
+        )
+        headers["Authorization"] = f"Bearer {token}"
+    except Exception as e:  # pylint: disable=broad-exception-caught
+        print(
+            "Warning: Could not fetch ID token for Cloud Run"
+            f" authentication: {e}"
+        )
+
 root_agent = LlmAgent(
     model=Gemini(
         model=MODEL,
@@ -52,7 +70,10 @@ root_agent = LlmAgent(
     ),
     tools=[
         McpToolset(
-            connection_params=SseServerParams(url=MCP_SERVER_URL),
+            connection_params=SseServerParams(
+                url=MCP_SERVER_URL,
+                headers=headers if headers else None,
+            ),
         )
     ],
 )

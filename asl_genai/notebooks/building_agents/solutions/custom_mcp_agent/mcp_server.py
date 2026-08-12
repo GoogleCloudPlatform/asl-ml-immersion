@@ -17,7 +17,7 @@ mcp = FastMCP(
 
     Call list_skus() to get the list of all the SKUs or any details related to
     the items/SKUs.
-    Call update_sku_qty(sku_id) to update the quantity of a specific SKU.
+    Call update_sku_qty(sku_id, quantity, sign) to update the quantity of a specific SKU.
     """,
     host="0.0.0.0",
     port=int(os.environ.get("PORT", 4200)),

@@ -47,8 +47,8 @@ root_agent = LlmAgent(
     name="inventory_assistant",
     description="You are a specialized assistant for inventory management.",
     instruction=(
-        "Help user get answer to their queries about inventory and update "
-        "or process the items."
+        "Help users find answers to their inventory inquiries and update "
+        "or adjust stock levels for specific items."
     ),
     tools=[
         McpToolset(

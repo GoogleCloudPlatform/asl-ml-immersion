@@ -62,18 +62,18 @@ def update_sku_qty(
     ),
     sign: int = Field(1, description="1 for adding and -1 for removing."),
 ):
-    """Updates the quantity of a specific SKU in the CSV file.
+    """Updates the stock quantity of a specific SKU in the inventory catalog.
 
-    If you are asked for placing or returning/cancelling an order, call this
-    function.
+    If you are asked to place, return, or cancel an order, call this function.
 
     Args:
         sku_id (str): The SKU ID of the product to update.
-        quantity (int): The new quantity for the SKU.
-        sign (int): 1 for adding and -1 for removing.
+        quantity (int): The number of units to add or deduct.
+        sign (int): 1 for restocking (adding) and
+            -1 for order fulfillment (deducting).
 
     Returns:
-        dict: A message indicating success or failure.
+        dict: A message indicating success or describing the failure error.
     """
     if not os.path.exists(CSV_FILE_PATH):
         return {"error": "SKU data file not found."}
@@ -102,13 +102,13 @@ def update_sku_qty(
                     )
                     # Potentially update 'Status' based on
                     # new quantity vs ReorderLevel
-                    if "ReorderLevel" in row and quantity <= int(
-                        row.get("ReorderLevel", 0)
-                    ):
+                    if "ReorderLevel" in row and int(
+                        row["QuantityOnHand"]
+                    ) <= int(row.get("ReorderLevel", 0)):
                         row["Status"] = "Low Stock"
-                    elif "ReorderLevel" in row and quantity > int(
-                        row.get("ReorderLevel", 0)
-                    ):
+                    elif "ReorderLevel" in row and int(
+                        row["QuantityOnHand"]
+                    ) > int(row.get("ReorderLevel", 0)):
                         row["Status"] = "In Stock"
                     updated = True
                     updated_qty = row["QuantityOnHand"]

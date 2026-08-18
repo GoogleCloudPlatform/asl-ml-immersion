@@ -1,4 +1,4 @@
-# Option1: Cloud Workstation Setup but using cloud_workstation_setup.sh
+# Option1: Cloud Workstation Setup using cloud_workstation_setup.sh
 
 First, open [CloudShell](https://cloud.google.com/shell) and run the following instructions:
 (If cloud workstation is already created, you can skip this step.)
@@ -6,7 +6,7 @@ First, open [CloudShell](https://cloud.google.com/shell) and run the following i
 ```bash
 git clone https://github.com/GoogleCloudPlatform/asl-ml-immersion.git
 cd asl-ml-immersion
-git checkout dev-adk-ide
+git checkout dev-adk2-workflows
 export PATH=$PATH:~/.local/bin
 ./scripts/cloud_workstation_setup.sh
 ```
@@ -40,7 +40,7 @@ You Should see installation messages similar to the following:
 ✅ Found IDE binary at: /usr/local/bin/code-oss-cloud-workstations
 ✅ Configured IDE extensions.
 
-To test ADK in Debug mode choose "Python Debugger: ADK Web"
+To test ADK in Debug mode choose "ADK WebUI Debugger"
 
 # Option2: Cloud Workstation manual setup using Google Cloud Console
 
@@ -144,15 +144,15 @@ Click Launch to open the Code OSS IDE directly in a new browser tab.
 # Option3: Local Development Environment Setup (VS Code or Antigravity)
 This option can be used to setup development environment on your local machine (MacOS, Linux) 
 with your local IDE (VS Code or Antigravity) and doesnt required Cloud Workstation.
-First you need to clone repository to your local env and switch to dev-adk-ide brunch:
+First you need to clone repository to your local env and switch to dev-adk2-workflows brunch:
 
 ```bash
 git clone https://github.com/GoogleCloudPlatform/asl-ml-immersion.git
 cd asl-ml-immersion
-git checkout dev-adk-ide
+git checkout dev-adk2-workflows
 ```
 After the repository is cloned, move to /scaffolds/adk_ide folder and run **setup_adk_ide.sh** script:
-```
+```bash
 cd scaffolds/adk_ide
 sh setup_adk_ide.sh
 ```
@@ -165,43 +165,6 @@ You Should see installation messages similar to the following:
 ✅ Configured IDE extensions.
 ```
 
-
-
-# Testing API Server with curl
-
-## Create a session
-
-```bash
-SESSION_ID=$(curl -X POST http://localhost:8502/apps/agent_01_tool_func/users/u_123/sessions/s_123 \
-  -H "Content-Type: application/json" \
-  -d '{"key1": "value1", "key2": 42}' \
-  | jq -r '.id')
-```
-## Print the session ID
-
-```bash
-echo "Session ID: $SESSION_ID"
-```
-
-# Execute a query with curl
-
-```bash
-curl -X POST http://localhost:8502/run \
--H "Content-Type: application/json" \
--d '{
-"appName": "agent_01_tool_func",
-"userId": "u_123",
-"sessionId": "s_123",
-"newMessage": {
-    "role": "user",
-    "parts": [{
-    "text": "Hey whats the weather in new york today"
-    }]
-}
-}'
-```
-
-For full command options and usage, refer to the [Makefile](Makefile).
 
 # ADK Agents Overview
 
@@ -376,4 +339,41 @@ This section provides a quick description, main learning ADK learning objectives
 - **Description**: Demonstrates advanced configuration of Gemini models.
 - **Learning Objectives**: Learn how to adjust safety settings, system instructions, and other parameters.
 - **Expected Results**: Agent behaves according to the specific configuration applied.
+
+
+# Testing API Server with curl
+
+## Create a session
+
+```bash
+SESSION_ID=$(curl -X POST http://localhost:8502/apps/agent_01_tool_func/users/u_123/sessions/s_123 \
+  -H "Content-Type: application/json" \
+  -d '{"key1": "value1", "key2": 42}' \
+  | jq -r '.id')
+```
+## Print the session ID
+
+```bash
+echo "Session ID: $SESSION_ID"
+```
+
+# Execute a query with curl
+
+```bash
+curl -X POST http://localhost:8502/run \
+-H "Content-Type: application/json" \
+-d '{
+"appName": "agent_01_tool_func",
+"userId": "u_123",
+"sessionId": "s_123",
+"newMessage": {
+    "role": "user",
+    "parts": [{
+    "text": "Hey whats the weather in new york today"
+    }]
+}
+}'
+```
+
+For full command options and usage, refer to the [Makefile](Makefile).
 

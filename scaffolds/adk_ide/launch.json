@@ -38,6 +38,20 @@
             "cwd": "${workspaceFolder}"
         },
         {
+            "name": "ADK Run (CLI)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scaffolds/adk_ide/.venv/bin/adk",
+            "python": "${workspaceFolder}/scaffolds/adk_ide/.venv/bin/python",
+            "envFile": "${workspaceFolder}/scaffolds/adk_ide/.env",
+            "args": [
+                "run",
+                "${relativeFileDirname}"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}"
+        },
+        {
             "name": "Python Debugger: Current File",
             "type": "debugpy",
             "request": "launch",

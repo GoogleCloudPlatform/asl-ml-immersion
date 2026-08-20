@@ -48,7 +48,7 @@ gcloud run deploy "$APP_NAME" \
   --region us-central1 \
   --no-allow-unauthenticated \
   --invoker-iam-check \
-  --update-env-vars GCP_PROJECT="$GOOGLE_CLOUD_PROJECT",GCP_REGION="$GOOGLE_CLOUD_LOCATION",AGENT_API_URL="AGENT_ID"
+  --update-env-vars GCP_PROJECT="$GOOGLE_CLOUD_PROJECT",GCP_REGION="$GOOGLE_CLOUD_LOCATION",GOOGLE_CLOUD_AGENT_ENGINE_ID="projects/PROJECT_ID/locations/us-central1/reasoningEngines/RUNTIME_ID"
 
 echo 'Deployment Done.'
 

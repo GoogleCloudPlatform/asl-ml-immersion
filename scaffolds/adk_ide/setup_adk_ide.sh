@@ -26,6 +26,7 @@ chmod +x setup_mcp_toolbox.sh
 chmod +x setup_mcp_toolbox.sh
 chmod +x streamlit_adk_app/deploy.sh
 chmod +x streamlit_adk_app/run_streamlit_app.sh
+chmod +x adk_deploy_agent_runtime.sh
 
 echo "⚙️  Detecting environment and configuring IDE extensions..."
 

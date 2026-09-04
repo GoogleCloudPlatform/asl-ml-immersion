@@ -4,7 +4,6 @@
 import os
 
 import httpx
-from a2a.types import AgentCard, AgentInterface
 from google.adk.agents import LlmAgent
 from google.adk.agents.remote_a2a_agent import RemoteA2aAgent
 from google.adk.models.google_llm import Gemini
@@ -12,7 +11,12 @@ from google.adk.tools import AgentTool
 from google.auth import default
 from google.auth.transport.requests import Request as AuthRequest
 
-INVENTORY_AGENT_CARD_URL = os.environ.get("INVENTORY_AGENT_CARD_URL", "")
+INVENTORY_AGENT_CARD_URL = os.environ.get("INVENTORY_AGENT_CARD_URL")
+if not INVENTORY_AGENT_CARD_URL:
+    raise ValueError(
+        "INVENTORY_AGENT_CARD_URL environment variable is not set. "
+        "It must point to the deployed Agent Engine endpoint."
+    )
 
 
 def get_store_info(info_type: str = "hours") -> str:
@@ -41,31 +45,11 @@ def get_gcp_httpx_client(timeout: int = 60) -> httpx.AsyncClient:
     )
 
 
-# Define remote A2A sub-agent if URL is configured
-agent_card = AgentCard(
-    name="inventory_assistant",
-    description=(
-        "Specialized assistant for inventory management, listing SKUs, "
-        "and updating stock quantities."
-    ),
-    supported_interfaces=[
-        AgentInterface(
-            url=INVENTORY_AGENT_CARD_URL,
-            protocol_binding="HTTP+JSON",
-            protocol_version="1.0",
-        )
-    ],
-    skills=[],
-)
-
+# Remote A2A Agent dynamically retrieves its AgentCard from the
+# deployed Agent Engine endpoint
 inventory_remote_agent = RemoteA2aAgent(
     name="inventory_assistant",
-    description=(
-        "Specialized assistant for inventory management, listing SKUs, "
-        "and updating stock quantities. Delegate to this agent for any "
-        "inventory or stock operations."
-    ),
-    agent_card=agent_card,
+    agent_card=INVENTORY_AGENT_CARD_URL,
     httpx_client=get_gcp_httpx_client(),
 )
 

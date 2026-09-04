@@ -1,0 +1,4 @@
+google-adk[a2a,eval,extensions,otel-gcp]==1.27.2
+google-cloud-aiplatform[adk,agent-engines]==1.130.0
+python-dotenv>=1.0.1
+pg8000>=1.31.2

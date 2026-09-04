@@ -1,0 +1,3 @@
+{
+    "python.defaultInterpreterPath": "${workspaceFolder}/scaffolds/adk_ide/.venv/bin/python"
+}

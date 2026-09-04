@@ -5,7 +5,7 @@ description = "ASL ADK LABs"
 requires-python = ">=3.12,<3.14"
 
 dependencies = [
-    "google-adk[all]==2.7.1",
+    "google-adk[all]==2.8.0",
     "a2a-sdk>=1.1.2",
     "uvicorn>=0.44.0",
     "psycopg2-binary>=2.9.10",

@@ -1,11 +1,11 @@
 #!/bin/bash
-
 export PATH=$PATH:~/.local/bin
-#cd scaffolds/adk_ide
 make install
 export PATH=$PATH:~/.local/bin
 make install
 source .venv/bin/activate
+adk telemetry disable
+export ADK_TELEMETRY=false
 export PROJECT_ID=$(curl -s "http://metadata.google.internal/computeMetadata/v1/project/project-id" -H "Metadata-Flavor: Google")
 echo $PROJECT_ID
 gcloud config set project $PROJECT_ID
@@ -17,10 +17,11 @@ cp env.example .env
 sed -i "s/^# GOOGLE_CLOUD_PROJECT=.*/GOOGLE_CLOUD_PROJECT=$PROJECT_ID/" .env
 cd ..
 cd ..
+cd ..
 mkdir .vscode
-cp scaffolds/adk_ide/launch.json .vscode/
-cp scaffolds/adk_ide/settings.json .vscode/
-cd scaffolds/adk_ide
+cp asl_genai/scaffolds/adk_ide/launch.json .vscode/
+cp asl_genai/scaffolds/adk_ide/settings.json .vscode/
+cd asl_genai/scaffolds/adk_ide
 chmod +x adk_deploy_cloudrun.sh
 chmod +x setup_mcp_toolbox.sh
 chmod +x setup_mcp_toolbox.sh
@@ -62,8 +63,8 @@ else
     if [ "$IS_LOCAL" = true ]; then
         echo "📦 Installing Dev Containers extension..."
         mkdir -p .devcontainer
-        cp scaffolds/adk_ide/devcontainer_template/Dockerfile .devcontainer/
-        cp scaffolds/adk_ide/devcontainer_template/devcontainer.json .devcontainer/
+        cp asl_genai/scaffolds/adk_ide/devcontainer_template/Dockerfile .devcontainer/
+        cp asl_genai/scaffolds/adk_ide/devcontainer_template/devcontainer.json .devcontainer/
         "$CODE_BIN" --install-extension ms-vscode-remote.remote-containers --force
     else
         echo "⏩ Skipping Dev Containers extension (Native to Cloud / Not on Open VSX)."

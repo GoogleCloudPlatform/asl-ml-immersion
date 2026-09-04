@@ -1,15 +1,15 @@
 {
-    "version": "0.2.0",
+    "version": "0.3.0",
     "configurations": [
         {
             "name": "ADK WebUI Debug",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/scaffolds/adk_ide/.venv/bin/adk",
-            "python": "${workspaceFolder}/scaffolds/adk_ide/.venv/bin/python",
+            "program": "${workspaceFolder}/asl_genai/scaffolds/adk_ide/.venv/bin/adk",
+            "python": "${workspaceFolder}/asl_genai/scaffolds/adk_ide/.venv/bin/python",
             "args": [
                 "web",
-                "${workspaceFolder}/scaffolds/adk_ide",
+                "${workspaceFolder}/asl_genai/scaffolds/adk_ide",
                 "--port",
                 "8501",
                 "--reload_agents",
@@ -23,11 +23,11 @@
             "name": "ADK API Server",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/scaffolds/adk_ide/.venv/bin/adk",
-            "python": "${workspaceFolder}/scaffolds/adk_ide/.venv/bin/python",
+            "program": "${workspaceFolder}/asl_genai/scaffolds/adk_ide/.venv/bin/adk",
+            "python": "${workspaceFolder}/asl_genai/scaffolds/adk_ide/.venv/bin/python",
             "args": [
                 "api_server",
-                "${workspaceFolder}/scaffolds/adk_ide",
+                "${workspaceFolder}/asl_genai/scaffolds/adk_ide",
                 "--port",
                 "8502",
                 "--reload_agents",
@@ -41,9 +41,9 @@
             "name": "ADK Run (CLI)",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/scaffolds/adk_ide/.venv/bin/adk",
-            "python": "${workspaceFolder}/scaffolds/adk_ide/.venv/bin/python",
-            "envFile": "${workspaceFolder}/scaffolds/adk_ide/.env",
+            "program": "${workspaceFolder}/asl_genai/scaffolds/adk_ide/.venv/bin/adk",
+            "python": "${workspaceFolder}/asl_genai/scaffolds/adk_ide/.venv/bin/python",
+            "envFile": "${workspaceFolder}/asl_genai/scaffolds/adk_ide/.env",
             "args": [
                 "run",
                 "${relativeFileDirname}"
@@ -56,24 +56,8 @@
             "type": "debugpy",
             "request": "launch",
             "program": "${file}",
-            "python": "${workspaceFolder}/scaffolds/adk_ide/.venv/bin/python",
+            "python": "${workspaceFolder}/asl_genai/scaffolds/adk_ide/.venv/bin/python",
             "console": "integratedTerminal"
-        },
-        {
-            "name": "Python: Debug Remote A2A Agent Example",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "${workspaceFolder}/scaffolds/adk_ide/.venv/bin/uvicorn",
-            "args": [
-                "agent_20_remote_sub_agent_a2a.remote_weather_agent:a2a_app",
-                "--host", "localhost",
-                "--port", "10020"
-            ],
-            "env": {
-                "PYTHONPATH": "${workspaceFolder}/scaffolds/adk_ide/"
-            },
-            "console": "integratedTerminal"
-        },
+        }
     ]
 }
-

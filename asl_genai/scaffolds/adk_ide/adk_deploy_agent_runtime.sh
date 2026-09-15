@@ -1,12 +1,12 @@
 #!/bin/bash
-source scaffolds/adk_ide/.venv/bin/activate
+source asl_genai/scaffolds/adk_ide/.venv/bin/activate
 export PATH=$PATH:~/.local/bin
 export SERVICE_NAME="adk-service-test"
 export APP_NAME="agent_01_tool_func"
 #export AGENT_PATH="./agent_01_tool_func"
-export AGENT_PATH="./scaffolds/adk_ide/agent_01_tool_func"
+export AGENT_PATH="./asl_genai/scaffolds/adk_ide/agent_01_tool_func"
 pwd
-[ ! -f ./scaffolds/adk_ide/.env ] || export $(grep -v '^#' ./scaffolds/adk_ide/.env | xargs)
+[ ! -f ./asl_genai/scaffolds/adk_ide/.env ] || export $(grep -v '^#' ./asl_genai/scaffolds/adk_ide/.env | xargs)
 echo $GOOGLE_CLOUD_PROJECT
 echo $GOOGLE_CLOUD_LOCATION
 

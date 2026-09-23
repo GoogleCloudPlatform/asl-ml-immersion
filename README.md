@@ -3,7 +3,7 @@
 ## Overview
 This repository contains AI and Machine Learning contents meant to be run on Google Cloud. This is maintained by Google Cloud’s [Advanced Solutions Lab (ASL)](https://cloud.google.com/asl) team.
 
-This repository contains 3 main modules to covers various AI/ML toipcs:
+This repository contains 3 main modules to covers various AI/ML topics:
 - `asl_core`: A wide range of model architectures (DNN, CNN, RNN, transformers, SNGP, etc.) targeting many data modalities (tabular, image, text, time-series) implemented mainly in Tensorflow and Keras.
 - `asl_mlops`: Tools on Google Cloud’s Agent Platform for operationalizing Tensorflow, Scikit-learn and PyTorch models at scale (e.g. Agent Platform training, tuning, and serving and MLOps on Kubeflow pipelines).
 - `asl_genai`: Generative AI and Agent System using Gemini and Agentic Frameworks like Google ADK.
@@ -40,7 +40,7 @@ This repository is tested on Agent Platform Workbench and Cloud Workstations. To
 
 Run the setup script in [Cloud Shell](https://shell.cloud.google.com) to provision your environment.
 ```bash
-git clone https://github.com/GoogleCloudPlatform/asl-ml-immersion.git
+git clone --depth 1 https://github.com/GoogleCloudPlatform/asl-ml-immersion.git
 cd asl-ml-immersion
 bash scripts/setup_env.sh
 ```
@@ -59,16 +59,16 @@ Next, you will be asked if you want to attach a GPU (Nvidia T4) to the environme
 
 **Note:** Accelerators (GPU/TPU) are not required in most of the notebooks, but some notebooks recommend using them.
 
-### Step 2. Build the Environemnt
-Once your environment is running, open it. Then, run the commands below in Terminal **inside the environment** to clone this repository, and build the environemnt (venvs and jupyter kernels).
+### Step 2. Build the Environment
+Once your environment is running, open it. Then, run the commands below in Terminal **inside the environment** to clone this repository, and build the environment (venvs and jupyter kernels).
 
 ```bash
-git clone https://github.com/GoogleCloudPlatform/asl-ml-immersion.git
+git clone --depth 1 https://github.com/GoogleCloudPlatform/asl-ml-immersion.git
 cd asl-ml-immersion
 make
 ```
 
-On Cloud Workstations, click `Open Folder` -> `asl-ml-immersion` to open the repository window. If the folder is already opend, `Command + Shift + P` and type `Developer: Reload Window` to reflect the changes.
+On Cloud Workstations, click `Open Folder` -> `asl-ml-immersion` to open the repository window. If the folder is already opened, `Command + Shift + P` and type `Developer: Reload Window` to reflect the changes.
 
 ## Using the Environment
 ### Running a notebook

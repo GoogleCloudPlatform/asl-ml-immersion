@@ -26,7 +26,7 @@ Be strategic and combine insights from both sources.
 """
 
 root_agent = LlmAgent(
-    model="gemini-2.5-flash",
+    model="gemini-3.8-flash",
     name="bakery_consultant_agent",
     instruction=PROMPT,
     tools=[bq_toolset, maps_toolset],

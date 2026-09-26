@@ -64,7 +64,57 @@ gcloud services enable \
   dataflow.googleapis.com \
   run.googleapis.com \
   telemetry.googleapis.com \
-  modelarmor.googleapis.com
+  modelarmor.googleapis.com \
+  cloudresourcemanager.googleapis.com \
+  pubsub.googleapis.com \
+  bigquerydatatransfer.googleapis.com
+
+# Grant permissions to Compute Engine service account
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com \
+    --role roles/storage.objectAdmin
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com \
+    --role=roles/dataflow.serviceAgent \
+    --condition=None
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member=serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com\
+    --role=roles/storage.admin
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member=serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com\
+    --role=roles/run.admin
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member=serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com\
+    --role=roles/resourcemanager.projectIamAdmin
+
+# Grant aiplatform permission to Cloud Build service account
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member=serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com\
+    --role=roles/aiplatform.admin
+
+# Grant permissions for Cloud Run service account
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+    --role="roles/run.admin"
+
+# Add IAM policy to the service account to provide authentication needed to invoke Cloud Run
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+     --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-pubsub.iam.gserviceaccount.com" \
+     --role="roles/iam.serviceAccountTokenCreator"
+
+# Grant permissions for BigQuery DTS service account
+gcloud iam service-accounts add-iam-policy-binding "${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+    --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-bigquerydatatransfer.iam.gserviceaccount.com" \
+    --role='roles/iam.serviceAccountTokenCreator'
+
+# Grant several permissions to AI Platform service account
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-aiplatform.iam.gserviceaccount.com" \
+    --role=roles/artifactregistry.writer
+
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-aiplatform.iam.gserviceaccount.com" \
+    --role=roles/storage.objectAdmin
 
 
 # Setup Artifact Registry

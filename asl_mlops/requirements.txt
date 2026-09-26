@@ -5,6 +5,7 @@ scikit-learn==1.7.2
 torch==2.3.1
 torchtext==0.18.0
 torch-model-archiver==0.10.0
+xgboost==2.0.1
 
 # MLOps
 kubernetes==17.17.0
@@ -17,6 +18,7 @@ google-cloud-storage
 google-cloud-aiplatform
 google-cloud-bigquery
 cloudml-hypertune
+google-cloud-pubsub
 apache-beam[gcp]>=2.72.0
 google-auth==2.52.0
 
@@ -30,3 +32,5 @@ fastapi
 fsspec
 gcsfs
 tqdm
+nbformat>=4.2.0
+plotly

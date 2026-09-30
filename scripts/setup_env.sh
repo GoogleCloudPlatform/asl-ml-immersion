@@ -64,7 +64,9 @@ gcloud services enable \
   dataflow.googleapis.com \
   run.googleapis.com \
   telemetry.googleapis.com \
-  modelarmor.googleapis.com
+  modelarmor.googleapis.com \
+  apikeys.googleapis.com \
+  mapstools.googleapis.com
 
 
 # Setup Artifact Registry

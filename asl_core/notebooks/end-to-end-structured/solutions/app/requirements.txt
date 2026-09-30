@@ -1,2 +1,0 @@
-Flask
-google-cloud-aiplatform

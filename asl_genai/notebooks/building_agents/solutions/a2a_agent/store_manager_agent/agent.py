@@ -57,7 +57,7 @@ inventory_remote_agent = RemoteA2aAgent(
 root_agent = LlmAgent(
     name="store_manager_agent",
     model=Gemini(
-        model="gemini-3.5-flash",
+        model="gemini-3.8-flash",
         client_kwargs={"vertexai": True, "location": "global"},
     ),
     instruction=(

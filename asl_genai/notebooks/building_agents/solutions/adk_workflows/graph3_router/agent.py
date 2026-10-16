@@ -2,7 +2,7 @@
 
 from google.adk import Agent, Event, Workflow
 
-MODEL = "gemini-3.5-flash"
+MODEL = "gemini-3.8-flash"
 
 # 1. LLM Classifier Agent
 process_message = Agent(

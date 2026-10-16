@@ -1,7 +1,7 @@
 # pylint: skip-file
 from google.adk.agents import Agent
 
-MODEL = "gemini-3.5-flash"
+MODEL = "gemini-3.8-flash"
 
 from .tools import get_weather
 

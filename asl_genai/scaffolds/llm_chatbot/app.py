@@ -18,7 +18,7 @@ PROJECT_ID = os.environ.get("GCP_PROJECT")
 client = genai.Client(project=PROJECT_ID, vertexai=True, location="global")
 
 if "gemini_model" not in st.session_state:
-    st.session_state["gemini_model"] = "gemini-3.5-flash"
+    st.session_state["gemini_model"] = "gemini-3.8-flash"
 
 # Initialize chat history
 if "messages" not in st.session_state:

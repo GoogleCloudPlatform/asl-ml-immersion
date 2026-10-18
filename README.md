@@ -40,7 +40,7 @@ This repository is tested on Agent Platform Workbench and Cloud Workstations. To
 
 Run the setup script in [Cloud Shell](https://shell.cloud.google.com) to provision your environment.
 ```bash
-git clone --depth 1 https://github.com/GoogleCloudPlatform/asl-ml-immersion.git
+git clone --depth 1 -b asl_tok_202610 https://github.com/GoogleCloudPlatform/asl-ml-immersion.git
 cd asl-ml-immersion
 bash scripts/setup_env.sh
 ```
@@ -63,7 +63,7 @@ Next, you will be asked if you want to attach a GPU (Nvidia T4) to the environme
 Once your environment is running, open it. Then, run the commands below in Terminal **inside the environment** to clone this repository, and build the environment (venvs and jupyter kernels).
 
 ```bash
-git clone --depth 1 https://github.com/GoogleCloudPlatform/asl-ml-immersion.git
+git clone --depth 1 -b asl_tok_202610 https://github.com/GoogleCloudPlatform/asl-ml-immersion.git
 cd asl-ml-immersion
 make
 ```

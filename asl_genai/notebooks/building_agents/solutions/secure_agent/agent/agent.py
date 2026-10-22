@@ -21,7 +21,7 @@ model_armor_guard = ModelArmorGuard(
 )
 
 root_agent = LlmAgent(
-    model="gemini-2.5-flash",
+    model="gemini-3.5-flash",
     name="customer_service_agent",
     instruction=PROMPT,
     tools=[bigquery_tools],

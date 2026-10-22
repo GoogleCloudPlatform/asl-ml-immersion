@@ -7,7 +7,7 @@ from google.adk.agents import LlmAgent, LoopAgent, SequentialAgent
 from google.adk.tools import google_search
 from google.adk.tools.agent_tool import AgentTool
 
-MODEL = "gemini-2.5-flash"
+MODEL = "gemini-3.5-flash"
 
 # --- Agent Prompts ---
 
@@ -29,13 +29,10 @@ Plan:
 """
 
 
-WRITER_PROMPT = (
-    INITIAL_WRITER_PROMPT
-    + """
+WRITER_PROMPT = INITIAL_WRITER_PROMPT + """
 Critique:
 {critique}
 """
-)
 
 REFLECTION_PROMPT = """You are a professor grading an essay submission.
 Read the essay provided by the user and generate critique and recommendations for it.

@@ -3,7 +3,7 @@
 from google.adk import Agent, Event, Workflow
 from google.adk.events import RequestInput
 
-MODEL = "gemini-3.5-flash"
+MODEL = "gemini-3.8-flash"
 
 
 def process_input(node_input: str):

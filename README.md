@@ -21,7 +21,6 @@ We have three main folders described below:
 │   │   ├── building_production_ml_systems
 │   │   │   ├── labs
 │   │   │   └── solutions
-│   │   ├── end-to-end-structured
 │   │   ├── image_models
 │   │   ├── ...
 │   ├── kernels - contains kernel scripts needed for certain notebooks

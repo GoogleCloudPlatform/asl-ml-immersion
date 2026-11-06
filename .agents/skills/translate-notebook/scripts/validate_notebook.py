@@ -7,6 +7,95 @@ import ast
 import json
 import re
 import sys
+import textwrap
+
+
+def _normalize_code_for_comparison(source: str, transformer=None) -> str:
+    """Normalize a code cell's source so only comments and docstrings are ignored.
+
+    All executable statements, identifiers, arguments, string literals (prompts,
+    dict keys/values, print strings, etc.), magic commands, and TODO placeholders
+    are preserved in the normalized representation.
+    """
+    lines = source.splitlines()
+    magic_header = ""
+    if lines and lines[0].strip().startswith("%%"):
+        magic_line = lines[0].strip()
+        magic_header = re.sub(r"#.*$", "", magic_line).strip()
+        body = "\n".join(lines[1:])
+        if magic_header.startswith("%%writefile") and re.search(
+            r"\.py\b", magic_header
+        ):
+            source = textwrap.dedent(body)
+        else:
+            cleaned = []
+            for l in lines:
+                l_no_comment = re.sub(r"(#|--).*$", "", l).strip()
+                if l_no_comment:
+                    cleaned.append(l_no_comment)
+            return "MAGIC:\n" + "\n".join(cleaned)
+
+    proc_lines = []
+    in_shell_continuation = False
+    for l in source.splitlines():
+        stripped = l.strip()
+        if stripped.startswith(("!", "%")) or in_shell_continuation:
+            in_shell_continuation = stripped.endswith("\\")
+            l = re.sub(r"#.*$", "", l).rstrip()
+        proc_lines.append(l)
+    clean = "\n".join(proc_lines)
+    clean = re.sub(r"#\s*TODO\b[^\n\"']*", "# TODO", clean, flags=re.IGNORECASE)
+    clean = re.sub(
+        r"(=\s*)#\s*TODO\b", r"\g<1>None # TODO", clean, flags=re.IGNORECASE
+    )
+    clean = re.sub(
+        r"(:\s*\n\s*)#\s*TODO\b",
+        r"\g<1>pass # TODO",
+        clean,
+        flags=re.IGNORECASE,
+    )
+
+    try:
+        if transformer:
+            transformed = transformer.transform_cell(clean)
+            tree = ast.parse(transformed)
+        else:
+            clean_py_lines = [
+                l
+                for l in clean.splitlines()
+                if not l.strip().startswith(("!", "%", "#"))
+                and not re.match(r"^\s*\w+\s*=\s*[!%]", l)
+            ]
+            magic_lines = [
+                re.sub(r"#.*$", "", l).strip()
+                for l in clean.splitlines()
+                if l.strip().startswith(("!", "%"))
+                or re.match(r"^\s*\w+\s*=\s*[!%]", l)
+            ]
+            tree = ast.parse("\n".join(clean_py_lines))
+            magic_header += "\n".join(magic_lines)
+
+        for node in ast.walk(tree):
+            if isinstance(
+                node,
+                (
+                    ast.Module,
+                    ast.FunctionDef,
+                    ast.AsyncFunctionDef,
+                    ast.ClassDef,
+                ),
+            ):
+                if (
+                    node.body
+                    and isinstance(node.body[0], ast.Expr)
+                    and isinstance(node.body[0].value, ast.Constant)
+                    and isinstance(node.body[0].value.value, str)
+                ):
+                    node.body[0].value.value = "__DOCSTRING__"
+        return f"AST:{magic_header}:{ast.dump(tree)}"
+    except Exception:
+        cleaned = [re.sub(r"#.*$", "", l).strip() for l in source.splitlines()]
+        return f"RAW:{magic_header}:" + "\n".join(c for c in cleaned if c)
 
 
 def validate_notebook(target_path: str, orig_path: str = None) -> bool:
@@ -216,6 +305,42 @@ def validate_notebook(target_path: str, orig_path: str = None) -> bool:
                 print(
                     f" [WARN] Cell ID differences at indices: {id_mismatches}"
                 )
+
+            code_mismatches = []
+            for i in range(min(len(orig_cells), len(target_cells))):
+                if (
+                    orig_cells[i].get("cell_type") == "code"
+                    and target_cells[i].get("cell_type") == "code"
+                    and i not in orig_code_errors
+                ):
+                    orig_lines = orig_cells[i].get("source", [])
+                    orig_src = (
+                        "".join(orig_lines)
+                        if isinstance(orig_lines, list)
+                        else orig_lines
+                    )
+                    target_lines = target_cells[i].get("source", [])
+                    target_src = (
+                        "".join(target_lines)
+                        if isinstance(target_lines, list)
+                        else target_lines
+                    )
+                    if _normalize_code_for_comparison(
+                        orig_src, transformer
+                    ) != _normalize_code_for_comparison(
+                        target_src, transformer
+                    ):
+                        code_mismatches.append(i)
+
+            if not code_mismatches:
+                print(
+                    " [PASS] Executable code & AST match 1:1 across all code cells (only comments/docstrings translated)."
+                )
+            else:
+                print(
+                    f" [FAIL] Executable code modification / hallucination detected at cell indices: {code_mismatches}"
+                )
+                all_passed = False
 
         except Exception as e:
             print(f" [FAIL] Could not load or compare original notebook: {e}")

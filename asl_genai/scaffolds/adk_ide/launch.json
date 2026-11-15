@@ -1,0 +1,63 @@
+{
+    "version": "0.3.0",
+    "configurations": [
+        {
+            "name": "ADK WebUI Debug",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/asl_genai/scaffolds/adk_ide/.venv/bin/adk",
+            "python": "${workspaceFolder}/asl_genai/scaffolds/adk_ide/.venv/bin/python",
+            "args": [
+                "web",
+                "${workspaceFolder}/asl_genai/scaffolds/adk_ide",
+                "--port",
+                "8501",
+                "--reload_agents",
+                "--allow_origins",
+                "*"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "ADK API Server",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/asl_genai/scaffolds/adk_ide/.venv/bin/adk",
+            "python": "${workspaceFolder}/asl_genai/scaffolds/adk_ide/.venv/bin/python",
+            "args": [
+                "api_server",
+                "${workspaceFolder}/asl_genai/scaffolds/adk_ide",
+                "--port",
+                "8502",
+                "--reload_agents",
+                "--allow_origins",
+                "*"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "ADK Run (CLI)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/asl_genai/scaffolds/adk_ide/.venv/bin/adk",
+            "python": "${workspaceFolder}/asl_genai/scaffolds/adk_ide/.venv/bin/python",
+            "envFile": "${workspaceFolder}/asl_genai/scaffolds/adk_ide/.env",
+            "args": [
+                "run",
+                "${relativeFileDirname}"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Python Debugger: Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "python": "${workspaceFolder}/asl_genai/scaffolds/adk_ide/.venv/bin/python",
+            "console": "integratedTerminal"
+        }
+    ]
+}

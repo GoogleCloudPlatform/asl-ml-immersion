@@ -4,7 +4,7 @@ evaluate==0.4.0
 rouge-score==0.1.2
 nltk==3.8.1
 rouge-score==0.1.2
-datasets==2.14.5
+datasets==5.0.1
 huggingface-hub==0.17.2
 multiprocess==0.70.15
 responses==0.18.0

@@ -7,7 +7,7 @@ from google.adk.agents import LlmAgent, LoopAgent, SequentialAgent
 from google.adk.tools import google_search
 from google.adk.tools.agent_tool import AgentTool
 
-MODEL = "gemini-3.8-flash"
+MODEL = "gemini-4-hydrogen"
 
 # --- Agent Prompts ---
 

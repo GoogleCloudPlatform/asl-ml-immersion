@@ -5,7 +5,7 @@ from typing import Literal
 from google.adk import Agent, Event, Workflow
 from pydantic import BaseModel, Field
 
-MODEL = "gemini-3.8-flash"
+MODEL = "gemini-4-hydrogen"
 
 
 class Feedback(BaseModel):

@@ -51,7 +51,7 @@ Adapt your execution steps dynamically based on the user's specific question:
 """
 
 root_agent = LlmAgent(
-    model="gemini-3.8-flash",
+    model="gemini-4-hydrogen",
     name="bakery_consultant_agent",
     instruction=PROMPT,
     planner=BuiltInPlanner(

@@ -154,3 +154,6 @@ cython_debug/
 bert_dataset/
 asl_core/notebooks/time_series_prediction/data/*.csv
 asl_core/notebooks/time_series_prediction/stock_src/*.zip
+
+# ADK
+.adk/

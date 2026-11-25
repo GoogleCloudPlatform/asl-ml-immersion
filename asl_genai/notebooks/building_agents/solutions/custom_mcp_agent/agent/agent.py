@@ -31,7 +31,7 @@ if os.path.exists(env_path):
 else:
     load_dotenv(override=True)
 
-MODEL = "gemini-3.5-flash"
+MODEL = "gemini-4-hydrogen"
 
 # Connect to the remote Cloud Run MCP Server over HTTPS
 MCP_SERVER_URL = os.environ.get(

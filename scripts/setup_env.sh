@@ -42,10 +42,15 @@ export REGION=us-central1
 export ARTIFACT_REG_REPO=asl-artifact-repo
 
 
-# Grant Storage Object Admin to Compute Engine service account
+# Grant Storage Object Admin and Cloud Run Admin to Compute Engine service account
 gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com \
     --role roles/storage.objectAdmin
+
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com \
+    --role roles/run.admin
+
 
 
 # Enable Google Cloud services
@@ -64,7 +69,9 @@ gcloud services enable \
   dataflow.googleapis.com \
   run.googleapis.com \
   telemetry.googleapis.com \
-  modelarmor.googleapis.com
+  modelarmor.googleapis.com \
+  apikeys.googleapis.com \
+  mapstools.googleapis.com
 
 
 # Setup Artifact Registry
